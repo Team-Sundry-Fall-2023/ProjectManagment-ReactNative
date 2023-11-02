@@ -1,0 +1,114 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { firebase } from './firebase';
+
+const CreateTaskScreen = ({ navigation, route }) => {
+  const { projectId } = route.params;
+  const [taskName, setTaskName] = useState('');
+  const [taskDescription, setTaskDescription] = useState('');
+  const [taskStartDate, setTaskStartDate] = useState('');
+  const [taskEndDate, setTaskEndDate] = useState('');
+  const [taskCost, setTaskCost] = useState(0); // Set taskCost initially to 0
+  const [error, setError] = useState(''); // Add a state for error messages
+
+  const handleCreateTask = async () => {
+    // Reset the error message
+    setError('');
+
+    // Validate input fields
+    if (!taskName || !taskDescription || !taskStartDate || !taskEndDate) {
+      showAlert('All fields are required.'); // Show an alert
+      return;
+    }
+
+    try {
+      // Create the task in the Firebase Firestore database
+      const taskRef = firebase.firestore().collection('tasks');
+      await taskRef.add({
+        taskName,
+        taskDescription,
+        taskStartDate,
+        taskEndDate, // Include taskEndDate
+        taskCost, // Include taskCost
+        projectId, // Foreign key linking to the project
+        taskCode: 0, // Set taskCode to 0 initially
+        actualTaskEndDate: null, // Set actualTaskEndDate to null initially
+      });
+
+      // Navigate back to the Project Detail page upon successful task creation
+      navigation.navigate('ProjectDetail', { projectId });
+    } catch (error) {
+      showAlert('Error creating task. Please try again.'); // Show an alert
+      console.error('Error creating task:', error);
+    }
+  };
+
+  // Function to show an alert with the error message
+  const showAlert = (message) => {
+    Alert.alert('Error', message, [{ text: 'OK' }], { cancelable: false });
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Create Task</Text>
+      {/* Error message */}
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+      <TextInput
+        style={styles.input}
+        placeholder="Task Name"
+        value={taskName}
+        onChangeText={setTaskName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Task Description"
+        value={taskDescription}
+        onChangeText={setTaskDescription}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Task Start Date"
+        value={taskStartDate}
+        onChangeText={setTaskStartDate}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Task End Date"
+        value={taskEndDate}
+        onChangeText={setTaskEndDate}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Task Cost"
+        value={taskCost.toString()} // Convert to a string for input
+        onChangeText={(value) => setTaskCost(parseFloat(value))} // Parse as a float
+      />
+      <Button title="Create Task" onPress={handleCreateTask} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  header: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
+  },
+});
+
+export default CreateTaskScreen;
