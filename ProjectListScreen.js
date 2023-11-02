@@ -2,23 +2,48 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Button, Alert } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
-import { firebase } from './firebase';
+import { firebase ,auth, database} from './firebase';
+import {  ref, orderByChild, query, equalTo, get } from "firebase/database";
 
 const ProjectListScreen = () => {
   const navigation = useNavigation();
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    const projectRef = firebase.firestore().collection('projects');
+    const projectList = [];
+    const currentUser = auth.currentUser;
+console.log('currentUser' + currentUser )
+    const userQuery = query(ref(database, 'projects'), orderByChild('user'),equalTo(currentUser.email) );
+    get(userQuery).then((snapshot) => {
+         if (snapshot.exists()) {
+           // The snapshot contains the user data matching the email
+           const projects = snapshot.val();
+      
+           Object.keys(projects).forEach(() => {
+            projectList.push(projects);
+             
+          });
+          setProjects(projectList);
+         } else {
+          setProjects(projectList);
+         }
+       }).catch((error) => {
+        setProjects(projectList);
+        showAlert('Error finding Projects:', error);
+         return null;
+       });
 
-    projectRef.onSnapshot((snapshot) => {
-      const projectList = [];
-      snapshot.forEach((doc) => {
-        const projectData = doc.data();
-        projectList.push({ id: doc.id, ...projectData });
-      });
-      setProjects(projectList);
-    });
+
+    // const projectRef = firebase.collection('projects');
+
+    // projectRef.onSnapshot((snapshot) => {
+    //   const projectList = [];
+    //   snapshot.forEach((doc) => {
+    //     const projectData = doc.data();
+    //     projectList.push({ id: doc.id, ...projectData });
+    //   });
+    //   setProjects(projectList);
+    // });
   }, []);
 
   const handleDelete = async (project) => {
@@ -60,7 +85,9 @@ const ProjectListScreen = () => {
     );
   };
   
-
+  const showAlert = (message) => {
+    Alert.alert('Error', message, [{ text: 'OK' }], { cancelable: false });
+  };
   const handleViewDetails = (project) => {
     navigation.navigate('ProjectDetail', { project });
   };

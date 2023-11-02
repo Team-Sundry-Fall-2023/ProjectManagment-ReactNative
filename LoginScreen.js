@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Image, StyleSheet } from 'react-native';
-import { auth } from './firebase';
+import { auth, database } from './firebase';
 import { getUserRoleFromUserTable } from './FirebaseFunctions';
 import { signInWithEmailAndPassword } from "firebase/auth";
+import {  ref, orderByChild, query, equalTo, get } from "firebase/database";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -21,19 +22,47 @@ export default function LoginScreen({ navigation }) {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+     const userCredential = await signInWithEmailAndPassword(auth, email, password);
        // Get the user's ID
       const user = userCredential.user;
-      const userId = user.uid;
-     // Query the user's role from the user table
-     const userRole = await getUserRoleFromUserTable(userId);
+     if (user)
+     {
+      console.log('Login' + email);
+
+      const userQuery = query(ref(database, 'users'), orderByChild('email'),equalTo(email) );
+      get(userQuery).then((snapshot) => {
+           if (snapshot.exists()) {
+             // The snapshot contains the user data matching the email
+             const user = snapshot.val();
+        
+             Object.keys(user).forEach((userId) => {
+              const userData = user[userId];
+              if (userData && userData.category) {
+                const category = userData.category;
+                if (category === 'Admin') {
+                  navigation.navigate('AdminTabNavigator'); // Navigate to the admin tab bar
+                } else if (category === 'Member') {
+                  navigation.navigate('MemberTabNavigator'); // Navigate to the member tab bar
+                }
+              } else {
+                setError('Category not found for user with ID', userId);
+              }
+            });
+           } else {
+            setError('User not found.');
+           }
+         }).catch((error) => {
+           
+          setError('Error finding user:', error);
+           return null;
+         });
+
 
      // Determine which tab navigator to navigate to based on the user's role
-    if (userRole === 'Admin') {
-      navigation.navigate('AdminTabNavigator'); // Navigate to the admin tab bar
-    } else if (userRole === 'Member') {
-      navigation.navigate('MemberTabNavigator'); // Navigate to the member tab bar
-    }
+
+  }else{
+    setError('User not exist!');
+  }
     } catch (error) {
       setError(error.message);
     }

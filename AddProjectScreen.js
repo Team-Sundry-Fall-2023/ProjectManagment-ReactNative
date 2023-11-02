@@ -10,11 +10,13 @@ const AddProjectScreen = () => {
 
   const handleAddProject = async () => {
     const projectRef = firebase.firestore().collection('projects');
+    const currentUser = auth.currentUser;
     try {
       await projectRef.add({
         name,
         description,
         ProjectCost: 0,
+        user: currentUser.email
       });
       navigation.navigate('ProjectList');
     } catch (error) {
