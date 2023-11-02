@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { firebase } from './firebase'; // Import your Firebase configuration
+import { firebase,auth } from './firebase'; // Import your Firebase configuration
 
 const ProfileDetailScreen = ({ navigation }) => {
   const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
     // Fetch the currently authenticated user's details
-    const currentUser = firebase.auth().currentUser;
+    const currentUser = auth.currentUser;
 
     if (currentUser) {
       setUserDetails({

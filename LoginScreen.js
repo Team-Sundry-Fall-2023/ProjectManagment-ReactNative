@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Image, StyleSheet } from 'react-native';
-import { firebase } from './firebase';
+import { auth } from './firebase';
 import { getUserRoleFromUserTable } from './FirebaseFunctions';
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ export default function LoginScreen({ navigation }) {
     }
 
     try {
-      await firebase.auth().signInWithEmailAndPassword(email, password);
+      await signInWithEmailAndPassword(auth, email, password);
        // Get the user's ID
       const user = userCredential.user;
       const userId = user.uid;

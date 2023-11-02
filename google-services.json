@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "148422738224",
+    "firebase_url": "https://projectmanagement-9f9ce-default-rtdb.firebaseio.com",
+    "project_id": "projectmanagement-9f9ce",
+    "storage_bucket": "projectmanagement-9f9ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148422738224:android:c172c97d1c7f3cbb6588f5",
+        "android_client_info": {
+          "package_name": "com.sundry.projectManagement"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8_-8YSrcwtOpHUKDqdrZQGxLveHKpayw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

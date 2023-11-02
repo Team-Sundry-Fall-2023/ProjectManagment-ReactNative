@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { firebase } from './firebase';
+import { firebase, auth} from './firebase';
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const CreateMemberScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
@@ -23,22 +24,39 @@ const CreateMemberScreen = ({ navigation }) => {
     }
 
     try {
-      // Create the member in Firebase Authentication
-      const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
 
-      // Store additional member data in Firebase Firestore
-      const user = userCredential.user;
-      const memberRef = firebase.firestore().collection('users').doc(user.uid);
-      await memberRef.set({
-        firstName,
-        lastName,
-        email,
-        hourlyRate: parseFloat(hourlyRate), // Convert hourlyRate to a number
-        category: 'Memebr',
-      });
-
-      // Navigate to another screen upon successful member creation
-      navigation.navigate('AdminDashboard'); // Adjust this to your needs
+  createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed up 
+    const user = userCredential.user;
+    console.log('Register' +user)
+    const userRef = ref(database,'users');
+    console.log('Register ref' + userRef)
+   
+    const userData = {
+      firstName : firstName,
+      lastName :lastName,
+      email : email,
+      hourlyRate:parseFloat(hourlyRate), // Convert hourlyRate to a number
+      category: 'Memebr', 
+    };
+    push(userRef, userData)
+    .then(() => {
+      showAlert('User added successfully');
+    })
+    .catch((error) => {
+      showAlert('Error adding user:', error);
+    });
+    
+  })
+  .catch((error) => {
+    console.log('Register Error' +error.message)
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    showAlert('Error adding user:', error.message);
+    // ..
+  });
+ 
     } catch (error) {
       showAlert('Error creating member. Please try again.'); // Show an alert
       console.error('Error creating member:', error);

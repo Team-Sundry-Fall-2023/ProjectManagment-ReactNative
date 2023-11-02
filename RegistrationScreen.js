@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-// import { firebase } from './firebase';
-import * as firebase from 'firebase/app';
+import { firebase ,auth, database} from './firebase';
 import 'firebase/auth';
 import 'firebase/database'; 
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import {  ref, push } from "firebase/database";
 
 const RegistrationScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
@@ -29,24 +30,51 @@ const RegistrationScreen = ({ navigation }) => {
     }
 
     try {
+
+createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed up 
+    const user = userCredential.user;
+    console.log('Register' +user)
+    const userRef = ref(database,'users');
+    console.log('Register ref' + userRef)
+   
+    const userData = {
+      firstName : firstName,
+      lastName :lastName,
+      email : email,
+      hourlyRate:0,
+      category: 'Admin', // Set the category to "Admin" for every user
+    };
+    push(userRef, userData)
+    .then(() => {
+      showAlert('User added successfully');
+      navigation.navigate('AdminTabNavigator');
+    })
+    .catch((error) => {
+      showAlert('Error adding user:', error);
+    });
+    
+  })
+  .catch((error) => {
+    console.log('Register Error' +error.message)
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    showAlert('Error adding user:', error.message);
+    // ..
+  });
       // Create the user in Firebase Authentication
-      const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      // const userCredential = await auth.createUserWithEmailAndPassword(email, password);
 
       // Store additional user data in Firebase Firestore
-      const user = userCredential.user;
-      const userRef = firebase.firestore().collection('users').doc(user.uid);
-      await userRef.set({
-        firstName,
-        lastName,
-        email,
-        hourlyRate:0,
-        category: 'Admin', // Set the category to "Admin" for every user
-      });
+      
+      
 
       // Navigate to another screen (e.g., the main app screen) upon successful registration
-      navigation.navigate('MainScreen');
+   
     } catch (error) {
       console.error('Error registering user:', error);
+      showAlert('Error adding user:', error.message);
       // Handle registration error and show an error message
     }
   };
