@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, Image, StyleSheet } from 'react-native';
 import { firebase } from './firebase';
+import { getUserRoleFromUserTable } from './FirebaseFunctions';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -20,9 +21,18 @@ export default function LoginScreen({ navigation }) {
 
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password);
-      // Navigate to the main app screen after successful login
-      // You can replace 'MainScreen' with your main app screen component
-      navigation.replace('TabNavigator');
+       // Get the user's ID
+      const user = userCredential.user;
+      const userId = user.uid;
+     // Query the user's role from the user table
+     const userRole = await getUserRoleFromUserTable(userId);
+
+     // Determine which tab navigator to navigate to based on the user's role
+    if (userRole === 'Admin') {
+      navigation.navigate('AdminTabNavigator'); // Navigate to the admin tab bar
+    } else if (userRole === 'Member') {
+      navigation.navigate('MemberTabNavigator'); // Navigate to the member tab bar
+    }
     } catch (error) {
       setError(error.message);
     }
@@ -30,6 +40,10 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={require('./assets/icon.png')} // Provide the correct path to your logo
+        style={styles.logo}
+      />
       <TextInput
        style={styles.input}
         placeholder="Email"
@@ -60,6 +74,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16,
+  },
+  logo: {
+    width: 100, // Adjust the width and height according to your logo's dimensions
+    height: 100,
+    alignSelf: 'center', // Center the logo horizontally
+    marginBottom: 20,
   },
   header: {
     fontSize: 24,

@@ -28,12 +28,13 @@ const CreateMemberScreen = ({ navigation }) => {
 
       // Store additional member data in Firebase Firestore
       const user = userCredential.user;
-      const memberRef = firebase.firestore().collection('members').doc(user.uid);
+      const memberRef = firebase.firestore().collection('users').doc(user.uid);
       await memberRef.set({
         firstName,
         lastName,
         email,
         hourlyRate: parseFloat(hourlyRate), // Convert hourlyRate to a number
+        category: 'Memebr',
       });
 
       // Navigate to another screen upon successful member creation

@@ -39,6 +39,7 @@ const RegistrationScreen = ({ navigation }) => {
         firstName,
         lastName,
         email,
+        hourlyRate:0,
         category: 'Admin', // Set the category to "Admin" for every user
       });
 
