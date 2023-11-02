@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { firebase } from './firebase';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+// import { firebase } from './firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database'; 
 
 const RegistrationScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
@@ -11,12 +14,17 @@ const RegistrationScreen = ({ navigation }) => {
 
   const handleRegistration = async () => {
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      // Perform input validation and show error messages
+      showAlert('All fields are required.'); 
       return;
     }
 
     if (password !== confirmPassword) {
-      // Passwords do not match, show an error message
+      showAlert('Password mismatch.'); 
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      showAlert('Invalid email format.'); // Show an alert
       return;
     }
 
@@ -44,7 +52,6 @@ const RegistrationScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Registration</Text>
       <TextInput
         style={styles.input}
         placeholder="First Name"
@@ -81,6 +88,17 @@ const RegistrationScreen = ({ navigation }) => {
     </View>
   );
 };
+
+const showAlert = (message) => {
+  Alert.alert('Error', message, [{ text: 'OK' }], { cancelable: false });
+};
+
+  // Email validation function
+  const validateEmail = (email) => {
+    // Use a regular expression to validate email format
+    const emailPattern = /\S+@\S+\.\S+/;
+    return emailPattern.test(email);
+  };
 
 const styles = StyleSheet.create({
   container: {

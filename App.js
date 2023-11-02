@@ -77,7 +77,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './LoginScreen';
 import TabNavigator from './TabNavigator'; // Create a separate component for your tab bar navigation
-
+import RegistrationScreen from './RegistrationScreen';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -86,6 +86,7 @@ const App = () => {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="Registration" component={RegistrationScreen} options={{ headerShown: true }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
