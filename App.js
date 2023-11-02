@@ -86,20 +86,22 @@ import EditProjectScreen from './EditProjectScreen';
 import ProfileDetailScreen from './ProfileDetailScreen';
 import ProjectDetailScreen from './ProjectDetailScreen';
 import ProjectListScreen from './ProjectListScreen';
+import OnBoardingScreen from './OnBoardingScreen';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="OnBoardingScreen">
+        <Stack.Screen name="OnBoardingScreen" component={OnBoardingScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="AdminTabNavigator" component={AdminTabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="MemberTabNavigator" component={MemberTabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Registration" component={RegistrationScreen} options={{ headerShown: true }} />
         <Stack.Screen name="AddProject" component={AddProjectScreen} options={{ headerShown: true }} />
 
-        <Stack.Screen name="CreateMembe" component={CreateMemberScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateMember" component={CreateMemberScreen} options={{ headerShown: false }} />
         <Stack.Screen name="CreateTask" component={CreateTaskScreen} options={{ headerShown: true }} />
         <Stack.Screen name="EditProject" component={EditProjectScreen} options={{ headerShown: true }} />
         <Stack.Screen name="ProfileDetail" component={ProfileDetailScreen} options={{ headerShown: false }} />
