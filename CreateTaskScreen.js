@@ -17,7 +17,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
 
     // Validate input fields
     if (!taskName || !taskDescription || !taskStartDate || !taskEndDate) {
-      showAlert('All fields are required.'); // Show an alert
+      showAlert('Error','All fields are required.'); // Show an alert
       return;
     }
 
@@ -38,14 +38,14 @@ const CreateTaskScreen = ({ navigation, route }) => {
       // Navigate back to the Project Detail page upon successful task creation
       navigation.navigate('ProjectDetail', { projectId });
     } catch (error) {
-      showAlert('Error creating task. Please try again.'); // Show an alert
+      showAlert('Error','Error creating task. Please try again.'); // Show an alert
       console.error('Error creating task:', error);
     }
   };
 
   // Function to show an alert with the error message
-  const showAlert = (message) => {
-    Alert.alert('Error', message, [{ text: 'OK' }], { cancelable: false });
+  const showAlert = (title, message) => {
+    Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
 
   return (

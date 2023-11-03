@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { View, Text, TextInput, Button, Image, StyleSheet } from 'react-native';
 import { auth, database } from './firebase';
 import { getUserRoleFromUserTable } from './FirebaseFunctions';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import {  ref, orderByChild, query, equalTo, get } from "firebase/database";
+import UserContext from './UserContext';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { login } = useContext(UserContext);
 
-  const login = async () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       setError('Email and password are required');
       return;
@@ -39,6 +41,19 @@ export default function LoginScreen({ navigation }) {
               const userData = user[userId];
               if (userData && userData.category) {
                 const category = userData.category;
+// const fn = userData.firstName;
+// const ln = userData.lastName;
+//                 console.log(fn);
+//                 console.log(ln);
+                //  const userData = {
+                //    firstName: userData.firstName,
+                //   lastName: userData.lastName,
+                //   email: email,
+                // };
+                //  login(userData);
+                setEmail('');
+                setPassword('');
+
                 if (category === 'Admin') {
                   navigation.navigate('AdminTabNavigator'); // Navigate to the admin tab bar
                 } else if (category === 'Member') {
@@ -86,7 +101,7 @@ export default function LoginScreen({ navigation }) {
         onChangeText={setPassword}
       />
       <Text style={styles.errorText}>{error}</Text>
-      <Button title="Login" onPress={login} />
+      <Button title="Login" onPress={handleLogin} />
       <Button title="Register" onPress={() => navigation.navigate('Registration')} />
     </View>
   );

@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { firebase,auth } from './firebase'; // Import your Firebase configuration
+import UserContext from './UserContext';
 
 const ProfileDetailScreen = ({ navigation }) => {
   const [userDetails, setUserDetails] = useState(null);
+  const { user, logout } = useContext(UserContext);
 
   useEffect(() => {
     // Fetch the currently authenticated user's details
@@ -20,8 +22,9 @@ const ProfileDetailScreen = ({ navigation }) => {
 
   const handleLogout = () => {
     // Implement your logout logic here, such as signing the user out
-    firebase.auth().signOut()
+    auth.signOut()
       .then(() => {
+        logout();
         // After successful sign-out, navigate back to the login screen or perform any other actions
         navigation.navigate('Login');
       })
@@ -36,7 +39,8 @@ const ProfileDetailScreen = ({ navigation }) => {
       <Text style={styles.header}>Profile Details</Text>
       {userDetails ? (
         <View style={styles.userDetails}>
-          <Text>Name: {userDetails.firstName}</Text>
+          <Text>First Name: {userDetails.firstName}</Text>
+          <Text>Last Name: {userDetails.lastName}</Text>
           <Text>Email: {userDetails.email}</Text>
           {/* Add more user details here */}
         </View>

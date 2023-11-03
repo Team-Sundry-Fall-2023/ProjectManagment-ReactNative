@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { firebase ,auth, database} from './firebase';
+import {  ref, push } from "firebase/database";
 import 'firebase/auth';
 import 'firebase/database'; 
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import {  ref, push } from "firebase/database";
+import UserContext from './UserContext';
+
 
 const RegistrationScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
@@ -12,20 +14,21 @@ const RegistrationScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const { login } = useContext(UserContext);
 
   const handleRegistration = async () => {
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      showAlert('All fields are required.'); 
+      showAlert('Error','All fields are required.'); 
       return;
     }
 
     if (password !== confirmPassword) {
-      showAlert('Password mismatch.'); 
+      showAlert('Error','Password mismatch.'); 
       return;
     }
 
     if (!validateEmail(email)) {
-      showAlert('Invalid email format.'); // Show an alert
+      showAlert('Error','Invalid email format.'); // Show an alert
       return;
     }
 
@@ -48,11 +51,17 @@ createUserWithEmailAndPassword(auth, email, password)
     };
     push(userRef, userData)
     .then(() => {
-      showAlert('User added successfully');
+      showAlert('Success','User added successfully');
+      const userData = {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+      };
+      login(userData);
       navigation.navigate('AdminTabNavigator');
     })
     .catch((error) => {
-      showAlert('Error adding user:', error);
+      showAlert('Error','Error adding user:', error);
     });
     
   })
@@ -60,7 +69,7 @@ createUserWithEmailAndPassword(auth, email, password)
     console.log('Register Error' +error.message)
     const errorCode = error.code;
     const errorMessage = error.message;
-    showAlert('Error adding user:', error.message);
+    showAlert('Error','Error adding user:', error.message);
     // ..
   });
       // Create the user in Firebase Authentication
@@ -74,7 +83,7 @@ createUserWithEmailAndPassword(auth, email, password)
    
     } catch (error) {
       console.error('Error registering user:', error);
-      showAlert('Error adding user:', error.message);
+      showAlert('Error','Error adding user:', error.message);
       // Handle registration error and show an error message
     }
   };
@@ -118,8 +127,8 @@ createUserWithEmailAndPassword(auth, email, password)
   );
 };
 
-const showAlert = (message) => {
-  Alert.alert('Error', message, [{ text: 'OK' }], { cancelable: false });
+const showAlert = (title, message) => {
+  Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
 };
 
   // Email validation function

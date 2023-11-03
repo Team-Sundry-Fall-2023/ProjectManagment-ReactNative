@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { firebase, auth} from './firebase';
+import { firebase, auth, database} from './firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import {  ref, push } from "firebase/database";
 
 const CreateMemberScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
@@ -13,49 +14,54 @@ const CreateMemberScreen = ({ navigation }) => {
   const handleCreateMember = async () => {
     // Validate input fields
     if (!firstName || !lastName || !email || !password || !hourlyRate) {
-      showAlert('All fields are required.'); // Show an alert
+      showAlert('Error','All fields are required.'); // Show an alert
       return;
     }
 
     // Validate the email format
     if (!validateEmail(email)) {
-      showAlert('Invalid email format.'); // Show an alert
+      showAlert('Error','Invalid email format.'); // Show an alert
       return;
     }
 
     try {
-
-  createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed up 
-    const user = userCredential.user;
-    console.log('Register' +user)
-    const userRef = ref(database,'users');
-    console.log('Register ref' + userRef)
-   
-    const userData = {
-      firstName : firstName,
-      lastName :lastName,
-      email : email,
-      hourlyRate:parseFloat(hourlyRate), // Convert hourlyRate to a number
-      category: 'Memebr', 
-    };
-    push(userRef, userData)
-    .then(() => {
-      showAlert('User added successfully');
-    })
-    .catch((error) => {
-      showAlert('Error adding user:', error);
-    });
-    
-  })
-  .catch((error) => {
-    console.log('Register Error' +error.message)
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    showAlert('Error adding user:', error.message);
-    // ..
-  });
+      const userRef = ref(database,'users');
+      console.log('Register ref' + userRef)
+      const userData = {
+        firstName : firstName,
+        lastName :lastName,
+        email : email,
+        hourlyRate:parseFloat(hourlyRate), // Convert hourlyRate to a number
+        category: 'Memebr', 
+      };
+      push(userRef, userData)
+      .then(() => {
+        showAlert('Success','User added successfully');
+            // Clear text fields
+            setFirstName('');
+            setLastName('');
+            setEmail('');
+            setPassword('');
+            setHourlyRate('');
+        createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed up 
+          const user = userCredential.user;
+          console.log('Register' +user)
+         
+          
+        })
+        .catch((error) => {
+          console.log('Register Error' +error.message)
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          showAlert('Error','Error adding user:', error.message);
+          // ..
+        });
+      })
+      .catch((error) => {
+        showAlert('Error','Error adding user:', error);
+      });
  
     } catch (error) {
       showAlert('Error creating member. Please try again.'); // Show an alert
@@ -71,13 +77,12 @@ const CreateMemberScreen = ({ navigation }) => {
   };
 
   // Function to show an alert with the error message
-  const showAlert = (message) => {
-    Alert.alert('Error', message, [{ text: 'OK' }], { cancelable: false });
+  const showAlert = (title, message) => {
+    Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Create Member</Text>
       <TextInput
         style={styles.input}
         placeholder="First Name"

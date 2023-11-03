@@ -87,11 +87,13 @@ import ProfileDetailScreen from './ProfileDetailScreen';
 import ProjectDetailScreen from './ProjectDetailScreen';
 import ProjectListScreen from './ProjectListScreen';
 import OnBoardingScreen from './OnBoardingScreen';
+import UserProvider from './UserProvider';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
+    <UserProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="OnBoardingScreen">
         <Stack.Screen name="OnBoardingScreen" component={OnBoardingScreen} options={{ headerShown: false }} />
@@ -109,6 +111,7 @@ const App = () => {
         <Stack.Screen name="ProjectList" component={ProjectListScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
+    </UserProvider>
   );
 };
 

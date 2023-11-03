@@ -29,7 +29,7 @@ console.log('currentUser' + currentUser )
          }
        }).catch((error) => {
         setProjects(projectList);
-        showAlert('Error finding Projects:', error);
+        showAlert('Error','Error finding Projects:', error);
          return null;
        });
 
@@ -85,8 +85,8 @@ console.log('currentUser' + currentUser )
     );
   };
   
-  const showAlert = (message) => {
-    Alert.alert('Error', message, [{ text: 'OK' }], { cancelable: false });
+  const showAlert = (title, message) => {
+    Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
   const handleViewDetails = (project) => {
     navigation.navigate('ProjectDetail', { project });
