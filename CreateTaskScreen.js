@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { firebase } from './firebase';
+import { firebase ,auth, database} from './firebase';
+import {  ref, push, set } from "firebase/database";
 
 const CreateTaskScreen = ({ navigation, route }) => {
   const { projectId } = route.params;
@@ -22,21 +23,31 @@ const CreateTaskScreen = ({ navigation, route }) => {
     }
 
     try {
-      // Create the task in the Firebase Firestore database
-      const taskRef = firebase.firestore().collection('tasks');
-      await taskRef.add({
-        taskName,
-        taskDescription,
-        taskStartDate,
-        taskEndDate, // Include taskEndDate
-        taskCost, // Include taskCost
-        projectId, // Foreign key linking to the project
+      const taskRef = push(ref(database, "tasks"));
+      const taskId = taskRef.key;
+
+      const task = {
+        taskName:taskName,
+        taskDescription:taskDescription,
+        taskStartDate:taskStartDate,
+        taskEndDate:taskEndDate, // Include taskEndDate
+        taskCost:taskCost, // Include taskCost
+        projectId: projectId, // Foreign key linking to the project
         taskCode: 0, // Set taskCode to 0 initially
         actualTaskEndDate: null, // Set actualTaskEndDate to null initially
+        taskId : taskId,
+        status:'New'
+      };
+
+      set(taskRef, task)
+      .then(() => {
+        showAlert('Success','Task added successfully');
+        navigation.goBack();
+      })
+      .catch((error) => {
+        showAlert('Error','Error adding task:', error);
       });
 
-      // Navigate back to the Project Detail page upon successful task creation
-      navigation.navigate('ProjectDetail', { projectId });
     } catch (error) {
       showAlert('Error','Error creating task. Please try again.'); // Show an alert
       console.error('Error creating task:', error);
@@ -50,7 +61,6 @@ const CreateTaskScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Create Task</Text>
       {/* Error message */}
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <TextInput
@@ -76,12 +86,6 @@ const CreateTaskScreen = ({ navigation, route }) => {
         placeholder="Task End Date"
         value={taskEndDate}
         onChangeText={setTaskEndDate}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Task Cost"
-        value={taskCost.toString()} // Convert to a string for input
-        onChangeText={(value) => setTaskCost(parseFloat(value))} // Parse as a float
       />
       <Button title="Create Task" onPress={handleCreateTask} />
     </View>

@@ -1,9 +1,9 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, Image, StyleSheet } from 'react-native';
 import { auth, database } from './firebase';
 import { getUserRoleFromUserTable } from './FirebaseFunctions';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import {  ref, orderByChild, query, equalTo, get } from "firebase/database";
+import { ref, orderByChild, query, equalTo, get } from "firebase/database";
 import UserContext from './UserContext';
 
 export default function LoginScreen({ navigation }) {
@@ -24,35 +24,35 @@ export default function LoginScreen({ navigation }) {
     }
 
     try {
-     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-       // Get the user's ID
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      // Get the user's ID
       const user = userCredential.user;
-     if (user)
-     {
-      console.log('Login' + email);
+      if (user) {
+        console.log('Login' + email);
+        setEmail('');
+        setPassword('');
+        const userQuery = query(ref(database, 'users'), orderByChild('email'), equalTo(email));
 
-      const userQuery = query(ref(database, 'users'), orderByChild('email'),equalTo(email) );
-      get(userQuery).then((snapshot) => {
-           if (snapshot.exists()) {
-             // The snapshot contains the user data matching the email
-             const user = snapshot.val();
-        
-             Object.keys(user).forEach((userId) => {
+        get(userQuery).then((snapshot) => {
+          if (snapshot.exists()) {
+            // The snapshot contains the user data matching the email
+            const user = snapshot.val();
+
+            Object.keys(user).forEach((userId) => {
               const userData = user[userId];
               if (userData && userData.category) {
                 const category = userData.category;
-// const fn = userData.firstName;
-// const ln = userData.lastName;
-//                 console.log(fn);
-//                 console.log(ln);
+                // const fn = userData.firstName;
+                // const ln = userData.lastName;
+                //                 console.log(fn);
+                //                 console.log(ln);
                 //  const userData = {
                 //    firstName: userData.firstName,
                 //   lastName: userData.lastName,
                 //   email: email,
                 // };
                 //  login(userData);
-                setEmail('');
-                setPassword('');
+
 
                 if (category === 'Admin') {
                   navigation.navigate('AdminTabNavigator'); // Navigate to the admin tab bar
@@ -63,21 +63,21 @@ export default function LoginScreen({ navigation }) {
                 setError('Category not found for user with ID', userId);
               }
             });
-           } else {
+          } else {
             setError('User not found.');
-           }
-         }).catch((error) => {
-           
+          }
+        }).catch((error) => {
+
           setError('Error finding user:', error);
-           return null;
-         });
+          return null;
+        });
 
 
-     // Determine which tab navigator to navigate to based on the user's role
+        // Determine which tab navigator to navigate to based on the user's role
 
-  }else{
-    setError('User not exist!');
-  }
+      } else {
+        setError('User not exist!');
+      }
     } catch (error) {
       setError(error.message);
     }
@@ -90,14 +90,16 @@ export default function LoginScreen({ navigation }) {
         style={styles.logo}
       />
       <TextInput
-       style={styles.input}
+        style={styles.input}
         placeholder="Email"
+        value={email}
         onChangeText={setEmail}
       />
       <TextInput
-       style={styles.input}
+        style={styles.input}
         placeholder="Password"
         secureTextEntry
+        value={password}
         onChangeText={setPassword}
       />
       <Text style={styles.errorText}>{error}</Text>
@@ -107,12 +109,12 @@ export default function LoginScreen({ navigation }) {
   );
 }
 
-  // Email validation function
-  const validateEmail = (email) => {
-    // Use a regular expression to validate email format
-    const emailPattern = /\S+@\S+\.\S+/;
-    return emailPattern.test(email);
-  };
+// Email validation function
+const validateEmail = (email) => {
+  // Use a regular expression to validate email format
+  const emailPattern = /\S+@\S+\.\S+/;
+  return emailPattern.test(email);
+};
 
 const styles = StyleSheet.create({
   container: {

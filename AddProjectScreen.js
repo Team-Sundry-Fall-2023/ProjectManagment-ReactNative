@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { firebase ,auth, database} from './firebase';
-import {  ref, push } from "firebase/database";
+import {  ref, push, set } from "firebase/database";
 import UserContext from './UserContext';
 
 const AddProjectScreen = () => {
@@ -14,16 +14,18 @@ const AddProjectScreen = () => {
   const handleAddProject = async () => {
     const currentUser = auth.currentUser;
     console.log('Addproject ' +user)
-    const userRef = ref(database,'projects');
-    console.log('Register ref' + userRef)
-   
+    // const userRef = ref(database,'projects');
+    const projectRef = push(ref(database, "projects"));
+    // console.log('Register ref' + userRef)
+    const projectId = projectRef.key;
     const projectData = {
       name : name,
       description : description,
-      ProjectCost: 0,
-      user: currentUser.email
+      projectCost: 0,
+      user: currentUser.email,
+      projectId : projectId
     };
-    push(userRef, projectData)
+    set(projectRef, projectData)
     .then(() => {
       showAlert('Success','Project added successfully');
       navigation.goBack();

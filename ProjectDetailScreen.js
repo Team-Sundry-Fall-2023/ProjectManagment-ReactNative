@@ -1,33 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
-import { firebase } from './firebase';
+import { View, Text, Button, FlatList, StyleSheet,Alert } from 'react-native';
+import { firebase ,auth, database} from './firebase';
+import {  ref, query, orderByChild, equalTo, get} from "firebase/database";
 
 const ProjectDetailScreen = ({ route, navigation }) => {
-  const { projectId } = route.params;
+  const { projectObj } = route.params;
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    // Fetch project details from Firestore
-    const projectRef = firebase.firestore().collection('projects').doc(projectId);
-    projectRef.get().then((doc) => {
-      if (doc.exists) {
-        setProject(doc.data());
-      }
-    });
+    // // Fetch project details from Firestore
+    // const projectRef = firebase.firestore().collection('projects').doc(projectId);
+    // console.log('projectObj :' + projectObj);
+    // const projectId = projectObj.projectId;
 
-    // Fetch tasks related to the project
-    const tasksRef = firebase.firestore().collection('tasks').where('projectId', '==', projectId);
-    tasksRef.get().then((querySnapshot) => {
-      const tasksList = [];
-      querySnapshot.forEach((doc) => {
-        tasksList.push({
-          id: doc.id,
-          ...doc.data(),
-        });
-      });
-      setTasks(tasksList);
-    });
+    // const userQuery = query(ref(database, 'projects'),orderByChild('projectId'),equalTo(projectId) );
+
+    // // projectRef.get().then((doc) => {
+    // //   if (doc.exists) {
+    // //     setProject(doc.data());
+    // //   }
+    // // });
+
+    // get(userQuery).then((snapshot) => {
+    //   if (snapshot.exists()) {
+    //     // The snapshot contains the user data matching the email
+    //     const user = snapshot.val();
+
+    //     Object.keys(project).forEach((projectId) => {
+    //       const projectData = project[projectId];
+    //       setProject(projectData);
+    //     });
+    //   } else {
+     
+    //     showAlert('Error','Project Not Found');
+    //   }
+    // }).catch((error) => {
+
+    //   showAlert('Error','Error finding user:', error);
+    //   return null;
+    // });
+    if (projectObj) {
+      setProject(projectObj);
+      console.log('projectObj', projectObj);
+
+
+    const userQuery = query(ref(database, 'tasks'),orderByChild('projectId'),equalTo(project.projectId) );
+    console.log('userQuery' + userQuery )
+     get(userQuery).then((snapshot) => {
+         if (snapshot.exists()) {
+           // The snapshot contains the user data matching the email
+           const tasks = snapshot.val();
+
+           Object.keys(tasks).forEach((taskId) => {
+            const task = tasks[taskId];
+            console.log('task item', task);
+            tasksList.push(task);
+             
+          });
+          console.log('taskList ' + tasksList.length )
+          setTasks(tasksList);
+         } else {
+          setTasks(tasksList);
+         }
+       }).catch((error) => {
+        setTasks(tasksList);
+        showAlert('Error','Error finding Tasks :', error.message);
+         return null;
+       });
+      }else {
+        // Handle the case where projectObj is null
+        showAlert('Error', 'Project Not Found');
+      }
+
+
   }, []);
 
   return (
@@ -51,6 +97,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
                   <Text style={styles.taskDescription}>{item.taskDescription}</Text>
                   <Text>{`Start Date: ${item.taskStartDate}`}</Text>
                   <Text>{`End Date: ${item.taskEndDate}`}</Text>
+                  <Text>{`status: ${item.status}`}</Text>
                 </View>
               )}
             />
@@ -61,6 +108,10 @@ const ProjectDetailScreen = ({ route, navigation }) => {
       )}
     </View>
   );
+};
+
+const showAlert = (title, message) => {
+  Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
 };
 
 const styles = StyleSheet.create({

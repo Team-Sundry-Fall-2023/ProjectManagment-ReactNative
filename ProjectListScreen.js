@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, Button, Alert } from 'react-nat
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
 import { firebase ,auth, database} from './firebase';
-import {  ref, orderByChild, query, equalTo, get } from "firebase/database";
+import {  ref, query, orderByChild, equalTo, get} from "firebase/database";
 
 const ProjectListScreen = () => {
   const navigation = useNavigation();
@@ -12,24 +12,30 @@ const ProjectListScreen = () => {
   useEffect(() => {
     const projectList = [];
     const currentUser = auth.currentUser;
-console.log('currentUser' + currentUser )
-    const userQuery = query(ref(database, 'projects'), orderByChild('user'),equalTo(currentUser.email) );
-    get(userQuery).then((snapshot) => {
+    const currentUserEmail = currentUser.email;
+console.log('currentUser ' + currentUserEmail )
+    const userQuery = query(ref(database, 'projects'),orderByChild('user'),equalTo(currentUserEmail) );
+    console.log('userQuery' + userQuery )
+     get(userQuery).then((snapshot) => {
          if (snapshot.exists()) {
            // The snapshot contains the user data matching the email
            const projects = snapshot.val();
-      
-           Object.keys(projects).forEach(() => {
-            projectList.push(projects);
+
+           Object.keys(projects).forEach((projectId) => {
+            const project = projects[projectId];
+            console.log('project item', project);
+            projectList.push(project);
+            // console.log('projectList ' + projectList.length )
              
           });
+          console.log('projectList ' + projectList.length )
           setProjects(projectList);
          } else {
           setProjects(projectList);
          }
        }).catch((error) => {
         setProjects(projectList);
-        showAlert('Error','Error finding Projects:', error);
+        showAlert('Error','Error finding Projects :', error.message);
          return null;
        });
 
@@ -94,37 +100,40 @@ console.log('currentUser' + currentUser )
 
   return (
     <View>
-      <FlatList
-        data={projects}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Swipeout
-            right={[
-              {
-                text: 'Delete',
-                onPress: () => handleDelete(item),
-                type: 'delete',
-              },
-              {
-                text: 'View Details',
-                onPress: () => handleViewDetails(item),
-                type: 'default', // A default swipe action
-              },
-            ]}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('EditProject', { project: item });
-              }}
-            >
-              <View>
-                <Text>{item.name}</Text>
-                <Text>{item.description}</Text>
-              </View>
-            </TouchableOpacity>
-          </Swipeout>
-        )}
-      />
+ <FlatList
+  data={projects}
+  keyExtractor={(item) => item.id}
+  renderItem={({ item }) => (
+    <Swipeout
+      right={[
+        {
+          text: 'Delete',
+          onPress: () => handleDelete(item),
+          type: 'delete',
+        },
+        {
+          text: 'View Details',
+          onPress: () => handleViewDetails(item),
+          type: 'default',
+        },
+      ]}
+    >
+      <TouchableOpacity
+        onPress={() => {
+          console.log('item edit' +item)
+          navigation.navigate('EditProject', { projectObj: item });
+        }}
+      >
+        <View>
+          <Text>{item.name}</Text>
+          <Text>{item.description}</Text>
+          <Text>{item.projectCost}</Text> 
+        </View>
+      </TouchableOpacity>
+    </Swipeout>
+  )}
+/>
+
       <Button
         title="Add Project"
         onPress={() => {
