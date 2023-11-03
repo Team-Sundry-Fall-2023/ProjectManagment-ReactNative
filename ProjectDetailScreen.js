@@ -9,6 +9,12 @@ const ProjectDetailScreen = ({ route, navigation }) => {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
+    if (projectObj) {
+      setProject(projectObj);
+    }
+  }, [projectObj]);
+
+  useEffect(() => {
     // // Fetch project details from Firestore
     // const projectRef = firebase.firestore().collection('projects').doc(projectId);
     // console.log('projectObj :' + projectObj);
@@ -37,13 +43,12 @@ const ProjectDetailScreen = ({ route, navigation }) => {
     //   }
     // }).catch((error) => {
 
-    //   showAlert('Error','Error finding user:', error);
+    //   showAlert('Error','Error finding user:'+ error);
     //   return null;
     // });
-    if (projectObj) {
-      setProject(projectObj);
-      console.log('projectObj', projectObj);
+    if (project) {
 
+      console.log('project ', project);
 
     const userQuery = query(ref(database, 'tasks'),orderByChild('projectId'),equalTo(project.projectId) );
     console.log('userQuery' + userQuery )
@@ -74,15 +79,15 @@ const ProjectDetailScreen = ({ route, navigation }) => {
       }
 
 
-  }, []);
+  }, [project]);
 
   return (
     <View style={styles.container}>
       {project && (
         <View>
-          <Text style={styles.header}>Project: {project.projectName}</Text>
-          <Text style={styles.header}>Project: {project.description}</Text>
-          <Text style={styles.header}>Project: {project.ProjectCost}</Text>
+          <Text style={styles.header}>Project Name: {project.name}</Text>
+          <Text style={styles.header}>Project Description: {project.description}</Text>
+          <Text style={styles.header}>Project Cost: {project.projectCost}</Text>
           <Button
             title="Create Task"
             onPress={() => navigation.navigate('CreateTask', { projectId })}
@@ -97,7 +102,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
                   <Text style={styles.taskDescription}>{item.taskDescription}</Text>
                   <Text>{`Start Date: ${item.taskStartDate}`}</Text>
                   <Text>{`End Date: ${item.taskEndDate}`}</Text>
-                  <Text>{`status: ${item.status}`}</Text>
+                  <Text>{`Status: ${item.status}`}</Text>
                 </View>
               )}
             />

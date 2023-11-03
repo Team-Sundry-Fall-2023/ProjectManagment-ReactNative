@@ -23,7 +23,7 @@ const getUserRoleFromUserTable = async (email) => {
         }
       }).catch((error) => {
         
-        console.error('Error finding user:', error);
+        console.error('Error finding user:'+ error);
         return null;
       });
     // // Get the user document
@@ -41,7 +41,7 @@ const getUserRoleFromUserTable = async (email) => {
     // }
   } catch (error) {
     // Handle any errors that may occur during the database query
-    console.error('Error fetching user role:', error);
+    console.error('Error fetching user role:'+ error);
     return null; // You can return a default role or handle it differently
   }
 };

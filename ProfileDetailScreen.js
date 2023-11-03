@@ -12,7 +12,7 @@ const ProfileDetailScreen = ({ navigation }) => {
     const currentUser = auth.currentUser;
 
     if (currentUser) {
-      setUserDetails({
+      setUserDetails ({
         firstName: currentUser.displayName,
         email: currentUser.email,
         // Add more user details as needed
@@ -30,7 +30,7 @@ const ProfileDetailScreen = ({ navigation }) => {
       })
       .catch(error => {
         // Handle sign-out error
-        console.error('Error during sign-out:', error);
+        console.error('Error during sign-out:'+ error);
       });
   };
 

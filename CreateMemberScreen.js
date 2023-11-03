@@ -60,12 +60,12 @@ const CreateMemberScreen = ({ navigation }) => {
         });
       })
       .catch((error) => {
-        showAlert('Error','Error adding user:', error);
+        showAlert('Error','Error adding user:'+ error);
       });
  
     } catch (error) {
       showAlert('Error creating member. Please try again.'); // Show an alert
-      console.error('Error creating member:', error);
+      console.error('Error creating member:'+ error);
     }
   };
 

@@ -79,11 +79,11 @@ console.log('currentUser ' + currentUserEmail )
                 try {
                   await projectRef.delete();
                 } catch (error) {
-                  console.error('Error deleting project:', error);
+                  console.error('Error deleting project:'+ error);
                 }
               })
               .catch((error) => {
-                console.error('Error deleting tasks:', error);
+                console.error('Error deleting tasks:'+ error);
               });
           },
         },
@@ -95,7 +95,7 @@ console.log('currentUser ' + currentUserEmail )
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
   const handleViewDetails = (project) => {
-    navigation.navigate('ProjectDetail', { project });
+    navigation.navigate('ProjectDetail', { projectObj: project });
   };
 
   return (
@@ -120,8 +120,8 @@ console.log('currentUser ' + currentUserEmail )
     >
       <TouchableOpacity
         onPress={() => {
-          console.log('item edit' +item)
-          navigation.navigate('EditProject', { projectObj: item });
+          console.log('item edit ' +item)
+          navigation.navigate('EditProject', {projectObj:item });
         }}
       >
         <View>

@@ -45,12 +45,12 @@ const CreateTaskScreen = ({ navigation, route }) => {
         navigation.goBack();
       })
       .catch((error) => {
-        showAlert('Error','Error adding task:', error);
+        showAlert('Error','Error adding task:'+ error);
       });
 
     } catch (error) {
       showAlert('Error','Error creating task. Please try again.'); // Show an alert
-      console.error('Error creating task:', error);
+      console.error('Error creating task:'+ error);
     }
   };
 

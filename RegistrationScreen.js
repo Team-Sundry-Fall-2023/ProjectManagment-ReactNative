@@ -61,7 +61,7 @@ createUserWithEmailAndPassword(auth, email, password)
       navigation.navigate('AdminTabNavigator');
     })
     .catch((error) => {
-      showAlert('Error','Error adding user:', error);
+      showAlert('Error','Error adding user:'+ error);
     });
     
   })
@@ -82,7 +82,7 @@ createUserWithEmailAndPassword(auth, email, password)
       // Navigate to another screen (e.g., the main app screen) upon successful registration
    
     } catch (error) {
-      console.error('Error registering user:', error);
+      console.error('Error registering user:'+ error);
       showAlert('Error','Error adding user:', error.message);
       // Handle registration error and show an error message
     }

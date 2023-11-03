@@ -68,7 +68,7 @@ export default function LoginScreen({ navigation }) {
           }
         }).catch((error) => {
 
-          setError('Error finding user:', error);
+          setError('Error finding user:'+ error);
           return null;
         });
 

@@ -31,7 +31,7 @@ const AddProjectScreen = () => {
       navigation.goBack();
     })
     .catch((error) => {
-      showAlert('Error','Error adding project:', error);
+      showAlert('Error','Error adding project:'+ error);
     });
   };
 
