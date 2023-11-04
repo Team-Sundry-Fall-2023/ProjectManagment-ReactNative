@@ -89,6 +89,9 @@ import ProjectListScreen from './ProjectListScreen';
 import OnBoardingScreen from './OnBoardingScreen';
 import UserProvider from './UserProvider';
 
+import TaskDetailScreen from './TaskDetailScreen';
+import EditTaskScreen from './EditTaskScreen';
+
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -109,6 +112,9 @@ const App = () => {
         <Stack.Screen name="ProfileDetail" component={ProfileDetailScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProjectDetail" component={ProjectDetailScreen} options={{ headerShown: true }} />
         <Stack.Screen name="ProjectList" component={ProjectListScreen} options={{ headerShown: false }} />
+
+        <Stack.Screen name="TaskDetail " component={TaskDetailScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="EditTask" component={EditTaskScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>

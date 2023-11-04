@@ -15,41 +15,10 @@ const ProjectDetailScreen = ({ route, navigation }) => {
   }, [projectObj]);
 
   useEffect(() => {
-    // // Fetch project details from Firestore
-    // const projectRef = firebase.firestore().collection('projects').doc(projectId);
-    // console.log('projectObj :' + projectObj);
-    // const projectId = projectObj.projectId;
-
-    // const userQuery = query(ref(database, 'projects'),orderByChild('projectId'),equalTo(projectId) );
-
-    // // projectRef.get().then((doc) => {
-    // //   if (doc.exists) {
-    // //     setProject(doc.data());
-    // //   }
-    // // });
-
-    // get(userQuery).then((snapshot) => {
-    //   if (snapshot.exists()) {
-    //     // The snapshot contains the user data matching the email
-    //     const user = snapshot.val();
-
-    //     Object.keys(project).forEach((projectId) => {
-    //       const projectData = project[projectId];
-    //       setProject(projectData);
-    //     });
-    //   } else {
-     
-    //     showAlert('Error','Project Not Found');
-    //   }
-    // }).catch((error) => {
-
-    //   showAlert('Error','Error finding user:'+ error);
-    //   return null;
-    // });
     if (project) {
 
       console.log('project ', project);
-
+      const tasksList = [];
     const userQuery = query(ref(database, 'tasks'),orderByChild('projectId'),equalTo(project.projectId) );
     console.log('userQuery' + userQuery )
      get(userQuery).then((snapshot) => {
@@ -73,9 +42,6 @@ const ProjectDetailScreen = ({ route, navigation }) => {
         showAlert('Error','Error finding Tasks :', error.message);
          return null;
        });
-      }else {
-        // Handle the case where projectObj is null
-        showAlert('Error', 'Project Not Found');
       }
 
 
@@ -90,7 +56,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
           <Text style={styles.header}>Project Cost: {project.projectCost}</Text>
           <Button
             title="Create Task"
-            onPress={() => navigation.navigate('CreateTask', { projectId })}
+            onPress={() => navigation.navigate('CreateTask', {projectObj: project })}
           />
           {tasks.length > 0 ? (
             <FlatList
@@ -98,11 +64,14 @@ const ProjectDetailScreen = ({ route, navigation }) => {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.taskItem}>
-                  <Text style={styles.taskName}>{item.taskName}</Text>
-                  <Text style={styles.taskDescription}>{item.taskDescription}</Text>
-                  <Text>{`Start Date: ${item.taskStartDate}`}</Text>
-                  <Text>{`End Date: ${item.taskEndDate}`}</Text>
-                  <Text>{`Status: ${item.status}`}</Text>
+                    <Text style={styles.taskName}>{item.taskName}</Text>
+                <Text style={styles.taskDescription}>{item.taskDescription}</Text>
+                <Text>{`Start Date: ${item.taskStartDate}`}</Text>
+                <Text>{`End Date: ${item.taskEndDate}`}</Text>
+                <Text>{`Status: ${item.status}`}</Text>
+                <Text>{`Member: ${item.member}`}</Text>
+                <Text>{`Actual End Date: ${item.actualEndDate}`}</Text>
+                <Text>{`Cost: ${item.taskCost}`}</Text>
                 </View>
               )}
             />

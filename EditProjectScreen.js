@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert,FlatList} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { firebase,database,auth } from './firebase';
-import {  ref, query, orderByChild, equalTo, get, update} from "firebase/database";
+import { firebase, database, auth } from './firebase';
+import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
 
 const EditProjectScreen = () => {
   const navigation = useNavigation();
@@ -18,78 +18,85 @@ const EditProjectScreen = () => {
     if (projectObj) {
       setProject(projectObj);
     }
-  }, [projectObj]);
+  }, [projectObj, project]);
 
 
   useEffect(() => {
+    console.log(project)
     if (project) {
- setDescription(project.description);
- setName(project.name)
- const userQuery = query(ref(database, 'tasks'),orderByChild('projectId'),equalTo(project.projectId) );
- console.log('userQuery' + userQuery )
-  get(userQuery).then((snapshot) => {
-      if (snapshot.exists()) {
-        // The snapshot contains the user data matching the email
-        const tasks = snapshot.val();
+      const tasksList = [];
+      setDescription(project.description);
+      setName(project.name)
+      const userQuery = query(ref(database, 'tasks'), orderByChild('projectId'), equalTo(project.projectId));
+      console.log('userQuery' + userQuery)
+      get(userQuery).then((snapshot) => {
+        if (snapshot.exists()) {
+          // The snapshot contains the user data matching the email
+          const tasks = snapshot.val();
 
-        Object.keys(tasks).forEach((taskId) => {
-         const task = tasks[taskId];
-         console.log('task item', task);
-         tasksList.push(task);
-          
-       });
-       console.log('taskList ' + tasksList.length )
-       setTasks(tasksList);
-      } else {
-       setTasks(tasksList);
-      }
-    }).catch((error) => {
-     setTasks(tasksList);
-     showAlert('Error','Error finding Tasks :', error.message);
-      return null;
-    });
-   }else {
-     // Handle the case where projectObj is null
-     showAlert('Error', 'Tasks Not Found');
-   }
+          Object.keys(tasks).forEach((taskId) => {
+            const task = tasks[taskId];
+            console.log('task item', task);
+            tasksList.push(task);
+
+          });
+          console.log('taskList Length' + tasksList.length)
+          setTasks(tasksList);
+        } else {
+          setTasks(tasksList);
+        }
+      }).catch((error) => {
+        setTasks(tasksList);
+        showAlert('Error', 'Error finding Tasks :', error.message);
+        return null;
+      });
+    } else {
+
+    }
 
   }, [project]);
 
   const handleEditProject = async () => {
-    const userQuery = query(ref(database, 'projects'),orderByChild('projectId'),equalTo(project.projectId) );
-  
+
+    if (!name || !description) {
+      showAlert('Error','All fields are required.'); // Show an alert
+      return;
+    }
+    
+    const userQuery = query(ref(database, 'projects'), orderByChild('projectId'), equalTo(project.projectId));
+
     // Fetch the project data
-get(userQuery)
-.then((snapshot) => {
-  if (snapshot.exists()) {
-    const projects = snapshot.val();
-    const projectId = Object.keys(projects)[0]; // Assuming there's only one project with a given ID
+    get(userQuery)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const projects = snapshot.val();
+          const projectId = Object.keys(projects)[0]; // Assuming there's only one project with a given ID
 
 
-    const updatedProjectData = {
-      name : name,
-      description : description,
-    };
+          const updatedProjectData = {
+            name: name,
+            description: description,
+          };
 
-    // Update the project in the database
-    update(ref(database, `projects/${projectId}`), updatedProjectData)
-      .then(() => {
-        // Project data has been successfully updated
-        showAlert('Success','Project data updated');
-        navigation.goBack();
+          // Update the project in the database
+          update(ref(database, `projects/${projectId}`), updatedProjectData)
+            .then(() => {
+              // Project data has been successfully updated
+              showAlert('Success', 'Project data updated');
+              navigation.goBack();
+            })
+            .catch((error) => {
+              // Handle the error if the update fails
+              showAlert('Error', 'Error updating project data:' + error);
+            });
+        } else {
+          console.log('Project not found'); // Handle the case where the project is not found
+        }
       })
       .catch((error) => {
-        // Handle the error if the update fails
-        showAlert('Error','Error updating project data:'+ error);
+        // Handle the error if the fetch fails
+        showAlert('Error', 'Error finding project:' + error);
       });
-  } else {
-    console.log('Project not found'); // Handle the case where the project is not found
-  }
-})
-.catch((error) => {
-  // Handle the error if the fetch fails
-  showAlert('Error', 'Error finding project:'+ error);
-});
   };
 
   // return (
@@ -115,42 +122,45 @@ get(userQuery)
   return (
     <View style={styles.container}>
       {/* {project && ( */}
-        <View>
-                <TextInput
-       style={styles.input}
-        placeholder="Project Name"
-        value={name}
-        onChangeText={(text) => setName(text)}
-      />
-      <TextInput
-       style={styles.input}
-        placeholder="Project Description"
-        value={description}
-        onChangeText={(text) => setDescription(text)}
-      />
-      <Button title="Edit Project" onPress={handleEditProject} />
-          <Button
-            title="Create Task"
-            onPress={() => navigation.navigate('CreateTask', { projectId })}
+      <View>
+        <TextInput
+          style={styles.input}
+          placeholder="Project Name"
+          value={name}
+          onChangeText={(text) => setName(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Project Description"
+          value={description}
+          onChangeText={(text) => setDescription(text)}
+        />
+        <Button title="Edit Project" onPress={handleEditProject} />
+        <Button
+          title="Create Task"
+          onPress={() => navigation.navigate('CreateTask', { projectObj: project })}
+        />
+        {tasks.length > 0 ? (
+          <FlatList
+            data={tasks}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.taskItem}>
+                <Text style={styles.taskName}>{item.taskName}</Text>
+                <Text style={styles.taskDescription}>{item.taskDescription}</Text>
+                <Text>{`Start Date: ${item.taskStartDate}`}</Text>
+                <Text>{`End Date: ${item.taskEndDate}`}</Text>
+                <Text>{`Status: ${item.status}`}</Text>
+                <Text>{`Member: ${item.member}`}</Text>
+                <Text>{`Cost: ${item.taskCost}`}</Text>
+                <Text>{`Actual End Date: ${item.actualEndDate}`}</Text>
+              </View>
+            )}
           />
-          {tasks.length > 0 ? (
-            <FlatList
-              data={tasks}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <View style={styles.taskItem}>
-                  <Text style={styles.taskName}>{item.taskName}</Text>
-                  <Text style={styles.taskDescription}>{item.taskDescription}</Text>
-                  <Text>{`Start Date: ${item.taskStartDate}`}</Text>
-                  <Text>{`End Date: ${item.taskEndDate}`}</Text>
-                  <Text>{`status: ${item.status}`}</Text>
-                </View>
-              )}
-            />
-          ) : (
-            <Text>No tasks found for this project.</Text>
-          )}
-        </View>
+        ) : (
+          <Text>No tasks found for this project.</Text>
+        )}
+      </View>
       {/* )} */}
     </View>
   );
@@ -160,10 +170,10 @@ get(userQuery)
 
 
 
-  // Function to show an alert with the error message
-  const showAlert = (title, message) => {
-    Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
-  };
+// Function to show an alert with the error message
+const showAlert = (title, message) => {
+  Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -180,6 +190,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  taskItem: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    padding: 10,
+    marginBottom: 10,
+  },
+  taskName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  taskDescription: {
+    marginBottom: 5,
   },
 });
 

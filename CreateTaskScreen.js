@@ -1,57 +1,126 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { firebase ,auth, database} from './firebase';
-import {  ref, push, set } from "firebase/database";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import RNPickerSelect from 'react-native-picker-select';
+import { firebase, auth, database } from './firebase';
+import { ref, push, set, query, orderByChild, equalTo, get } from 'firebase/database';
+
 
 const CreateTaskScreen = ({ navigation, route }) => {
-  const { projectId } = route.params;
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
-  const [taskStartDate, setTaskStartDate] = useState('');
-  const [taskEndDate, setTaskEndDate] = useState('');
-  const [taskCost, setTaskCost] = useState(0); // Set taskCost initially to 0
-  const [error, setError] = useState(''); // Add a state for error messages
+  const [taskStartDate, setTaskStartDate] = useState(new Date());
+  const [taskEndDate, setTaskEndDate] = useState(new Date());
+  const { projectObj } = route.params;
+  const [project, setProject] = useState(null);
+  const [projectOptions, setProjectOptions] = useState([]);
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [userOptions, setUserOptions] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
 
-  const handleCreateTask = async () => {
-    // Reset the error message
-    setError('');
+  useEffect(() => {
+    if (projectObj) {
+      setProject(projectObj);
+      setSelectedProject(projectObj);
+    }
+  }, [projectObj]);
 
+  useEffect(() => {
+    if (!project) {
+    // Fetch projects related to the current user and populate projectOptions
+    if (auth.currentUser) {
+      const currentUserEmail = auth.currentUser.email;
+      const userProjectsQuery = query(
+        ref(database, 'projects'),
+        orderByChild('user'),
+        equalTo(currentUserEmail)
+      );
+
+      get(userProjectsQuery)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const projects = snapshot.val();
+            const options = Object.keys(projects).map((projectId) => ({
+              label: projects[projectId].name,
+              value: projects[projectId],
+            }));
+            setProjectOptions(options);
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching projects:', error);
+        });
+      }
+
+    }
+
+    const userQuery = query(
+      ref(database, 'users'),
+      orderByChild('category'),
+      equalTo('Memebr')
+    );
+
+    get(userQuery)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const users = snapshot.val();
+          const options = Object.keys(users).map((email) => ({
+            label: users[email].email,
+            value: users[email],
+          }));
+          setUserOptions(options);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching Users:', error);
+      });
+  }, [project]);
+
+  const handleCreateTask = () => {
     // Validate input fields
-    if (!taskName || !taskDescription || !taskStartDate || !taskEndDate) {
-      showAlert('Error','All fields are required.'); // Show an alert
+    if (!taskName || !taskDescription) {
+      showAlert('Error', 'Task Name and Task Description are required.');
       return;
     }
 
-    try {
-      const taskRef = push(ref(database, "tasks"));
-      const taskId = taskRef.key;
+    if (!selectedProject) {
+      showAlert('Error', 'Project is required.');
+      return;
+    }
 
-      const task = {
-        taskName:taskName,
-        taskDescription:taskDescription,
-        taskStartDate:taskStartDate,
-        taskEndDate:taskEndDate, // Include taskEndDate
-        taskCost:taskCost, // Include taskCost
-        projectId: projectId, // Foreign key linking to the project
-        taskCode: 0, // Set taskCode to 0 initially
-        actualTaskEndDate: null, // Set actualTaskEndDate to null initially
-        taskId : taskId,
-        status:'New'
-      };
+    if (!selectedUser) {
+      showAlert('Error', 'Member is required.');
+      return;
+    }
+    const currentUserEmail = auth.currentUser.email;
+    const tasksRef = push(ref(database, "tasks"));
+    // console.log('Register ref' + userRef)
+    const taskId = tasksRef.key;
+    // Create a new task with the selected project and other details
+    const newTask = {
+      taskName: taskName,
+      taskDescription: taskDescription,
+      taskStartDate: taskStartDate.toISOString(), // Store as ISO string
+      taskEndDate: taskEndDate.toISOString(), // Store as ISO string
+      taskCost: 0,
+      projectId: selectedProject ? selectedProject.projectId : null,
+      status: 'New',
+      taskId : taskId,
+      owner : currentUserEmail,
+      member : selectedUser ? selectedUser.email : null,
+      actualEndDate : null
+    };
 
-      set(taskRef, task)
+    set(tasksRef, newTask)
       .then(() => {
-        showAlert('Success','Task added successfully');
+        showAlert('Success', 'Task added successfully');
         navigation.goBack();
       })
       .catch((error) => {
-        showAlert('Error','Error adding task:'+ error);
+        showAlert('Error', 'Error adding task: ' + error);
       });
-
-    } catch (error) {
-      showAlert('Error','Error creating task. Please try again.'); // Show an alert
-      console.error('Error creating task:'+ error);
-    }
   };
 
   // Function to show an alert with the error message
@@ -61,8 +130,6 @@ const CreateTaskScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      {/* Error message */}
-      {error ? <Text style={styles.error}>{error}</Text> : null}
       <TextInput
         style={styles.input}
         placeholder="Task Name"
@@ -75,18 +142,65 @@ const CreateTaskScreen = ({ navigation, route }) => {
         value={taskDescription}
         onChangeText={setTaskDescription}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Task Start Date"
-        value={taskStartDate}
-        onChangeText={setTaskStartDate}
+      <Text>Task Start Date:</Text>
+      <Button
+        title={taskStartDate.toISOString().split('T')[0]}
+        onPress={() => setShowStartDatePicker(true)}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Task End Date"
-        value={taskEndDate}
-        onChangeText={setTaskEndDate}
+      {showStartDatePicker && (
+        <DateTimePicker
+          value={taskStartDate}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            if (selectedDate) {
+              setTaskStartDate(selectedDate);
+            }
+            setShowStartDatePicker(false);
+          }}
+          minimumDate={new Date()} // Disallow past dates
+        />
+      )}
+      <Text>Task End Date:</Text>
+      <Button
+        title={taskEndDate.toISOString().split('T')[0]}
+        onPress={() => setShowEndDatePicker(true)}
       />
+      {showEndDatePicker && (
+        <DateTimePicker
+          value={taskEndDate}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            if (selectedDate) {
+              setTaskEndDate(selectedDate);
+            }
+            setShowEndDatePicker(false);
+          }}
+          minimumDate={new Date()} // Disallow past dates
+        />
+      )}
+
+<Text>Memebr:</Text>
+
+  <RNPickerSelect
+    items={userOptions}
+    onValueChange={(value) => setSelectedUser(value)}
+    // Disable the picker if a project is selected
+  />
+
+<Text>Project:</Text>
+{project ? (
+  <Text style={styles.selectedProjectText}>
+    {project.name}
+  </Text>
+) : (
+  <RNPickerSelect
+    items={projectOptions}
+    onValueChange={(value) => setSelectedProject(value)}
+    disabled={project ? true : false} // Disable the picker if a project is selected
+  />
+)}
       <Button title="Create Task" onPress={handleCreateTask} />
     </View>
   );
@@ -95,12 +209,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 16,
-  },
-  header: {
-    fontSize: 24,
-    marginBottom: 20,
   },
   input: {
     height: 40,
@@ -108,10 +217,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
-  },
-  error: {
-    color: 'red',
-    marginBottom: 10,
   },
 });
 

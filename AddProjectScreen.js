@@ -12,6 +12,13 @@ const AddProjectScreen = () => {
   const { user } = useContext(UserContext);
 
   const handleAddProject = async () => {
+
+    if (!name || !description) {
+      showAlert('Error','All fields are required.'); // Show an alert
+      return;
+    }
+
+
     const currentUser = auth.currentUser;
     console.log('Addproject ' +user)
     // const userRef = ref(database,'projects');
