@@ -13,7 +13,7 @@ const ProjectListScreen = () => {
     const projectList = [];
     const currentUser = auth.currentUser;
     const currentUserEmail = currentUser.email;
-console.log('currentUser ' + currentUserEmail )
+    console.log('currentUser ' + currentUserEmail )
     const userQuery = query(ref(database, 'projects'),orderByChild('user'),equalTo(currentUserEmail) );
     console.log('userQuery' + userQuery )
      get(userQuery).then((snapshot) => {
@@ -39,17 +39,6 @@ console.log('currentUser ' + currentUserEmail )
          return null;
        });
 
-
-    // const projectRef = firebase.collection('projects');
-
-    // projectRef.onSnapshot((snapshot) => {
-    //   const projectList = [];
-    //   snapshot.forEach((doc) => {
-    //     const projectData = doc.data();
-    //     projectList.push({ id: doc.id, ...projectData });
-    //   });
-    //   setProjects(projectList);
-    // });
   }, []);
 
   const handleDelete = async (project) => {
@@ -137,7 +126,7 @@ console.log('currentUser ' + currentUserEmail )
       <Button
         title="Add Project"
         onPress={() => {
-          navigation.navigate('AddProject');
+            navigation.navigate('AddProject', { projects, setProjects });
         }}
       />
     </View>

@@ -5,11 +5,12 @@ import { firebase ,auth, database} from './firebase';
 import {  ref, push, set } from "firebase/database";
 import UserContext from './UserContext';
 
-const AddProjectScreen = () => {
+const AddProjectScreen = ({route}) => {
   const navigation = useNavigation();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const { user } = useContext(UserContext);
+  const { projects, setProjects } = route.params;
 
   const handleAddProject = async () => {
 
@@ -35,6 +36,10 @@ const AddProjectScreen = () => {
     set(projectRef, projectData)
     .then(() => {
       showAlert('Success','Project added successfully');
+      const newProject = {
+        ...projectData, 
+      };
+      setProjects([...projects, newProject]);
       navigation.goBack();
     })
     .catch((error) => {
