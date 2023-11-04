@@ -8,7 +8,6 @@ import {  ref, query, orderByChild, get, remove} from "firebase/database";
 const MemberListScreen = () => {
     const navigation = useNavigation();
     const [members, setMembers] = useState([]);
-
     useEffect(() => {
         const memberList = [];
         const currentUser = auth.currentUser;
@@ -95,7 +94,7 @@ const MemberListScreen = () => {
       ]
     );
   };
-  
+
   const showAlert = (title, message) => {
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
@@ -143,7 +142,7 @@ const MemberListScreen = () => {
       <Button
         title="Create Member"
         onPress={() => {
-          navigation.navigate('CreateMember');
+            navigation.navigate('CreateMember', { members, setMembers });
         }}
       />
     </View>

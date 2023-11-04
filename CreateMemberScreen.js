@@ -5,7 +5,9 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import {  ref, push } from "firebase/database";
 import RNPickerSelect from 'react-native-picker-select';
 
-const CreateMemberScreen = ({ navigation }) => {
+const CreateMemberScreen = ({ navigation, route }) => {
+  const { members, setMembers } = route.params;
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -47,7 +49,12 @@ const CreateMemberScreen = ({ navigation }) => {
         .then((userCredential) => {
           // Signed up 
           const user = userCredential.user;
-          console.log('Register' +user)
+          console.log('Register' +user);
+
+          const newMember = {
+            ...userData, // Use the userData object to represent the member's data
+          };
+          setMembers([...members, newMember]);
           navigation.goBack();
         })
         .catch((error) => {
