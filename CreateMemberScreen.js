@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { firebase, auth, database} from './firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import {  ref, push } from "firebase/database";
+import RNPickerSelect from 'react-native-picker-select';
 
 const CreateMemberScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
@@ -10,6 +11,11 @@ const CreateMemberScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [hourlyRate, setHourlyRate] = useState('');
+  const [selectedRole, setSelectedRole] = useState(null);
+  const roleOptions = {
+    'Admin': "Admin",
+    'Member': "Member",
+  };
 
   const handleCreateMember = async () => {
     // Validate input fields
@@ -26,30 +32,23 @@ const CreateMemberScreen = ({ navigation }) => {
 
     try {
       const userRef = ref(database,'users');
-      console.log('Register ref' + userRef)
       const userData = {
         firstName : firstName,
         lastName :lastName,
         email : email,
-        hourlyRate:parseFloat(hourlyRate), // Convert hourlyRate to a number
-        category: 'Memebr', 
+        hourlyRate:parseFloat(hourlyRate), 
+        category: selectedRole ? selectedRole : 'Member',
       };
+      console.log(userData);
       push(userRef, userData)
       .then(() => {
         showAlert('Success','User added successfully');
-            // Clear text fields
-            setFirstName('');
-            setLastName('');
-            setEmail('');
-            setPassword('');
-            setHourlyRate('');
         createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed up 
           const user = userCredential.user;
           console.log('Register' +user)
-         
-          
+          navigation.goBack();
         })
         .catch((error) => {
           console.log('Register Error' +error.message)
@@ -108,6 +107,29 @@ const CreateMemberScreen = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
       />
+      <View>
+        <RNPickerSelect
+        items={[
+          ...Object.entries(roleOptions).map(([value, label]) => ({
+            label,
+            value: value,
+          })),
+        ]}
+        value={selectedRole} // Set the selected value (if needed)
+        onValueChange={(value) => setSelectedRole(value)}
+        style={{
+          inputIOS: {
+            fontSize: 16,
+            paddingVertical: 12,
+            paddingHorizontal: 10,
+            borderWidth: 1,
+            borderColor: 'gray',
+            borderRadius: 4,
+            color: 'black',
+          },
+        }}
+      />
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Hourly Rate"

@@ -81,6 +81,7 @@ import RegistrationScreen from './RegistrationScreen';
 import AddProjectScreen from './AddProjectScreen';
 import MemberTabNavigator from './MemberTabNavigator';
 import CreateMemberScreen from './CreateMemberScreen';
+import MemberListScreen from './MemberListScreen';
 import CreateTaskScreen from './CreateTaskScreen';
 import EditProjectScreen from './EditProjectScreen';
 import ProfileDetailScreen from './ProfileDetailScreen';
@@ -110,7 +111,8 @@ const App = () => {
         <Stack.Screen name="Registration" component={RegistrationScreen} options={{ headerShown: true }} />
         <Stack.Screen name="AddProject" component={AddProjectScreen} options={{ headerShown: true }} />
 
-        <Stack.Screen name="CreateMember" component={CreateMemberScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MemberList" component={MemberListScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateMember" component={CreateMemberScreen} options={{ headerShown: true }} />
         <Stack.Screen name="CreateTask" component={CreateTaskScreen} options={{ headerShown: true }} />
         <Stack.Screen name="EditProject" component={EditProjectScreen} options={{ headerShown: true }} />
         <Stack.Screen name="ProfileDetail" component={ProfileDetailScreen} options={{ headerShown: false }} />
