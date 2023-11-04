@@ -12,6 +12,7 @@ const ProfileDetailScreen = ({ navigation }) => {
     // Fetch the currently authenticated user's details
     const currentUser = auth.currentUser;
 
+    console.log(currentUser.email)
     if (currentUser) {
 
       const userQuery = query(
@@ -19,7 +20,7 @@ const ProfileDetailScreen = ({ navigation }) => {
         orderByChild('email'),
         equalTo(currentUser.email)
       );
-  
+
       get(userQuery)
         .then((snapshot) => {
           if (snapshot.exists()) {
@@ -70,10 +71,10 @@ const ProfileDetailScreen = ({ navigation }) => {
       />
       {userDetails ? (
         <View style={styles.userDetails}>
-          <Text>First Name: {userDetails.firstName}</Text>
-          <Text>Last Name: {userDetails.lastName}</Text>
-          <Text>Email: {userDetails.email}</Text>
-          <Text>Category: {userDetails.category}</Text>
+          <Text style={styles.text}>First Name: {userDetails.firstName}</Text>
+          <Text style={styles.text}>Last Name: {userDetails.lastName}</Text>
+          <Text style={styles.text}>Email: {userDetails.email}</Text>
+          <Text style={styles.text}>Category: {userDetails.category}</Text>
         </View>
       ) : (
         <Text>Loading user details...</Text>
@@ -101,10 +102,14 @@ const styles = StyleSheet.create({
   userDetails: {
     marginBottom: 20,
   },
-  logo: {
+    logo: {
     width: 100, // Adjust the width and height according to your logo's dimensions
     height: 100,
     alignSelf: 'center', // Center the logo horizontally
+    marginBottom: 20,
+  },
+  text: {
+    fontSize: 14,
     marginBottom: 20,
   },
 });

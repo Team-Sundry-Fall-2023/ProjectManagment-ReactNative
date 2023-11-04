@@ -31,7 +31,7 @@ export default function LoginScreen({ navigation }) {
         console.log('Login' + email);
         setEmail('');
         setPassword('');
-        const userQuery = query(ref(database, 'users'), orderByChild('email'), equalTo(email));
+        const userQuery = query(ref(database, 'users'), orderByChild('email'), equalTo(user.email));
 
         get(userQuery).then((snapshot) => {
           if (snapshot.exists()) {

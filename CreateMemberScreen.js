@@ -37,7 +37,7 @@ const CreateMemberScreen = ({ navigation, route }) => {
       const userData = {
         firstName : firstName,
         lastName :lastName,
-        email : email,
+        email : email.toLowerCase(),
         hourlyRate:parseFloat(hourlyRate), 
         category: selectedRole ? selectedRole : 'Member',
       };

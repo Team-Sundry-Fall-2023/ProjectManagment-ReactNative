@@ -45,19 +45,19 @@ createUserWithEmailAndPassword(auth, email, password)
     const userData = {
       firstName : firstName,
       lastName :lastName,
-      email : email,
+      email : email.toLowerCase(),
       hourlyRate:0,
       category: 'Admin', // Set the category to "Admin" for every user
     };
     push(userRef, userData)
     .then(() => {
       showAlert('Success','User added successfully');
-      const userData = {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-      };
-      login(userData);
+      // const userData = {
+      //   firstName: userData.firstName,
+      //   lastName: userData.lastName,
+      //   email: userData.email,
+      // };
+      // login(userData);
       navigation.navigate('AdminTabNavigator');
     })
     .catch((error) => {

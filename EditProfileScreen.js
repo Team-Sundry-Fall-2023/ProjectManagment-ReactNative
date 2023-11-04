@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { firebase ,auth, database} from './firebase';
-import {  ref, update } from "firebase/database";
+import {  ref, query, orderByChild, equalTo, get, update} from "firebase/database";
 import 'firebase/auth';
 import 'firebase/database'; 
 import { updatePassword } from "firebase/auth";
@@ -103,7 +103,7 @@ updatePassword(user, password)
 
   return (
     <View style={styles.container}>
-       <Text>Email: {email}</Text>
+       <Text style={styles.text}>Email: {email}</Text>
       <TextInput
         style={styles.input}
         placeholder="First Name"
@@ -130,7 +130,7 @@ updatePassword(user, password)
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      <Button title="Register" onPress={handleEditProfile} />
+      <Button title="Update" onPress={handleEditProfile} />
     </View>
   );
 };
@@ -162,6 +162,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  text: {
+    fontSize: 16,
+
+    marginBottom: 20,
   },
 });
 
