@@ -110,7 +110,8 @@ const CreateTaskScreen = ({ navigation, route }) => {
       taskId : taskId,
       owner : currentUserEmail,
       member : selectedUser ? selectedUser.email : null,
-      actualEndDate : null
+      actualEndDate : null,
+      noOfHours : 0
     };
 
     set(tasksRef, newTask)

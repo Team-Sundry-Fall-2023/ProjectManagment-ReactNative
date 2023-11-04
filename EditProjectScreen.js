@@ -153,6 +153,7 @@ const EditProjectScreen = () => {
                 <Text>{`Status: ${item.status}`}</Text>
                 <Text>{`Member: ${item.member}`}</Text>
                 <Text>{`Cost: ${item.taskCost}`}</Text>
+                <Text>{`Hours: ${item.noOfHours}`}</Text>
                 <Text>{`Actual End Date: ${item.actualEndDate}`}</Text>
               </View>
             )}

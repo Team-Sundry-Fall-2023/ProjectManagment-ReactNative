@@ -91,6 +91,10 @@ import UserProvider from './UserProvider';
 
 import TaskDetailScreen from './TaskDetailScreen';
 import EditTaskScreen from './EditTaskScreen';
+import TaskListScreen from './TaskListScreen';
+import MemberTaskListScreen from './MemberTaskListScreen';
+import CompleteTaskScreen from './CompleteTaskScreen';
+import EditProfileScreen from './EditProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -112,9 +116,14 @@ const App = () => {
         <Stack.Screen name="ProfileDetail" component={ProfileDetailScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProjectDetail" component={ProjectDetailScreen} options={{ headerShown: true }} />
         <Stack.Screen name="ProjectList" component={ProjectListScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TaskList" component={TaskListScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TaskDetail" component={TaskDetailScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="EditTask" component={EditTaskScreen} options={{ headerShown: true }} />
 
-        <Stack.Screen name="TaskDetail " component={TaskDetailScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="EditTask" component={EditTaskScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MemberTaskList" component={MemberTaskListScreen} options={{ headerShown: false }} />
+
+        <Stack.Screen name="CompleteTask" component={CompleteTaskScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: true }} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>

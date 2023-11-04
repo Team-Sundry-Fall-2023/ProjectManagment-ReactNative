@@ -72,6 +72,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
                 <Text>{`Member: ${item.member}`}</Text>
                 <Text>{`Actual End Date: ${item.actualEndDate}`}</Text>
                 <Text>{`Cost: ${item.taskCost}`}</Text>
+                <Text>{`Hours: ${item.noOfHours}`}</Text>
                 </View>
               )}
             />

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import RNPickerSelect from 'react-native-picker-select';
+import { firebase, auth, database } from './firebase';
+import { ref, push, set, query, orderByChild, equalTo, get, update } from 'firebase/database';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { firebase, database, auth } from './firebase';
-import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
 
 const EditTaskScreen = () => {
     const navigation = useNavigation();
@@ -18,8 +20,8 @@ const EditTaskScreen = () => {
     const [selectedProject, setSelectedProject] = useState(null);
     const [userOptions, setUserOptions] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
-
-
+    const [taskProjectId, setTaskProjectId] = useState('');
+    const [taskMemebr, setTaskMember] = useState('');
     useEffect(() => {
         if (taskObj) {
             setTask(taskObj);
@@ -30,18 +32,30 @@ const EditTaskScreen = () => {
     useEffect(() => {
         console.log(task)
         if (task) {
-            setTaskDescription(task.description);
-            setTaskName(task.name)
-            setTaskStartDate(task.taskStartDate);
-            setTaskEndDate(task.taskEndDate);
-            setSelectedProject(task.projectId);
-            setSelectedUser(task.member);
+            setTaskDescription(task.taskDescription);
+            setTaskName(task.taskName)
+            const startDateString = task.taskStartDate; // Replace this with your date string
+            const startDateObject = new Date(startDateString);
+            setTaskStartDate(startDateObject);
+            const endDateString = task.taskEndDate; // Replace this with your date string
+const dateObject = new Date(endDateString);
+            setTaskEndDate(dateObject);
+            setTaskProjectId(task.projectId);
+            setTaskMember(task.member);
         }
 
-    }, []);
+    }, [task]);
 
 
     useEffect(() => {
+
+        console.log('SET MEMER' +task)
+        if (task) {
+            setTaskProjectId(task.projectId);
+            setTaskMember(task.member);
+        }else{
+            console.log(' Task empty  ') 
+        }
         // Fetch projects related to the current user and populate projectOptions
         if (auth.currentUser) {
             const currentUserEmail = auth.currentUser.email;
@@ -58,12 +72,14 @@ const EditTaskScreen = () => {
                         const options = Object.keys(projects).map((projectId) => ({
                             label: projects[projectId].name,
                             value: projects[projectId],
-                        }));
+                        }
+                        
+                        ));
                         setProjectOptions(options);
                     }
                 })
                 .catch((error) => {
-                    console.error('Error fetching projects:', error);
+                    console.error('Error fetching task:', error);
                 });
 
         }
@@ -82,13 +98,34 @@ const EditTaskScreen = () => {
                         label: users[email].email,
                         value: users[email],
                     }));
-                    setUserOptions(options);
+                    setUserOptions(options);                    
                 }
             })
             .catch((error) => {
                 console.error('Error fetching Users:', error);
             });
-    }, []);
+            if (taskProjectId) {
+                const projectMatch = projectOptions.find((option) => option.value.projectId === taskProjectId);
+                if (projectMatch) {
+                  setSelectedProject(projectMatch.value);
+                }
+              }else{
+                console.error('projectMatch:');
+              }
+
+
+              if (taskMemebr) {
+                const userMatch = userOptions.find((option) => option.value.email === taskMemebr);
+                if (userMatch) {
+                  setSelectedUser(userMatch.value);
+                }
+            }else{
+                console.error('userMatch:');
+              }
+              
+
+
+    }, [task]);
 
     const handleEditTask = async () => {
 
@@ -107,6 +144,11 @@ const EditTaskScreen = () => {
             return;
           }
 
+          if(task.status == 'Complete'){
+            showAlert('Error', 'Task already completed. You cannot edit now');
+            navigation.goBack();
+          }
+
         const userQuery = query(ref(database, 'tasks'), orderByChild('taskId'), equalTo(task.taskId));
 
         // Fetch the task data
@@ -120,14 +162,15 @@ const EditTaskScreen = () => {
                     const updatedtaskData = {
                         taskName: taskName,
                         taskDescription: taskDescription,
-                        taskStartDate: task.taskStartDate, // Store as ISO string
+                        taskStartDate: task.taskStartDate, 
                         taskEndDate: taskEndDate.toISOString(), // Store as ISO string
                         taskCost: task.taskCost,
                         projectId: selectedProject ? selectedProject.projectId : null,
                         status: task.status,
                         owner: task.owner,
                         member: selectedUser ? selectedUser.email : null,
-                        actualEndDate: task.actualEndDate
+                        actualEndDate: task.actualEndDate,
+                        noOfHours : task.noOfHours
                     };
 
                     // Update the task in the database

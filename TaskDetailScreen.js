@@ -11,29 +11,23 @@ const TaskDetailScreen = ({ route, navigation }) => {
     if (taskObj) {
       settask(taskObj);
     }
-  }, [taskObj]);
+  }, [taskObj,task]);
 
-  useEffect(() => {
-    if (task) {
-
-      }
-
-
-  }, [task]);
 
   return (
     <View style={styles.container}>
       {task && (
         <View>
-          <Text style={styles.header}>Name: {task.name}</Text>
-          <Text style={styles.header}>Description: {task.description}</Text>
+          <Text style={styles.header}>Name: {task.taskName}</Text>
+          <Text style={styles.header}>Description: {task.taskDescription}</Text>
           <Text style={styles.header}>Cost: {task.taskCost}</Text>
-
+          <Text style={styles.header}>Hours: {item.noOfHours}</Text>
           <Text style={styles.header}>Start Date: {task.taskStartDate}</Text>
           <Text style={styles.header}>End Date: {task.taskEndDate}</Text>
           <Text style={styles.header}>Status: {task.status}</Text>
           <Text style={styles.header}>Member : {task.member}</Text>
-          <Text style={styles.header}>Actual End Date : {task.actualEndDate}</Text>       
+          <Text style={styles.header}>Actual End Date : {task.actualEndDate}</Text>    
+          <Text style={styles.header}>Project : {task.projectId}</Text>     
         </View>
       )}
     </View>
