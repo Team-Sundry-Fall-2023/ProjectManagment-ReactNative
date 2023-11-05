@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   container: {
+    paddingBottom: 70,
     flex: 1,
     backgroundColor: '#EFEFF4',
   },
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     right: 20,
-    bottom: 20,
+    bottom: 90,
     backgroundColor: '#5848ff',
     borderRadius: 28,
     elevation: 1,
