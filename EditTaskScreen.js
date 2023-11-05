@@ -5,11 +5,12 @@ import RNPickerSelect from 'react-native-picker-select';
 import { firebase, auth, database } from './firebase';
 import { ref, push, set, query, orderByChild, equalTo, get, update } from 'firebase/database';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import commonStyles from './style';
 
 const EditTaskScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const { taskObj } = route.params;
+    const {Tasks, setTasks, taskObj} = route.params;
     const [task, setTask] = useState(null);
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
@@ -169,7 +170,7 @@ const dateObject = new Date(endDateString);
                         status: task.status,
                         owner: task.owner,
                         member: selectedUser ? selectedUser.email.toLowerCase() : null,
-                        actualEndDate: task.actualEndDate,
+                        actualEndDate: task.actualEndDate || '',
                         noOfHours : task.noOfHours
                     };
 
@@ -177,12 +178,19 @@ const dateObject = new Date(endDateString);
                     update(ref(database, `tasks/${taskId}`), updatedtaskData)
                         .then(() => {
                             // task data has been successfully updated
-                            showAlert('Success', 'task data updated');
+                            showAlert('Success', 'Task data updated');
+                            /* const updatedTask = {
+                                ...updatedtaskData,
+                            };
+
+                            console.log('updatedTask' + updatedTask);
+                            
+                            setTask(updatedTask); */
                             navigation.goBack();
                         })
                         .catch((error) => {
                             // Handle the error if the update fails
-                            showAlert('Error', 'Error updating task data:' + error);
+                            console.log('Error updating task data:' + error);
                         });
                 } else {
                     console.log('task not found'); // Handle the case where the task is not found
@@ -190,29 +198,50 @@ const dateObject = new Date(endDateString);
             })
             .catch((error) => {
                 // Handle the error if the fetch fails
-                showAlert('Error', 'Error finding task:' + error);
+                console.log('Error updating task data:' + error);
             });
     };
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+          headerLeft: () => (
+            <View style={commonStyles.customHeaderLeft}>
+              <Button
+                onPress={() => navigation.goBack()}
+                title="< Back"
+                color="#007BFF"
+              />
+            </View>
+          ),
+          headerTitle: () => (
+            <View style={commonStyles.customHeader}>
+              <Text style={commonStyles.headerTitle}>Edit Task</Text>
+            </View>
+          ),
+        });
+      }, [navigation]);
 
     return (
         <View style={styles.container}>
             <TextInput
                 style={styles.input}
-                placeholder="Task Name"
+                placeholder="Name"
                 value={taskName}
                 onChangeText={setTaskName}
             />
             <TextInput
-                style={styles.input}
-                placeholder="Task Description"
+                style={[styles.input, { height: 4 * 40 }]} 
+                placeholder="Description"
                 value={taskDescription}
                 onChangeText={setTaskDescription}
+                multiline={true}
+                numberOfLines={4}
             />
-            <Text>Task Start Date:</Text>
+            <Text>Start Date:</Text>
             <Button
                 title={taskStartDate.toISOString().split('T')[0]}
             />
-            <Text>Task End Date:</Text>
+            <Text>End Date:</Text>
             <Button
                 title={taskEndDate.toISOString().split('T')[0]}
                 onPress={() => setShowEndDatePicker(true)}
@@ -232,7 +261,7 @@ const dateObject = new Date(endDateString);
                 />
             )}
 
-            <Text>Memebr:</Text>
+            <Text>Assign to:</Text>
 
             <RNPickerSelect
                 items={userOptions}
@@ -246,7 +275,7 @@ const dateObject = new Date(endDateString);
                     items={projectOptions}
                     onValueChange={(value) => setSelectedProject(value)}                  
                 />
-            <Button title="Edit Task" onPress={handleEditTask} />
+            <Button title="Update" onPress={handleEditTask} />
         </View>
     );
 

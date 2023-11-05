@@ -4,6 +4,7 @@ import { firebase, auth, database} from './firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, query, orderByChild, equalTo, get, push, update} from "firebase/database";
 import RNPickerSelect from 'react-native-picker-select';
+import commonStyles from './style';
 
 const CreateMemberScreen = ({ navigation, route }) => {
     const { members, setMembers, memberToEdit } = route.params;
@@ -147,7 +148,7 @@ const CreateMemberScreen = ({ navigation, route }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <View style={styles.customHeaderLeft}>
+        <View style={commonStyles.customHeaderLeft}>
           <Button
             onPress={() => navigation.goBack()}
             title="< Back"
@@ -156,8 +157,8 @@ const CreateMemberScreen = ({ navigation, route }) => {
         </View>
       ),
       headerTitle: () => (
-        <View style={styles.customHeader}>
-          <Text style={styles.headerTitle}>{memberToEdit ? 'Edit member' : 'Add member'}</Text>
+        <View style={commonStyles.customHeader}>
+          <Text style={commonStyles.headerTitle}>{memberToEdit ? 'Edit member' : 'Add member'}</Text>
         </View>
       ),
     });

@@ -4,9 +4,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import { firebase, auth, database } from './firebase';
 import { ref, push, set, query, orderByChild, equalTo, get } from 'firebase/database';
-
+import commonStyles from './style';
 
 const CreateTaskScreen = ({ navigation, route }) => {
+  const {Tasks, setTasks} = route.params;
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskStartDate, setTaskStartDate] = useState(new Date());
@@ -117,6 +118,11 @@ const CreateTaskScreen = ({ navigation, route }) => {
     set(tasksRef, newTask)
       .then(() => {
         showAlert('Success', 'Task added successfully');
+
+        const newTaskDt = {
+          ...newTask, // Use the userData object to represent the member's data
+        };
+        setTasks([...Tasks, newTaskDt]);
         navigation.goBack();
       })
       .catch((error) => {
@@ -129,21 +135,43 @@ const CreateTaskScreen = ({ navigation, route }) => {
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <View style={commonStyles.customHeaderLeft}>
+          <Button
+            onPress={() => navigation.goBack()}
+            title="< Back"
+            color="#007BFF"
+          />
+        </View>
+      ),
+      headerTitle: () => (
+        <View style={commonStyles.customHeader}>
+          <Text style={commonStyles.headerTitle}>Create a Task</Text>
+        </View>
+      ),
+    });
+  }, [navigation]);
+
+
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Task Name"
+        placeholder="Name"
         value={taskName}
         onChangeText={setTaskName}
       />
       <TextInput
-        style={styles.input}
-        placeholder="Task Description"
+        style={[styles.input, { height: 4 * 40 }]} 
+        placeholder="Description"
         value={taskDescription}
         onChangeText={setTaskDescription}
+        multiline={true}
+        numberOfLines={4}
       />
-      <Text>Task Start Date:</Text>
+      <Text>Start Date:</Text>
       <Button
         title={taskStartDate.toISOString().split('T')[0]}
         onPress={() => setShowStartDatePicker(true)}
@@ -162,7 +190,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
           minimumDate={new Date()} // Disallow past dates
         />
       )}
-      <Text>Task End Date:</Text>
+      <Text>End Date:</Text>
       <Button
         title={taskEndDate.toISOString().split('T')[0]}
         onPress={() => setShowEndDatePicker(true)}
@@ -182,7 +210,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
         />
       )}
 
-<Text>Memebr:</Text>
+<Text>Assign to:</Text>
 
   <RNPickerSelect
     items={userOptions}
@@ -202,7 +230,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
     disabled={project ? true : false} // Disable the picker if a project is selected
   />
 )}
-      <Button title="Create Task" onPress={handleCreateTask} />
+      <Button title="Save" onPress={handleCreateTask} />
     </View>
   );
 };

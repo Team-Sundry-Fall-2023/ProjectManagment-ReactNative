@@ -102,8 +102,13 @@ console.log('currentUser ' + currentUserEmail )
     navigation.navigate('TaskDetail', { taskObj: Task });
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'short', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   const handleRightButtonPress = () => {
-    navigation.navigate('CreateTask', { projectObj: null });
+    navigation.navigate('CreateTask', { projectObj: null, Tasks, setTasks });
   };
 
   React.useLayoutEffect(() => {
@@ -145,20 +150,20 @@ console.log('currentUser ' + currentUserEmail )
           if(item.status == 'Complete'){
             handleViewDetails(item)
           }else{
-          navigation.navigate('EditTask', {taskObj:item });
+            navigation.navigate('EditTask', {taskObj:item, Tasks, setTasks });
           }
         }}
       >
         <View>
         <Text style={styles.taskName}>{item.taskName}</Text>
                 <Text style={styles.taskDescription}>{item.taskDescription}</Text>
-                <Text>{`Start Date: ${item.taskStartDate}`}</Text>
-                <Text>{`End Date: ${item.taskEndDate}`}</Text>
+                <Text>{`Start Date: ${formatDate(item.taskStartDate)}`}</Text>
+                <Text>{`End Date: ${formatDate(item.taskEndDate)}`}</Text>
                 <Text>{`Status: ${item.status}`}</Text>
                 <Text>{`Member: ${item.member}`}</Text>
                 <Text>{`Cost: ${item.taskCost}`}</Text>
                 <Text>{`Hours: ${item.noOfHours}`}</Text>
-                <Text>{`Actual End Date: ${item.actualEndDate}`}</Text>
+                <Text>{`Actual End Date: ${item.actualEndDate ? formatDate(item.actualEndDate) : ''}`}</Text>
         </View>
       </TouchableOpacity>
     </Swipeout>
