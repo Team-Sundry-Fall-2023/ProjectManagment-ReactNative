@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, Button, Alert } from 'react-nat
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
 import { firebase ,auth, database} from './firebase';
-import {  ref, query, orderByChild, equalTo, get} from "firebase/database";
+import {  ref, query, orderByChild, equalTo, get , remove} from "firebase/database";
 
 const ProjectListScreen = () => {
   const navigation = useNavigation();
@@ -13,7 +13,7 @@ const ProjectListScreen = () => {
     const projectList = [];
     const currentUser = auth.currentUser;
     const currentUserEmail = currentUser.email;
-    console.log('currentUser ' + currentUserEmail )
+    console.log('currentUser' + currentUserEmail )
     const userQuery = query(ref(database, 'projects'),orderByChild('user'),equalTo(currentUserEmail) );
     console.log('userQuery' + userQuery )
      get(userQuery).then((snapshot) => {
@@ -50,29 +50,70 @@ const ProjectListScreen = () => {
         {
           text: 'Delete',
           onPress: async () => {
-            // First, fetch all tasks related to the project
-            const tasksRef = firebase.firestore().collection('tasks').where('projectId', '==', project.id);
-            const tasksSnapshot = await tasksRef.get();
-  
-            // Delete all related tasks
+            const deleteProjectssPromises = [];
             const deleteTasksPromises = [];
-            tasksSnapshot.forEach((taskDoc) => {
-              const taskRef = firebase.firestore().collection('tasks').doc(taskDoc.id);
-              deleteTasksPromises.push(taskRef.delete());
-            });
-  
-            // Delete the project after all tasks are deleted
+            // First, fetch all tasks related to the project
+            const userQuery = query(ref(database, 'tasks'),orderByChild('projectId'),equalTo(project.projectId) );
+                   // Fetch the task data
+                   console.log('userQuery ', userQuery)
+                   get(userQuery)
+                   .then((snapshot) => {
+                       if (snapshot.exists()) {
+           
+                       snapshot.forEach((taskData) => {
+                           const taskId = taskData.key;
+                           console.log('taskId ' , taskId)
+                           const taskRef = ref(database, `tasks/${taskId}`);
+                           // Delete each related task
+                           deleteTasksPromises.push(remove(taskRef));
+                         });          
+                       } else {
+                           console.log('task not found ')
+                       }
+                   })
+                   .catch((error) => {
+                       // Handle the error if the fetch fails
+                       console.log('Error finding task:' + error)
+                       showAlert('Error', 'Error finding task:' + error);
+                   });
+
             Promise.all(deleteTasksPromises)
               .then(async () => {
-                const projectRef = firebase.firestore().collection('projects').doc(project.id);
-                try {
-                  await projectRef.delete();
-                } catch (error) {
-                  console.error('Error deleting project:'+ error);
-                }
+            
+                const projectQuery = query(ref(database, 'projects'),orderByChild('projectId'),equalTo(project.projectId) );
+                console.log('projectQuery ', projectQuery)
+                get(projectQuery)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+        
+                    snapshot.forEach((projectData) => {
+                        const projectId = projectData.key;
+                        console.log('projectId ' , projectId)
+                        const taskRef = ref(database, `projects/${projectId}`);
+                        // Delete each related task
+                        deleteProjectssPromises.push(remove(taskRef));
+                      });  
+                      Promise.all(deleteProjectssPromises).then(() => {
+                        showAlert('Success', 'Project deleted');
+                        // Update the state to trigger a re-render
+                        setProjects((prevProjects) =>
+                        prevProjects.filter((item) => item.projectId !== project.projectId)
+                        );
+                    });        
+                    } else {
+                        console.log('Project not found ')
+                        showAlert('Error','Project not found'); // Handle the case where the task is not found
+                    }
+                })
+                .catch((error) => {
+                    // Handle the error if the fetch fails
+                    console.log('Error finding project:' + error)
+                    showAlert('Error', 'Error finding project:' + error);
+                });
+
               })
               .catch((error) => {
-                console.error('Error deleting tasks:'+ error);
+                console.error('Error deleting project:'+ error);
               });
           },
         },
@@ -86,6 +127,24 @@ const ProjectListScreen = () => {
   const handleViewDetails = (project) => {
     navigation.navigate('ProjectDetail', { projectObj: project });
   };
+
+
+  const handleRightButtonPress = () => {
+    navigation.navigate('CreateTask', { projectObj: null });
+  };
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          onPress={handleRightButtonPress}
+          title="Add"
+          color="#007BFF" 
+        />
+      ),
+    });
+  }, [navigation]);
+
 
   return (
     <View>
@@ -122,13 +181,6 @@ const ProjectListScreen = () => {
     </Swipeout>
   )}
 />
-
-      <Button
-        title="Add Project"
-        onPress={() => {
-            navigation.navigate('AddProject', { projects, setProjects });
-        }}
-      />
     </View>
   );
 };

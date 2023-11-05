@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Button, Alert,  StyleSheet } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
-import { firebase ,auth, database} from './firebase';
-import {  ref, query, orderByChild, equalTo, get} from "firebase/database";
+import { firebase ,auth, database, firestore} from './firebase';
+import {  ref, query, orderByChild, equalTo, get, remove} from "firebase/database";
 
 const TaskListScreen = () => {
   const navigation = useNavigation();
@@ -38,18 +38,6 @@ console.log('currentUser ' + currentUserEmail )
         showAlert('Error','Error finding Tasks :', error.message);
          return null;
        });
-
-
-    // const TaskRef = firebase.collection('Tasks');
-
-    // TaskRef.onSnapshot((snapshot) => {
-    //   const TaskList = [];
-    //   snapshot.forEach((doc) => {
-    //     const TaskData = doc.data();
-    //     TaskList.push({ id: doc.id, ...TaskData });
-    //   });
-    //   setTasks(TaskList);
-    // });
   }, []);
 
   const handleDelete = async (Task) => {
@@ -66,29 +54,40 @@ console.log('currentUser ' + currentUserEmail )
           text: 'Delete',
           onPress: async () => {
             // First, fetch all tasks related to the Task
-            const tasksRef = firebase.firestore().collection('tasks').where('TaskId', '==', Task.id);
-            const tasksSnapshot = await tasksRef.get();
-  
-            // Delete all related tasks
-            const deleteTasksPromises = [];
-            tasksSnapshot.forEach((taskDoc) => {
-              const taskRef = firebase.firestore().collection('tasks').doc(taskDoc.id);
-              deleteTasksPromises.push(taskRef.delete());
-            });
-  
-            // Delete the Task after all tasks are deleted
-            Promise.all(deleteTasksPromises)
-              .then(async () => {
-                const TaskRef = firebase.firestore().collection('Tasks').doc(Task.id);
-                try {
-                  await TaskRef.delete();
-                } catch (error) {
-                  console.error('Error deleting Task:'+ error);
-                }
-              })
-              .catch((error) => {
-                console.error('Error deleting tasks:'+ error);
+            const userQuery = query(ref(database, 'tasks'),orderByChild('taskId'),equalTo(Task.taskId) );
+
+                    // Fetch the task data
+        console.log('userQuery ', userQuery)
+        get(userQuery)
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                const tasks = snapshot.val();
+                const deleteTasksPromises = [];
+
+            snapshot.forEach((taskData) => {
+                const taskId = taskData.key;
+                console.log('taskId ' , taskId)
+                const taskRef = ref(database, `tasks/${taskId}`);
+                // Delete each related task
+                deleteTasksPromises.push(remove(taskRef));
               });
+              Promise.all(deleteTasksPromises).then(() => {
+                showAlert('Success', 'Task deleted');
+                // Update the state to trigger a re-render
+                setTasks((prevTasks) =>
+                  prevTasks.filter((item) => item.taskId !== Task.taskId)
+                );
+            });
+            } else {
+                console.log('task not found ')
+                showAlert('Error','task not found'); // Handle the case where the task is not found
+            }
+        })
+        .catch((error) => {
+            // Handle the error if the fetch fails
+            console.log('Error finding task:' + error)
+            showAlert('Error', 'Error finding task:' + error);
+        });
           },
         },
       ]
@@ -102,6 +101,22 @@ console.log('currentUser ' + currentUserEmail )
   const handleViewDetails = (Task) => {
     navigation.navigate('TaskDetail', { taskObj: Task });
   };
+
+  const handleRightButtonPress = () => {
+    navigation.navigate('CreateTask', { projectObj: null });
+  };
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          onPress={handleRightButtonPress}
+          title="Add"
+          color="#007BFF" 
+        />
+      ),
+    });
+  }, [navigation]);
 
   return (
     <View>
@@ -149,12 +164,6 @@ console.log('currentUser ' + currentUserEmail )
     </Swipeout>
   )}
 />
-
-      <Button
-        title="Add Task"
-        onPress=
-        {() => navigation.navigate('CreateTask', { projectObj: null })}
-      />
     </View>
   );
 };

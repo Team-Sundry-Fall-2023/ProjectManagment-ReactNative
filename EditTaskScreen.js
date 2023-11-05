@@ -168,7 +168,7 @@ const dateObject = new Date(endDateString);
                         projectId: selectedProject ? selectedProject.projectId : null,
                         status: task.status,
                         owner: task.owner,
-                        member: selectedUser ? selectedUser.email : null,
+                        member: selectedUser ? selectedUser.email.toLowerCase() : null,
                         actualEndDate: task.actualEndDate,
                         noOfHours : task.noOfHours
                     };

@@ -21,7 +21,7 @@ const TaskDetailScreen = ({ route, navigation }) => {
           <Text style={styles.header}>Name: {task.taskName}</Text>
           <Text style={styles.header}>Description: {task.taskDescription}</Text>
           <Text style={styles.header}>Cost: {task.taskCost}</Text>
-          <Text style={styles.header}>Hours: {item.noOfHours}</Text>
+          <Text style={styles.header}>Hours: {task.noOfHours}</Text>
           <Text style={styles.header}>Start Date: {task.taskStartDate}</Text>
           <Text style={styles.header}>End Date: {task.taskEndDate}</Text>
           <Text style={styles.header}>Status: {task.status}</Text>
