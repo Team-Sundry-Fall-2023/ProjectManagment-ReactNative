@@ -60,7 +60,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
     const userQuery = query(
       ref(database, 'users'),
       orderByChild('category'),
-      equalTo('Memebr')
+      equalTo('Member')
     );
 
     get(userQuery)
@@ -120,7 +120,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
         showAlert('Success', 'Task added successfully');
 
         const newTaskDt = {
-          ...newTask, // Use the userData object to represent the member's data
+          ...newTask, 
         };
         setTasks([...Tasks, newTaskDt]);
         navigation.goBack();

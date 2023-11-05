@@ -21,15 +21,13 @@ const CreateMemberScreen = ({ navigation, route }) => {
     };
 
     const handleCreateMember = async () => {
-      // Validate input fields
       if (!firstName || !lastName || !email || !password || !hourlyRate) {
-        showAlert('Error','All fields are required.'); // Show an alert
+        showAlert('Error','All fields are required.'); 
         return;
       }
 
-      // Validate the email format
       if (!validateEmail(email)) {
-        showAlert('Error','Invalid email format.'); // Show an alert
+        showAlert('Error','Invalid email format.'); 
         return;
       }
 
@@ -42,28 +40,20 @@ const CreateMemberScreen = ({ navigation, route }) => {
           hourlyRate:parseFloat(hourlyRate), 
           category: selectedRole ? selectedRole : 'Member',
         };
-        console.log(userData);
         push(userRef, userData)
         .then(() => {
           showAlert('Success','User added successfully');
           createUserWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
-            // Signed up 
             const user = userCredential.user;
-            console.log('Register' +user);
-
             const newMember = {
-              ...userData, // Use the userData object to represent the member's data
+              ...userData, 
             };
-            setMembers([...members, newMember]);
+            setMembers([...members, newMember]);           
             navigation.goBack();
           })
           .catch((error) => {
             console.log('Register Error' +error.message)
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            showAlert('Error','Error adding user:', error.message);
-            // ..
           });
         })
         .catch((error) => {
@@ -71,15 +61,14 @@ const CreateMemberScreen = ({ navigation, route }) => {
         });
   
       } catch (error) {
-        showAlert('Error creating member. Please try again.'); // Show an alert
+        showAlert('Error creating member. Please try again.');
         console.error('Error creating member:'+ error);
       }
     };
 
     const handleUpdateMember = async () => {
-      // Validate input fields
       if (!firstName || !lastName || !email || !hourlyRate) {
-        showAlert('Error', 'All fields are required.'); // Show an alert
+        showAlert('Error', 'All fields are required.'); 
         return;
       }
 
@@ -89,14 +78,12 @@ const CreateMemberScreen = ({ navigation, route }) => {
         const usersRef = ref(database, 'users');
         const userQuery = query(usersRef, orderByChild('email'), equalTo(email));
     
-        // Fetch the member data
         get(userQuery)
           .then((snapshot) => {
             if (snapshot.exists()) {
               const editMember = snapshot.val();
-              const userId = Object.keys(editMember)[0]; // Assuming there's only one member with a given email
+              const userId = Object.keys(editMember)[0];
     
-              // Construct the updated member data
               const updatedUserData = {
                 firstName: firstName,
                 lastName: lastName,
@@ -105,7 +92,6 @@ const CreateMemberScreen = ({ navigation, route }) => {
                 category: selectedRole || 'Member',
               };
     
-              // Update the member in the database
               update(ref(database, `users/${userId}`), updatedUserData)
                 .then(() => {
                   showAlert('Success', 'Member updated successfully');
@@ -133,14 +119,11 @@ const CreateMemberScreen = ({ navigation, route }) => {
         console.error('Error updating member:', error);
       }
     };
-  // Email validation function
   const validateEmail = (email) => {
-    // Use a regular expression to validate email format
     const emailPattern = /\S+@\S+\.\S+/;
     return emailPattern.test(email);
   };
 
-  // Function to show an alert with the error message
   const showAlert = (title, message) => {
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
@@ -209,7 +192,7 @@ const CreateMemberScreen = ({ navigation, route }) => {
             value: value,
           })),
         ]}
-        value={selectedRole} // Set the selected value (if needed)
+        value={selectedRole} 
         onValueChange={(value) => setSelectedRole(value)}
         style={{
           inputIOS: {

@@ -4,31 +4,23 @@ import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
 import { firebase ,auth, database} from './firebase';
 import {  ref, query, orderByChild, get, remove} from "firebase/database";
-import { getAuth, deleteUser } from 'firebase/auth';
 
 const MemberListScreen = () => {
     const navigation = useNavigation();
     const [members, setMembers] = useState([]);
-
+    
     useEffect(() => {
         const memberList = [];
         const userQuery = query(ref(database, 'users'),orderByChild('email'));
         get(userQuery).then((snapshot) => {
             if (snapshot.exists()) {
-                const members = snapshot.val();
-                Object.keys(members).forEach((memberId) => {
-                    const member = members[memberId];
-                    memberList.push(member);
-                });
-                setMembers(memberList);
-            } else {
-                setMembers(memberList);
+              const membersData = snapshot.val();
+              const existingMembers = Object.values(membersData);
+              setMembers(existingMembers);
             }
-        }).catch((error) => {
-            setMembers(memberList);
-            showAlert('Error','Error finding Members :', error.message);
-            return null;
-       });
+          }).catch((error) => {
+            showAlert('Error', 'Error fetching existing members: ' + error.message);
+          });
 
   }, []);
 
@@ -59,6 +51,7 @@ const MemberListScreen = () => {
         for (const memberId in members) {
           const member = members[memberId];
           if (member.email === email) {
+            console.log('Member found:', member);
             return memberId; 
           }
         }
@@ -90,16 +83,6 @@ const MemberListScreen = () => {
                     try {
                         const memberRef = ref(database, `users/${memberId}`);
                         await remove(memberRef);
-
-                        const auth = getAuth();
-                        deleteUser(auth.currentUser)
-                            .then(() => {
-                                console.log('Successfully deleted user');
-                            })
-                            .catch((error) => {
-                                console.log('Error deleting user:', error);
-                            });
-
                         const updatedMembers = members.filter((m) => m.email !== member.email);
                         setMembers(updatedMembers);
                     } catch (error) {
@@ -134,11 +117,11 @@ const MemberListScreen = () => {
                                 onPress: () => handleViewDetails(item),
                                 type: 'default',
                             },
-                            {
+                            /* {
                                 text: 'Delete',
                                 onPress: () => handleDelete(item),
                                 type: 'delete',
-                            },
+                            }, */
                         ]}
                     >
                         <TouchableOpacity

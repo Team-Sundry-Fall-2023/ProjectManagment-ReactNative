@@ -9,22 +9,17 @@ const AddProjectScreen = ({route}) => {
   const navigation = useNavigation();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const { user } = useContext(UserContext);
-  const { projects, setProjects } = route.params;
+  const { projects, refreshProjectsList, updatedProjects, setUpdatedProjects } = route.params;
+  console.log(projects);
 
   const handleAddProject = async () => {
 
     if (!name || !description) {
-      showAlert('Error','All fields are required.'); // Show an alert
+      showAlert('Error','All fields are required.');
       return;
     }
-
-
     const currentUser = auth.currentUser;
-    console.log('Addproject ' +user)
-    // const userRef = ref(database,'projects');
     const projectRef = push(ref(database, "projects"));
-    // console.log('Register ref' + userRef)
     const projectId = projectRef.key;
     const projectData = {
       name : name,
@@ -36,10 +31,13 @@ const AddProjectScreen = ({route}) => {
     set(projectRef, projectData)
     .then(() => {
       showAlert('Success','Project added successfully');
+      console.log('Project added successfully!!!!');
       const newProject = {
         ...projectData, 
       };
-      setProjects([...projects, newProject]);
+      setUpdatedProjects([...projects, newProject]);
+      //console.log(updatedProjects);
+      refreshProjectsList();
       navigation.goBack();
     })
     .catch((error) => {

@@ -23,15 +23,17 @@ const EditTaskScreen = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [taskProjectId, setTaskProjectId] = useState('');
     const [taskMemebr, setTaskMember] = useState('');
+
+    console.log('taskObj 1' + taskObj);
     useEffect(() => {
         if (taskObj) {
             setTask(taskObj);
         }
     }, [taskObj, task]);
 
+    console.log('task 1' + task);
 
     useEffect(() => {
-        console.log(task)
         if (task) {
             setTaskDescription(task.taskDescription);
             setTaskName(task.taskName)
@@ -39,7 +41,7 @@ const EditTaskScreen = () => {
             const startDateObject = new Date(startDateString);
             setTaskStartDate(startDateObject);
             const endDateString = task.taskEndDate; // Replace this with your date string
-const dateObject = new Date(endDateString);
+            const dateObject = new Date(endDateString);
             setTaskEndDate(dateObject);
             setTaskProjectId(task.projectId);
             setTaskMember(task.member);
@@ -47,16 +49,11 @@ const dateObject = new Date(endDateString);
 
     }, [task]);
 
+    console.log('taskProjectId 1' + taskProjectId);
 
     useEffect(() => {
-
-        console.log('SET MEMER' +task)
-        if (task) {
-            setTaskProjectId(task.projectId);
-            setTaskMember(task.member);
-        }else{
-            console.log(' Task empty  ') 
-        }
+        console.log('taskProjectId 2' + taskProjectId);
+       
         // Fetch projects related to the current user and populate projectOptions
         if (auth.currentUser) {
             const currentUserEmail = auth.currentUser.email;
@@ -84,11 +81,12 @@ const dateObject = new Date(endDateString);
                 });
 
         }
-
+        console.log('projectOptions' + projectOptions);
+        
         const userQuery = query(
             ref(database, 'users'),
             orderByChild('category'),
-            equalTo('Memebr')
+            equalTo('Member')
         );
 
         get(userQuery)
@@ -105,13 +103,15 @@ const dateObject = new Date(endDateString);
             .catch((error) => {
                 console.error('Error fetching Users:', error);
             });
+            console.log('taskProjectId 3' + taskProjectId);
             if (taskProjectId) {
+                console.log('projectOptions' + projectOptions);
                 const projectMatch = projectOptions.find((option) => option.value.projectId === taskProjectId);
                 if (projectMatch) {
                   setSelectedProject(projectMatch.value);
                 }
               }else{
-                console.error('projectMatch:');
+                //console.error('projectMatch:');
               }
 
 
@@ -121,7 +121,7 @@ const dateObject = new Date(endDateString);
                   setSelectedUser(userMatch.value);
                 }
             }else{
-                console.error('userMatch:');
+                //console.error('userMatch:');
               }
               
 
