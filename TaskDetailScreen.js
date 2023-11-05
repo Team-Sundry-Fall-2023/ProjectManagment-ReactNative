@@ -1,66 +1,96 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList, StyleSheet,Alert } from 'react-native';
-import { firebase ,auth, database} from './firebase';
-import {  ref, query, orderByChild, equalTo, get} from "firebase/database";
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Card, Button } from 'react-native-elements';
+import { Ionicons } from '@expo/vector-icons';
 
 const TaskDetailScreen = ({ route, navigation }) => {
   const { taskObj } = route.params;
-  const [task, settask] = useState(null);
+  const [task, setTask] = useState(null);
 
   useEffect(() => {
     if (taskObj) {
-      settask(taskObj);
+      setTask(taskObj);
     }
-  }, [taskObj,task]);
+  }, [taskObj]);
 
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return 'N/A';
+    }
+    const date = new Date(dateString);
+    if (isNaN(date)) {
+      return 'Invalid date';
+    }
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  };
 
-  return (
-    <View style={styles.container}>
-      {task && (
-        <View>
-          <Text style={styles.header}>Name: {task.taskName}</Text>
-          <Text style={styles.header}>Description: {task.taskDescription}</Text>
-          <Text style={styles.header}>Cost: {task.taskCost}</Text>
-          <Text style={styles.header}>Hours: {task.noOfHours}</Text>
-          <Text style={styles.header}>Start Date: {task.taskStartDate}</Text>
-          <Text style={styles.header}>End Date: {task.taskEndDate}</Text>
-          <Text style={styles.header}>Status: {task.status}</Text>
-          <Text style={styles.header}>Member : {task.member}</Text>
-          <Text style={styles.header}>Actual End Date : {task.actualEndDate}</Text>    
-          <Text style={styles.header}>Project : {task.projectId}</Text>     
-        </View>
-      )}
+  // An icon wrapper for convenience
+  const IconRow = ({ name, size, color, text }) => (
+    <View style={styles.detailRow}>
+      <Ionicons name={name} size={size} color={color} />
+      <Text style={styles.detailText}>{text}</Text>
     </View>
   );
-};
 
-const showAlert = (title, message) => {
-  Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
+  return (
+    <ScrollView style={styles.container}>
+      {task && (
+        <Card containerStyle={styles.card}>
+          <Card.Title style={styles.cardTitle}>{task.taskName}</Card.Title>
+          <Card.Divider />
+
+          <IconRow name="ios-list" size={24} color="#666" text={task.taskDescription} />
+          <IconRow name="ios-cash" size={24} color="#666" text={`$${task.taskCost}`} />
+          <IconRow name="ios-time" size={24} color="#666" text={`${task.noOfHours} Hours`} />
+          <IconRow name="ios-calendar" size={24} color="#666" text={`Start Date: ${formatDate(task.taskStartDate)}`} />
+          <IconRow name="ios-calendar" size={24} color="#666" text={`End Date: ${formatDate(task.taskEndDate)}`} />
+          <IconRow name="ios-checkmark-circle-outline" size={24} color="#666" text={`Status: ${task.status}`} />
+          <IconRow name="ios-person" size={24} color="#666" text={`Member: ${task.member}`} />
+          <IconRow name="ios-calendar" size={24} color="#666" text={`Actual End Date: ${formatDate(task.actualEndDate)}`} />
+          <IconRow name="ios-business" size={24} color="#666" text={`Project: ${task.projectId}`} />
+        </Card>
+      )}
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f2f2f2',
+  },
+  card: {
+    borderRadius: 8,
     padding: 16,
+    margin: 16,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    shadowOpacity: 0.1,
+    elevation: 4,
   },
-  header: {
-    fontSize: 24,
-    marginBottom: 20,
+  cardTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
   },
-  taskItem: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 10,
   },
-  taskName: {
+  detailText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    marginLeft: 10,
+    color: '#333',
   },
-  taskDescription: {
-    marginBottom: 5,
+  button: {
+    backgroundColor: '#5848ff',
+    borderRadius: 30,
+    marginTop: 20,
   },
+  // Add other styles as needed
 });
 
 export default TaskDetailScreen;
