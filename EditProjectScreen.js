@@ -138,7 +138,7 @@ const EditProjectScreen = () => {
         <Button title="Edit Project" onPress={handleEditProject} />
         <Button
           title="Create Task"
-          onPress={() => navigation.navigate('CreateTask', { projectObj: project })}
+          onPress={() => navigation.navigate('CreateTask', { projectObj: project,tasks, setTasks })}
         />
         {tasks.length > 0 ? (
           <FlatList
@@ -153,7 +153,7 @@ const EditProjectScreen = () => {
                 <Text>{`Status: ${item.status}`}</Text>
                 <Text>{`Member: ${item.member}`}</Text>
                 <Text>{`Cost: ${item.taskCost}`}</Text>
-                <Text>{`Hours: ${item.noOfHours}`}</Text>
+                <Text>{`Hours: ${item.taskCost}`}</Text>
                 <Text>{`Actual End Date: ${item.actualEndDate}`}</Text>
               </View>
             )}

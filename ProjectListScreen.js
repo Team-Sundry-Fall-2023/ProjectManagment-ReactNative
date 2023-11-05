@@ -155,8 +155,8 @@ const ProjectListScreen = () => {
     >
       <TouchableOpacity
         onPress={() => {
-          console.log('item edit ' +item)
-          navigation.navigate('EditProject', { project: item });
+          console.log('item edit ' + item)
+          navigation.navigate('EditProject', { projectObj: item });
         }}
       >
         <View>

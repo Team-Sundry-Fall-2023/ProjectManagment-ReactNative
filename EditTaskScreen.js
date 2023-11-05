@@ -10,7 +10,7 @@ import commonStyles from './style';
 const EditTaskScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const {Tasks, setTasks, taskObj} = route.params;
+    const {tasks, setTasks, taskObj} = route.params;
     const [task, setTask] = useState(null);
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');

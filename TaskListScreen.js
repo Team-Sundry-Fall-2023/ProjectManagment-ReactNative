@@ -7,10 +7,10 @@ import {  ref, query, orderByChild, equalTo, get, remove} from "firebase/databas
 
 const TaskListScreen = () => {
   const navigation = useNavigation();
-  const [Tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const TaskList = [];
+    const taskList = [];
     const currentUser = auth.currentUser;
     const currentUserEmail = currentUser.email;
 console.log('currentUser ' + currentUserEmail )
@@ -19,29 +19,29 @@ console.log('currentUser ' + currentUserEmail )
      get(userQuery).then((snapshot) => {
          if (snapshot.exists()) {
            // The snapshot contains the user data matching the email
-           const Tasks = snapshot.val();
+           const tasks = snapshot.val();
 
-           Object.keys(Tasks).forEach((TaskId) => {
-            const Task = Tasks[TaskId];
-            console.log('Task item', Task);
-            TaskList.push(Task);
+           Object.keys(tasks).forEach((taskId) => {
+            const task = tasks[taskId];
+            console.log('Task item', task);
+            taskList.push(task);
             // console.log('TaskList ' + TaskList.length )
              
           });
-          console.log('TaskList ' + TaskList.length )
-          setTasks(TaskList);
+          console.log('TaskList ' + taskList.length )
+          setTasks(taskList);
          } else {
-          setTasks(TaskList);
+          setTasks(taskList);
          }
        }).catch((error) => {
-        setTasks(TaskList);
+        setTasks(taskList);
         showAlert('Error','Error finding Tasks :', error.message);
          return null;
        });
   }, []);
 
-  const handleDelete = async (Task) => {
-    if(Task.status == 'Complete'){
+  const handleDelete = async (task) => {
+    if(task.status == 'Complete'){
         showAlert('Error', 'Task already completed. You cannot delete now');
     }else{
 
@@ -54,7 +54,7 @@ console.log('currentUser ' + currentUserEmail )
           text: 'Delete',
           onPress: async () => {
             // First, fetch all tasks related to the Task
-            const userQuery = query(ref(database, 'tasks'),orderByChild('taskId'),equalTo(Task.taskId) );
+            const userQuery = query(ref(database, 'tasks'),orderByChild('taskId'),equalTo(task.taskId) );
 
                     // Fetch the task data
         console.log('userQuery ', userQuery)
@@ -75,7 +75,7 @@ console.log('currentUser ' + currentUserEmail )
                 showAlert('Success', 'Task deleted');
                 // Update the state to trigger a re-render
                 setTasks((prevTasks) =>
-                  prevTasks.filter((item) => item.taskId !== Task.taskId)
+                  prevTasks.filter((item) => item.taskId !== task.taskId)
                 );
             });
             } else {
@@ -98,8 +98,8 @@ console.log('currentUser ' + currentUserEmail )
   const showAlert = (title, message) => {
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
-  const handleViewDetails = (Task) => {
-    navigation.navigate('TaskDetail', { taskObj: Task });
+  const handleViewDetails = (task) => {
+    navigation.navigate('TaskDetail', { taskObj: task });
   };
 
   const formatDate = (dateString) => {
@@ -108,7 +108,7 @@ console.log('currentUser ' + currentUserEmail )
   };
 
   const handleRightButtonPress = () => {
-    navigation.navigate('CreateTask', { projectObj: null, Tasks, setTasks });
+    navigation.navigate('CreateTask', { projectObj: null, tasks, setTasks });
   };
 
   React.useLayoutEffect(() => {
@@ -126,7 +126,7 @@ console.log('currentUser ' + currentUserEmail )
   return (
     <View>
  <FlatList
-  data={Tasks}
+  data={tasks}
   keyExtractor={(item) => item.id}
   renderItem={({ item }) => (
     <Swipeout
@@ -150,7 +150,7 @@ console.log('currentUser ' + currentUserEmail )
           if(item.status == 'Complete'){
             handleViewDetails(item)
           }else{
-            navigation.navigate('EditTask', {taskObj:item, Tasks, setTasks });
+            navigation.navigate('EditTask', {taskObj:item, tasks, setTasks });
           }
         }}
       >
