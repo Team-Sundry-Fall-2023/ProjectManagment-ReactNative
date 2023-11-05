@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, Image, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { View, Text, TextField, Button, Image, Colors } from 'react-native-ui-lib';
 import { auth, database } from './firebase';
 import { getUserRoleFromUserTable } from './FirebaseFunctions';
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -86,25 +87,30 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Image
-        source={require('./assets/icon.png')} // Provide the correct path to your logo
+        source={require('./assets/img/tiny_people.jpg')}
         style={styles.logo}
       />
-      <TextInput
+      <TextField
         style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        enableErrors={true} // RNUILib TextField specific props
+        error={error} // You can display the error directly in the TextField
       />
-      <TextInput
+      <TextField
         style={styles.input}
         placeholder="Password"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        enableErrors={true}
+        error={error}
       />
-      <Text style={styles.errorText}>{error}</Text>
-      <Button title="Login" onPress={handleLogin} />
-      <Button title="Register" onPress={() => navigation.navigate('Registration')} />
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      <Button label="Login" onPress={handleLogin} style={styles.button} />
+      <Button label="Register" backgroundColor={Colors.blue1} onPress={() => navigation.navigate('Registration')} style={styles.button} />
+
     </View>
   );
 }
@@ -117,29 +123,39 @@ const validateEmail = (email) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  logo: {
-    width: 100, // Adjust the width and height according to your logo's dimensions
-    height: 100,
-    alignSelf: 'center', // Center the logo horizontally
-    marginBottom: 20,
-  },
   header: {
     fontSize: 24,
     marginBottom: 20,
   },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 16,
+    backgroundColor: '#ffffff',
+  },
+  logo: {
+    width: 390,
+    height: 300,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
   input: {
+    width: 400,
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 10,
+    borderRadius: 20, // Adds roundness to the TextField
     paddingHorizontal: 10,
+    maxWidth: 340, // Ensures the TextField is not wider than the buttons
+    alignSelf: 'center', // Centers the TextField
   },
   errorText: {
     color: 'red',
+    marginBottom: 10, // Adds space above the error text
   },
+  button: {
+    alignSelf: 'center', // Centers the TextField
+    width: 250, // Set a fixed width for the buttons to match the TextFields
+    marginBottom: 10, // Adds space below the login button
+  }
 });

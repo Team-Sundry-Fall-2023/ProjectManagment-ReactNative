@@ -8,7 +8,6 @@ import commonStyles from './style';
 
 const CreateMemberScreen = ({ navigation, route }) => {
     const { members, setMembers, memberToEdit } = route.params;
-
     const [firstName, setFirstName] = useState(memberToEdit ? memberToEdit.firstName : '');
     const [lastName, setLastName] = useState(memberToEdit ? memberToEdit.lastName : '');
     const [email, setEmail] = useState(memberToEdit ? memberToEdit.email : '');
