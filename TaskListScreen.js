@@ -148,7 +148,7 @@ const TaskListScreen = () => {
               onPress={() => handleViewDetails(item)}
               style={styles.cardTouchable}
             >
-              <Card>
+              <Card containerStyle={styles.card}>
                 <View style={styles.cardHeader}>
                   <Text style={styles.taskName}>{item.taskName}</Text>
                   <View style={[styles.statusBadge, styles[`status_${item.status.toLowerCase()}`]]}>
@@ -173,8 +173,11 @@ const TaskListScreen = () => {
 
 const styles = StyleSheet.create({
   cardTouchable: {
-    borderRadius: 8,
+    borderRadius: 20,
     overflow: 'hidden',
+  },
+  card: {
+    borderRadius: 20, // This should match the border radius of the touchable if you have a card style
   },
   cardHeader: {
     flexDirection: 'row',
@@ -213,10 +216,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EFEFF4',
-  },
-  cardTouchable: {
-    borderRadius: 8,
-    overflow: 'hidden',
   },
   taskDescription: {
     fontSize: 14,
