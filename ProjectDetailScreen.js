@@ -56,7 +56,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
           <Text style={styles.header}>Project Cost: {project.projectCost}</Text>
           <Button
             title="Create Task"
-            onPress={() => navigation.navigate('CreateTask', {projectObj: project })}
+            onPress={() => navigation.navigate('CreateTask', {projectObj: project, tasks, setTasks })}
           />
           {tasks.length > 0 ? (
             <FlatList

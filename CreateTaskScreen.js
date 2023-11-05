@@ -7,7 +7,7 @@ import { ref, push, set, query, orderByChild, equalTo, get } from 'firebase/data
 import commonStyles from './style';
 
 const CreateTaskScreen = ({ navigation, route }) => {
-  const {Tasks, setTasks} = route.params;
+  const {tasks, setTasks} = route.params;
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskStartDate, setTaskStartDate] = useState(new Date());
@@ -122,7 +122,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
         const newTaskDt = {
           ...newTask, 
         };
-        setTasks([...Tasks, newTaskDt]);
+        setTasks([...tasks, newTaskDt]);
         navigation.goBack();
       })
       .catch((error) => {
