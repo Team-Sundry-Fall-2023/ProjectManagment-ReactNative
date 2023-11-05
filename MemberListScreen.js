@@ -8,6 +8,7 @@ import {  ref, query, orderByChild, get, remove} from "firebase/database";
 const MemberListScreen = () => {
     const navigation = useNavigation();
     const [members, setMembers] = useState([]);
+
     useEffect(() => {
         const memberList = [];
         const currentUser = auth.currentUser;
@@ -35,6 +36,22 @@ const MemberListScreen = () => {
        });
 
   }, []);
+
+  const handleRightButtonPress = () => {
+    navigation.navigate('CreateMember', { members, setMembers });
+  };
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          onPress={handleRightButtonPress}
+          title="Add"
+          color="#007BFF" 
+        />
+      ),
+    });
+  }, [navigation]);
 
   const getMemberIdByEmail = async (email) => {
     try {
@@ -95,58 +112,52 @@ const MemberListScreen = () => {
     );
   };
 
-  const showAlert = (title, message) => {
-    Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
-  };
-  const handleViewDetails = (project) => {
-    console.log('item edit ')
-    //navigation.navigate('ProjectDetail', { projectObj: project });
-  };
+    const handleViewDetails = (member) => {
+        navigation.navigate('CreateMember', { members, setMembers, memberToEdit: member });
+    };
 
-  return (
-    <View>
- <FlatList
-  data={members}
-  keyExtractor={(item) => item.id}
-  renderItem={({ item }) => (
-    <Swipeout
-      right={[
-        {
-          text: 'Delete',
-          onPress: () => handleDelete(item),
-          type: 'delete',
-        },
-        {
-          text: 'View Details',
-          onPress: () => handleViewDetails(item),
-          type: 'default',
-        },
-      ]}
-    >
-      <TouchableOpacity
-        onPress={() => {
-          console.log('item edit ' +item)
-          //navigation.navigate('EditProject', {projectObj:item });
-        }}
-      >
+
+    const showAlert = (title, message) => {
+        Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
+    };
+
+    return (
         <View>
-          <Text>{item.firstName} {item.lastName}</Text>
-          <Text>{item.email}</Text>
-          <Text>{item.category}</Text>
+            <FlatList
+                data={members}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <Swipeout
+                        right={[
+                            {
+                                text: 'Edit',
+                                onPress: () => handleViewDetails(item),
+                                type: 'default',
+                            },
+                            {
+                                text: 'Delete',
+                                onPress: () => handleDelete(item),
+                                type: 'delete',
+                            },
+                        ]}
+                    >
+                        <TouchableOpacity
+                            onPress={() => {
+                                console.log('item edit ' + item)
+                                //navigation.navigate('EditProject', {projectObj:item });
+                            }}
+                        >
+                            <View>
+                                <Text>{item.firstName} {item.lastName}</Text>
+                                <Text>{item.email}</Text>
+                                <Text>{item.category}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </Swipeout>
+                )}
+            />
         </View>
-      </TouchableOpacity>
-    </Swipeout>
-  )}
-/>
-
-      <Button
-        title="Create Member"
-        onPress={() => {
-            navigation.navigate('CreateMember', { members, setMembers });
-        }}
-      />
-    </View>
-  );
+    );
 };
 
 export default MemberListScreen;

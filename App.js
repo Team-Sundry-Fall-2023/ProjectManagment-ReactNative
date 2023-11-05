@@ -1,78 +1,3 @@
-// import React from 'react';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createStackNavigator } from '@react-navigation/stack';
-// import LoginScreen from './LoginScreen'; // Import your LoginScreen component
-// import RegistrationScreen from './RegistrationScreen'; 
-// import ProjectListScreen from './ProjectListScreen';
-// import AddProjectScreen from './AddProjectScreen';
-// import EditProjectScreen from './EditProjectScreen';
-// import ProjectDetailScreen from './ProjectDetailScreen';
-// import CreateMemberScreen from './CreateMemberScreen';
-// import CreateTaskScreen from './CreateTaskScreen';
-// import ProfileDetailScreen from './ProfileDetailScreen';
-
-// const Stack = createStackNavigator();
-
-// export default function App() {
-//   return (
-//     <NavigationContainer>
-//      <Stack.Navigator initialRouteName="LoginScreen">
-//         <Stack.Screen
-//           name="LoginScreen"
-//           component={LoginScreen}
-//           options={{ title: 'Login' }}
-//         />
-//         <Stack.Screen
-//           name="RegistrationScreen"
-//           component={RegistrationScreen}
-//           options={{ title: 'Registration' }}
-//         />
-//          <Stack.Screen
-//           name="ProjectListScreen"
-//           component={ProjectListScreen}
-//           options={{ title: 'Project List' }}
-//         />
-//         <Stack.Screen
-//           name="ProjectListScreen"
-//           component={ProjectListScreen}
-//           options={{ title: 'Project List' }}
-//         />
-//         <Stack.Screen
-//           name="AddProject"
-//           component={AddProjectScreen}
-//           options={{ title: 'Add Project' }}
-//         />
-//          <Stack.Screen
-//           name="EditProject"
-//           component={EditProjectScreen}
-//           options={{ title: 'Edit Project' }}
-//         />
-//         <Stack.Screen
-//           name="ProjectDetails"
-//           component={ProjectDetailScreen}
-//           options={{ title: 'Project Details' }}
-//         />
-//         <Stack.Screen
-//           name="CreateMember"
-//           component={CreateMemberScreen}
-//           options={{ title: 'Create Member' }}
-//         />
-//         <Stack.Screen
-//           name="CreateTask"
-//           component={CreateTaskScreen}
-//           options={{ title: 'Create Task' }}
-//         />
-//         <Stack.Screen
-//           name="ProfileDetail"
-//           component={ProfileDetailScreen}
-//           options={{ title: 'Profile' }}
-//         />
-//       </Stack.Navigator>
-//     </NavigationContainer>
-//   );
-// }
-
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './LoginScreen';
@@ -112,7 +37,7 @@ const App = () => {
         <Stack.Screen name="AddProject" component={AddProjectScreen} options={{ headerShown: true }} />
 
         <Stack.Screen name="MemberList" component={MemberListScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateMember" component={CreateMemberScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="CreateMember" component={CreateMemberScreen} options={{ headerShown: true}} />
         <Stack.Screen name="CreateTask" component={CreateTaskScreen} options={{ headerShown: true }} />
         <Stack.Screen name="EditProject" component={EditProjectScreen} options={{ headerShown: true }} />
         <Stack.Screen name="ProfileDetail" component={ProfileDetailScreen} options={{ headerShown: false }} />
