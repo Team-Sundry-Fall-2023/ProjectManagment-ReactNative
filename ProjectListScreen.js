@@ -130,7 +130,7 @@ const ProjectListScreen = () => {
 
 
   const handleRightButtonPress = () => {
-    navigation.navigate('CreateTask', { projectObj: null });
+    navigation.navigate('AddProject', { projects, setProjects });
   };
 
   React.useLayoutEffect(() => {
@@ -145,7 +145,7 @@ const ProjectListScreen = () => {
     });
   }, [navigation]);
 
-
+  
   return (
     <View>
  <FlatList
