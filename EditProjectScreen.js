@@ -12,13 +12,15 @@ const EditProjectScreen = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [tasks, setTasks] = useState([]);
+  const { projects, setProjects } = route.params;
 
 
   useEffect(() => {
     if (projectObj) {
       setProject(projectObj);
+      setProjects(projects);
     }
-  }, [projectObj, project]);
+  }, [projectObj, project,projects]);
 
 
   useEffect(() => {
@@ -83,6 +85,7 @@ const EditProjectScreen = () => {
             .then(() => {
               // Project data has been successfully updated
               showAlert('Success', 'Project data updated');
+              updateProject(updatedProjectData);
               navigation.goBack();
             })
             .catch((error) => {
@@ -97,6 +100,23 @@ const EditProjectScreen = () => {
         // Handle the error if the fetch fails
         showAlert('Error', 'Error finding project:' + error);
       });
+  };
+
+  const updateProject = (updatedProject) => {
+    console.log( 'updatedProject ',updatedProject)
+
+    const projectIndex = projects.findIndex((projectU) => projectU.projectId === project.projectId);
+    console.log( 'projectIndex ',projectIndex)
+    if (projectIndex !== -1) {
+      // Create a copy of the tasks array
+      const updatedProjects = [...projects];
+
+      // Update the task in the copied array
+      updatedProjects[projectIndex] = updatedProject;
+      console.log( 'updatedProject ',updatedProjects)
+      // Set the state to trigger a re-render with the updated tasks
+      setProjects(updatedProjects);
+    }
   };
 
   // return (

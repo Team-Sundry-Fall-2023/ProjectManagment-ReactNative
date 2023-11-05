@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList, StyleSheet,Alert } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet,Alert } from 'react-native';
 import { firebase ,auth, database} from './firebase';
-import {  ref, query, orderByChild, equalTo, get} from "firebase/database";
+import {  ref, query, orderByChild, equalTo, get, update} from "firebase/database";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CompleteTaskScreen = ({ route, navigation }) => {
   const { taskObj } = route.params;
+  const {tasks, setTasks} = route.params;
   const [task, settask] = useState(null);
   const [hours, setHours] = useState(0);
   const [taskEndDate, setTaskEndDate] = useState(new Date());
@@ -14,8 +15,9 @@ const CompleteTaskScreen = ({ route, navigation }) => {
   useEffect(() => {
     if (taskObj) {
       settask(taskObj);
+      setTasks(tasks);
     }
-  }, [taskObj,task]);
+  }, [taskObj,task, tasks]);
 
 
   useEffect(() => {
@@ -34,8 +36,8 @@ const CompleteTaskScreen = ({ route, navigation }) => {
         .then((snapshot) => {
           if (snapshot.exists()) {
             const users = snapshot.val();
-            Object.keys(user).forEach((userId) => {
-              const userData = user[userId];
+            Object.keys(users).forEach((userId) => {
+              const userData = users[userId];
               if (userData ) {
     
                 setHourlyRate(userData.hourlyRate);
@@ -59,7 +61,7 @@ const CompleteTaskScreen = ({ route, navigation }) => {
       return;
     }
 
-    const taskCost = noOfHours * hourlyRate;
+    const taskCost = hours * hourlyRate;
     const userQuery = query(ref(database, 'tasks'), orderByChild('taskId'), equalTo(task.taskId));
 
     // Fetch the task data
@@ -74,7 +76,7 @@ const CompleteTaskScreen = ({ route, navigation }) => {
                     // taskDescription: task.taskDescription,
                     // taskStartDate: task.taskStartDate, // Store as ISO string
                     // taskEndDate: task.taskEndDate , // Store as ISO string
-                    // taskCost: taskCost,
+                    taskCost: taskCost,
                     // projectId: task.projectId ,
                     status: 'Complete',
                     // taskId : task.taskId,
@@ -83,12 +85,16 @@ const CompleteTaskScreen = ({ route, navigation }) => {
                     actualEndDate : taskEndDate.toISOString(),
                     noOfHours : hours
                 };
-
+                console.log('updatedtaskData ', updatedtaskData); 
                 // Update the task in the database
                 update(ref(database, `tasks/${taskId}`), updatedtaskData)
                     .then(() => {
                         // task data has been successfully updated
                         showAlert('Success', 'task data updated');
+                         // Update the project's cost
+                        updateProjectCost(task.projectId, taskCost);
+                        console.log('updatedtaskData begin', updatedtaskData); 
+                        updateTask(taskCost);
                         navigation.goBack();
                     })
                     .catch((error) => {
@@ -103,6 +109,66 @@ const CompleteTaskScreen = ({ route, navigation }) => {
             // Handle the error if the fetch fails
             showAlert('Error', 'Error finding task:' + error);
         });
+  };
+
+  const updateTask = (taskCost) => {
+
+    const updatedtaskData = {
+        taskName: task.taskName,
+        taskDescription: task.taskDescription,
+        taskStartDate: task.taskStartDate, // Store as ISO string
+        taskEndDate: task.taskEndDate , // Store as ISO string
+        taskCost: taskCost,
+        projectId: task.projectId ,
+        status: 'Complete',
+        taskId : task.taskId,
+        owner : task.owner,
+        member : task.email,
+        actualEndDate : taskEndDate.toISOString(),
+        noOfHours : hours
+    };
+
+    console.log( 'updatedTask ',updatedtaskData)
+    // Find the index of the task to be updated in the tasks array
+    const taskIndex = tasks.findIndex((task) => task.taskId === updatedtaskData.taskId,);
+    console.log( 'taskIndex ',taskIndex)
+    if (taskIndex !== -1) {
+      // Create a copy of the tasks array
+      const updatedTasks = [...tasks];
+      console.log( 'updatedTasks End',updatedTasks)
+      // Update the task in the copied array
+      updatedTasks[taskIndex] = updatedtaskData;
+
+      // Set the state to trigger a re-render with the updated tasks
+      setTasks(updatedTasks);
+    }
+  };
+
+  const updateProjectCost = (projectId, taskCost) => {
+    const projectQuery = query(ref(database, 'projects'), orderByChild('projectId'), equalTo(projectId));
+
+    get(projectQuery)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const projects = snapshot.val();
+          const projectId = Object.keys(projects)[0];
+
+          const updatedProjectData = {
+            projectCost: projects[projectId].projectCost + taskCost, // Update the project cost
+          };
+
+          update(ref(database, `projects/${projectId}`), updatedProjectData)
+            .then(() => {
+              // Project cost has been successfully updated
+            })
+            .catch((error) => {
+              showAlert('Error', 'Error updating project cost: ' + error);
+            });
+        }
+      })
+      .catch((error) => {
+        showAlert('Error', 'Error finding project: ' + error);
+      });
   };
 
   // Function to show an alert with the error message
@@ -120,10 +186,9 @@ const CompleteTaskScreen = ({ route, navigation }) => {
           <Text style={styles.header}>Start Date: {task.taskStartDate}</Text>
           <Text style={styles.header}>End Date: {task.taskEndDate}</Text>
           <Text style={styles.header}>Project : {task.projectId}</Text>   
-          <Text style={styles.header}>Hours: {item.noOfHours}</Text> 
           <TextInput
           style={styles.input}
-          placeholder="Hours Spend : "
+          placeholder="Hours Spend "
           value={hours}
           onChangeText={(text) => setHours(text)}/> 
     <Text>Actual Task End Date:</Text>

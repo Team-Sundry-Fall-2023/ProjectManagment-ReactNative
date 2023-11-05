@@ -8,7 +8,7 @@ import {  ref, query, orderByChild, equalTo, get , remove} from "firebase/databa
 const ProjectListScreen = () => {
   const navigation = useNavigation();
   const [projects, setProjects] = useState([]);
-  const [updatedProjects, setUpdatedProjects] = useState([]);
+  // const [updatedProjects, setUpdatedProjects] = useState([]);
 
   useEffect(() => {
     const projectList = [];
@@ -111,13 +111,14 @@ const ProjectListScreen = () => {
     navigation.navigate('ProjectDetail', { projectObj: project });
   };
 
-  const refreshProjectsList = () => {
-    console.log('go back: ' + updatedProjects);
-    setProjects(updatedProjects);
-  };
+  // const refreshProjectsList = () => {
+  //   console.log('go back: ' + updatedProjects);
+  //   setProjects(updatedProjects);
+  // };
 
   const handleRightButtonPress = () => {
-    navigation.navigate('AddProject', { projects, refreshProjectsList, updatedProjects, setUpdatedProjects });
+    console.log('create projects' + projects)
+    navigation.navigate('AddProject', { projects, setProjects});
   };
 
   React.useLayoutEffect(() => {
@@ -155,8 +156,9 @@ const ProjectListScreen = () => {
     >
       <TouchableOpacity
         onPress={() => {
-          console.log('item edit ' + item)
-          navigation.navigate('EditProject', { projectObj: item });
+          console.log('item edit' + item)
+          console.log('item edit projects ' + projects)
+          navigation.navigate('EditProject', { projectObj: item , projects, setProjects });
         }}
       >
         <View>

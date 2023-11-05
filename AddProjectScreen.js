@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { firebase ,auth, database} from './firebase';
@@ -9,8 +9,15 @@ const AddProjectScreen = ({route}) => {
   const navigation = useNavigation();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const { projects, refreshProjectsList, updatedProjects, setUpdatedProjects } = route.params;
+  const { projects, setProjects } = route.params;
   console.log(projects);
+
+  useEffect(() => {
+    if (projects) {
+      console.log('projects ',projects)
+      setProjects(projects);
+    }
+  }, [projects]);
 
   const handleAddProject = async () => {
 
@@ -32,12 +39,8 @@ const AddProjectScreen = ({route}) => {
     .then(() => {
       showAlert('Success','Project added successfully');
       console.log('Project added successfully!!!!');
-      const newProject = {
-        ...projectData, 
-      };
-      setUpdatedProjects([...projects, newProject]);
-      //console.log(updatedProjects);
-      refreshProjectsList();
+
+      setProjects((prevProjects) => [...prevProjects, projectData]);
       navigation.goBack();
     })
     .catch((error) => {

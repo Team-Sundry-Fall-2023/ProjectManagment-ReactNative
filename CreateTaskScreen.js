@@ -25,8 +25,9 @@ const CreateTaskScreen = ({ navigation, route }) => {
     if (projectObj) {
       setProject(projectObj);
       setSelectedProject(projectObj);
+      setTasks(tasks)
     }
-  }, [projectObj]);
+  }, [projectObj,tasks]);
 
   useEffect(() => {
     if (!project) {
@@ -119,10 +120,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
       .then(() => {
         showAlert('Success', 'Task added successfully');
 
-        const newTaskDt = {
-          ...newTask, 
-        };
-        setTasks([...tasks, newTaskDt]);
+        setTasks((prevTasks) => [...prevTasks, newTask]);
         navigation.goBack();
       })
       .catch((error) => {

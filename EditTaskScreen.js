@@ -28,8 +28,9 @@ const EditTaskScreen = () => {
     useEffect(() => {
         if (taskObj) {
             setTask(taskObj);
+            setTasks(tasks);
         }
-    }, [taskObj, task]);
+    }, [taskObj, task, tasks]);
 
     console.log('task 1' + task);
 
@@ -186,6 +187,7 @@ const EditTaskScreen = () => {
                             console.log('updatedTask' + updatedTask);
                             
                             setTask(updatedTask); */
+                            updateTask(updatedtaskData);
                             navigation.goBack();
                         })
                         .catch((error) => {
@@ -201,6 +203,23 @@ const EditTaskScreen = () => {
                 console.log('Error updating task data:' + error);
             });
     };
+
+    const updateTask = (updatedTask) => {
+        console.log( 'updatedTask ',updatedTask)
+        // Find the index of the task to be updated in the tasks array
+        const taskIndex = tasks.findIndex((taskU) => taskU.taskId === task.taskId);
+        console.log( 'taskIndex ',taskIndex)
+        if (taskIndex !== -1) {
+          // Create a copy of the tasks array
+          const updatedTasks = [...tasks];
+    
+          // Update the task in the copied array
+          updatedTasks[taskIndex] = updatedTask;
+          console.log( 'updatedTasks ',updatedTasks)
+          // Set the state to trigger a re-render with the updated tasks
+          setTasks(updatedTasks);
+        }
+      };
 
     React.useLayoutEffect(() => {
         navigation.setOptions({

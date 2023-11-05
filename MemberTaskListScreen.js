@@ -6,10 +6,10 @@ import {  ref, query, orderByChild, equalTo, get} from "firebase/database";
 
 const MemberTaskListScreen = () => {
   const navigation = useNavigation();
-  const [Tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const TaskList = [];
+    const taskList = [];
     const currentUser = auth.currentUser;
     const currentUserEmail = currentUser.email;
 console.log('currentUser ' + currentUserEmail )
@@ -18,22 +18,22 @@ console.log('currentUser ' + currentUserEmail )
      get(userQuery).then((snapshot) => {
          if (snapshot.exists()) {
            // The snapshot contains the user data matching the email
-           const Tasks = snapshot.val();
+           const tasks = snapshot.val();
 
-           Object.keys(Tasks).forEach((TaskId) => {
-            const Task = Tasks[TaskId];
-            console.log('Task item', Task);
-            TaskList.push(Task);
+           Object.keys(tasks).forEach((taskId) => {
+            const task = tasks[taskId];
+            console.log('Task item', task);
+            taskList.push(task);
             // console.log('TaskList ' + TaskList.length )
              
           });
-          console.log('TaskList ' + TaskList.length )
-          setTasks(TaskList);
+          console.log('TaskList ' + taskList.length )
+          setTasks(taskList);
          } else {
-          setTasks(TaskList);
+          setTasks(taskList);
          }
        }).catch((error) => {
-        setTasks(TaskList);
+        setTasks(taskList);
         showAlert('Error','Error finding Tasks :', error.message);
          return null;
        });
@@ -42,14 +42,14 @@ console.log('currentUser ' + currentUserEmail )
   const showAlert = (title, message) => {
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
-  const handleViewDetails = (Task) => {
-    navigation.navigate('TaskDetail', { taskObj: Task });
+  const handleViewDetails = (task) => {
+    navigation.navigate('TaskDetail', { taskObj: task });
   };
 
   return (
     <View>
  <FlatList
-  data={Tasks}
+  data={tasks}
   keyExtractor={(item) => item.id}
   renderItem={({ item }) => (
       <TouchableOpacity
@@ -58,7 +58,7 @@ console.log('currentUser ' + currentUserEmail )
           if(item.status == 'Complete'){
             handleViewDetails(item);
           }else{
-          navigation.navigate('CompleteTask', {taskObj:item });
+          navigation.navigate('CompleteTask', {taskObj:item , tasks, setTasks});
           }
         }}
       >
