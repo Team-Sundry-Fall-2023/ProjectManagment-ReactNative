@@ -111,15 +111,20 @@ const ProjectListScreen = () => {
     navigation.navigate('ProjectDetail', { projectObj: project });
   };
 
-  // const refreshProjectsList = () => {
-  //   console.log('go back: ' + updatedProjects);
-  //   setProjects(updatedProjects);
+  // const handleRightButtonPress = () => {
+  //   console.log('create projects' + projects)
+  //   navigation.navigate('AddProject', { projects, setProjects});
   // };
-
   const handleRightButtonPress = () => {
-    console.log('create projects' + projects)
-    navigation.navigate('AddProject', { projects, setProjects});
+    // This callback function ensures that navigation occurs after the state update
+    setProjects(updatedProjects => {
+      console.log('create projects', updatedProjects);
+      navigation.navigate('AddProject', { projects: updatedProjects, setProjects });
+      return updatedProjects; // Return the updated projects for the state update
+    });
   };
+
+  
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
