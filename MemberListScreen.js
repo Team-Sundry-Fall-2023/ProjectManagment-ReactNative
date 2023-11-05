@@ -4,6 +4,7 @@ import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
 import { firebase ,auth, database} from './firebase';
 import {  ref, query, orderByChild, get, remove} from "firebase/database";
+import { getAuth, deleteUser } from 'firebase/auth';
 
 const MemberListScreen = () => {
     const navigation = useNavigation();
@@ -11,20 +12,14 @@ const MemberListScreen = () => {
 
     useEffect(() => {
         const memberList = [];
-        const currentUser = auth.currentUser;
-        const currentUserEmail = currentUser.email;
-        console.log('currentUser ' + currentUserEmail )
         const userQuery = query(ref(database, 'users'),orderByChild('email'));
-        console.log('userQuery' + userQuery )
         get(userQuery).then((snapshot) => {
             if (snapshot.exists()) {
                 const members = snapshot.val();
                 Object.keys(members).forEach((memberId) => {
                     const member = members[memberId];
-                    console.log('member: ', member);
                     memberList.push(member);
                 });
-                console.log('memberList ' + memberList.length )
                 setMembers(memberList);
             } else {
                 setMembers(memberList);
@@ -61,12 +56,10 @@ const MemberListScreen = () => {
       if (snapshot.exists()) {
         const members = snapshot.val();
   
-        // Iterate through the members to find the one with the matching email
         for (const memberId in members) {
           const member = members[memberId];
           if (member.email === email) {
-            console.log('Member found:', member);
-            return memberId; // Return the doc.id (memberId) when a matching member is found
+            return memberId; 
           }
         }
   
@@ -83,34 +76,41 @@ const MemberListScreen = () => {
   };
   
   
-  
+    const handleDelete = async (member) => {
+        Alert.alert(
+        'Confirmation',
+        'Are you sure you want to delete this member?',
+        [
+            { text: 'Cancel', style: 'cancel' },
+            {
+            text: 'Delete',
+            onPress: async () => {
+                const memberId = await getMemberIdByEmail(member.email);
+                if (memberId) {
+                    try {
+                        const memberRef = ref(database, `users/${memberId}`);
+                        await remove(memberRef);
 
-  const handleDelete = async (member) => {
-    Alert.alert(
-      'Confirmation',
-      'Are you sure you want to delete this member?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          onPress: async () => {
-            const memberId = await getMemberIdByEmail(member.email);
-            if (member) {
-                try {
-                  const memberRef = ref(database, `users/${memberId}`);
-                  await remove(memberRef);
-                  const updatedMembers = members.filter((m) => m.email !== member.email);
-                  console.log("updatedMembers", updatedMembers);
-                  setMembers(updatedMembers);
-                } catch (error) {
-                  console.error('Error deleting member:', error);
+                        const auth = getAuth();
+                        deleteUser(auth.currentUser)
+                            .then(() => {
+                                console.log('Successfully deleted user');
+                            })
+                            .catch((error) => {
+                                console.log('Error deleting user:', error);
+                            });
+
+                        const updatedMembers = members.filter((m) => m.email !== member.email);
+                        setMembers(updatedMembers);
+                    } catch (error) {
+                        console.error('Error deleting member:', error);
+                    }
                 }
-            } 
-          },
-        },
-      ]
-    );
-  };
+            },
+            },
+        ]
+        );
+    };
 
     const handleViewDetails = (member) => {
         navigation.navigate('CreateMember', { members, setMembers, memberToEdit: member });
@@ -143,7 +143,7 @@ const MemberListScreen = () => {
                     >
                         <TouchableOpacity
                             onPress={() => {
-                                console.log('item edit ' + item)
+                                console.log('view task of' + item.email)
                                 //navigation.navigate('EditProject', {projectObj:item });
                             }}
                         >
