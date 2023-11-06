@@ -283,11 +283,12 @@ const styles = StyleSheet.create({
     width: '100%', // Set a fixed width for the TextFields
     borderColor: 'gray',
     borderWidth: 1,
-    borderRadius: 10, // This is half of the height to make the TextField rounded
+    borderRadius: 20, // This is half of the height to make the TextField rounded
     paddingHorizontal: 10,
     marginBottom: 20,
   },
   multilineInput: {
+    paddingTop: 10,
     minHeight: 100, // Minimum height for text area
   },
   dateButton: {

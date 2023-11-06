@@ -4,6 +4,9 @@ import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
 import { firebase ,auth, database} from './firebase';
 import {  ref, query, orderByChild, equalTo, get , remove} from "firebase/database";
+import { Card } from 'react-native-elements';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { StyleSheet } from 'react-native';
 
 const ProjectListScreen = () => {
   const navigation = useNavigation();
@@ -107,6 +110,7 @@ const ProjectListScreen = () => {
   const showAlert = (title, message) => {
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
+
   const handleViewDetails = (project) => {
     navigation.navigate('ProjectDetail', { projectObj: project });
   };
@@ -124,59 +128,102 @@ const ProjectListScreen = () => {
     });
   };
 
-  
-
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <Button
-          onPress={handleRightButtonPress}
-          title="Add"
-          color="#007BFF" 
-        />
+  // New component for swipeout buttons, similar to TaskListScreen
+  const swipeoutBtns = (item) => [
+    {
+      component: (
+        <View style={styles.swipeButton}>
+          <FontAwesome name="trash" size={25} color="#FFF" />
+        </View>
       ),
-    });
-  }, [navigation]);
-
+      backgroundColor: '#FF3B30',
+      onPress: () => handleDelete(item),
+    },
+    {
+      component: (
+        <View style={styles.swipeButton}>
+          <FontAwesome name="info-circle" size={25} color="#FFF" />
+        </View>
+      ),
+      backgroundColor: '#007AFF',
+      onPress: () => handleViewDetails(item),
+    },
+  ];
   
   return (
-    <View>
- <FlatList
-  data={projects}
-  keyExtractor={(item) => item.id}
-  renderItem={({ item }) => (
-    <Swipeout
-      right={[
-        {
-          text: 'Delete',
-          onPress: () => handleDelete(item),
-          type: 'delete',
-        },
-        {
-          text: 'View Details',
-          onPress: () => handleViewDetails(item),
-          type: 'default',
-        },
-      ]}
-    >
-      <TouchableOpacity
-        onPress={() => {
-          console.log('item edit' + item)
-          console.log('item edit projects ' + projects)
-          navigation.navigate('EditProject', { projectObj: item , projects, setProjects });
-        }}
-      >
-        <View>
-          <Text>{item.name}</Text>
-          <Text>{item.description}</Text>
-          <Text>{item.projectCost}</Text> 
-        </View>
+    <View style={styles.container}>
+      <FlatList
+        data={projects}
+        keyExtractor={(item) => item.id?.toString() ?? ''}
+        renderItem={({ item }) => (
+          <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
+            <TouchableOpacity
+              onPress={() => handleViewDetails(item)}
+              style={styles.cardTouchable}
+            >
+              <Card containerStyle={styles.card}>
+                <Text style={styles.projectName}>{item.name}</Text>
+                <Card.Divider />
+                <Text style={styles.projectDescription}>{item.description}</Text>
+                <Text style={styles.projectCost}>{`Cost: ${item.projectCost}`}</Text> 
+              </Card>
+            </TouchableOpacity>
+          </Swipeout>
+        )}
+      />
+      <TouchableOpacity style={styles.fab} onPress={handleRightButtonPress}>
+        <FontAwesome name="plus" size={20} color="#FFF" />
       </TouchableOpacity>
-    </Swipeout>
-  )}
-/>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  cardTouchable: {
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  card: {
+    borderRadius: 20, // This should match the border radius of the touchable if you have a card style
+  },
+  projectName: {
+    alignItems: 'center',
+    marginBottom: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  container: {
+    paddingBottom: 70,
+    flex: 1,
+    backgroundColor: '#EFEFF4',
+  },
+  projectDescription: {
+    fontSize: 14,
+    color: '#4F4F4F',
+    marginBottom: 10,
+  },
+  swipeButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  fab: {
+    position: 'absolute',
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 20,
+    bottom: 90,
+    backgroundColor: '#5848ff',
+    borderRadius: 28,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+});
 
 export default ProjectListScreen;
