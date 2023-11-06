@@ -1,17 +1,17 @@
-import React, { useState , useEffect} from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Alert, ScrollView } from 'react-native';
+import { Button, TextField, Text } from 'react-native-ui-lib'; // Import from 'react-native-ui-lib'
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
+import { updatePassword } from "firebase/auth";
 import { firebase ,auth, database} from './firebase';
-import {  ref, query, orderByChild, equalTo, get, update} from "firebase/database";
 import 'firebase/auth';
 import 'firebase/database'; 
-import { updatePassword } from "firebase/auth";
-import { useNavigation, useRoute } from '@react-navigation/native';
 
-
-const EditProfileScreen = ({  }) => {
-    const navigation = useNavigation();
-    const route = useRoute();
-    const { profileObj } = route.params;
+const EditProfileScreen = ({ }) => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { profileObj } = route.params;
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -21,14 +21,14 @@ const EditProfileScreen = ({  }) => {
 
   useEffect(() => {
     if (profileObj) {
-        setProfile(profileObj);
+      setProfile(profileObj);
     }
   }, [profileObj, profile]);
 
   useEffect(() => {
 
     if (profile) {
-    setLastName(profile.lastName);
+      setLastName(profile.lastName);
       setFirstName(profile.firstName)
       setEmail(profile.email)
     } else {
@@ -39,105 +39,64 @@ const EditProfileScreen = ({  }) => {
 
   const handleEditProfile = async () => {
     if (!firstName || !lastName || !password || !confirmPassword) {
-      showAlert('Error','All fields are required.'); 
+      showAlert('Error', 'All fields are required.');
       return;
     }
 
     if (password !== confirmPassword) {
-      showAlert('Error','Password mismatch.'); 
+      showAlert('Error', 'Password mismatch.');
       return;
     }
 
     const user = auth.currentUser; // Get the current authenticated user
 
-// Use the `updatePassword` method to update the user's password
-updatePassword(user, password)
-  .then(() => {
-    showAlert('Success', 'Password updated');
+    // Use the `updatePassword` method to update the user's password
+    updatePassword(user, password)
+      .then(() => {
+        showAlert('Success', 'Password updated');
 
+        const userQuery = query(ref(database, 'users'), orderByChild('email'), equalTo(user.email));
 
-    const userQuery = query(ref(database, 'users'), orderByChild('email'), equalTo(user.email));
+        // Fetch the project data
+        get(userQuery)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const users = snapshot.val();
+              const userEmail = Object.keys(users)[0]; // Assuming there's only one project with a given ID
 
-    // Fetch the project data
-    get(userQuery)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const users = snapshot.val();
-          const userEmail = Object.keys(users)[0]; // Assuming there's only one project with a given ID
+              const updatedUsertData = {
+                firstName: firstName,
+                lastName: lastName,
+              };
 
-
-          const updatedUsertData = {
-            firstName : firstName,
-            lastName :lastName,
-          };
-
-          // Update the project in the database
-          update(ref(database, `users/${userEmail}`), updatedUsertData)
-            .then(() => {
-              // Project data has been successfully updated
-              showAlert('Success', 'User data updated');
-              navigation.goBack();
-            })
-            .catch((error) => {
-              // Handle the error if the update fails
-              showAlert('Error', 'Error updating user data:' + error);
-            });
-        } else {
-          console.log('User not found'); // Handle the case where the project is not found
-        }
+              // Update the project in the database
+              update(ref(database, `users/${userEmail}`), updatedUsertData)
+                .then(() => {
+                  // Project data has been successfully updated
+                  showAlert('Success', 'User data updated');
+                  navigation.goBack();
+                })
+                .catch((error) => {
+                  // Handle the error if the update fails
+                  showAlert('Error', 'Error updating user data:' + error);
+                });
+            } else {
+              console.log('User not found'); // Handle the case where the project is not found
+            }
+          })
+          .catch((error) => {
+            // Handle the error if the fetch fails
+            showAlert('Error', 'Error finding user:' + error);
+          });
       })
       .catch((error) => {
-        // Handle the error if the fetch fails
-        showAlert('Error', 'Error finding user:' + error);
+        showAlert('Error', 'Error updating password: ' + error);
       });
-
-
-
-
-  })
-  .catch((error) => {
-    showAlert('Error', 'Error updating password: ' + error);
-  });
-
   };
 
-  return (
-    <View style={styles.container}>
-       <Text style={styles.text}>Email: {email}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        value={firstName}
-        onChangeText={setFirstName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        value={lastName}
-        onChangeText={setLastName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
-      <Button title="Update" onPress={handleEditProfile} />
-    </View>
-  );
-};
-
-const showAlert = (title, message) => {
-  Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
-};
+  const showAlert = (title, message) => {
+    Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
+  };
 
   // Email validation function
   const validateEmail = (email) => {
@@ -146,27 +105,83 @@ const showAlert = (title, message) => {
     return emailPattern.test(email);
   };
 
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.fieldContainer}>
+        <Text style={styles.labelEmail}>Account: {email}</Text>
+        
+        <Text style={styles.label}>First Name</Text>
+        <TextField
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={setFirstName}
+          style={styles.input}
+        />
+
+        <Text style={styles.label}>Last Name</Text>
+        <TextField
+          placeholder="Last Name"
+          value={lastName}
+          onChangeText={setLastName}
+          style={styles.input}
+        />
+
+        <Text style={styles.label}>Password</Text>
+        <TextField
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          style={styles.input}
+        />
+
+        <Text style={styles.label}>Confirm Password</Text>
+        <TextField
+          placeholder="Confirm Password"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          style={styles.input}
+        />
+        <Button label="Update" onPress={handleEditProfile} style={styles.button} />
+      </View>
+    </ScrollView>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#fff',
   },
-  header: {
-    fontSize: 24,
+  fieldContainer: {
     marginBottom: 20,
+  },
+  labelEmail: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: '#333',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  label: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 5,
   },
   input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 10,
+    borderRadius: 20,
     paddingHorizontal: 10,
-  },
-  text: {
-    fontSize: 16,
-
     marginBottom: 20,
+  },
+  button: {
+    marginTop: 20,
+    borderRadius: 20,
+    backgroundColor: '#5848ff',
   },
 });
 
