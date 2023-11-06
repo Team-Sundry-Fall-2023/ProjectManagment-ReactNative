@@ -65,7 +65,9 @@ const TabNavigator = () => {
       <Tab.Screen
         name="ProfileDetail"
         component={ProfileDetailScreen}
-        options={{ title: 'Profile' }}
+        options={{
+          headerShown: false, // This hides the navigation bar on the top
+        }}
       />
     </Tab.Navigator>
   );
