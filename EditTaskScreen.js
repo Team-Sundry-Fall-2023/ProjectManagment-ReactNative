@@ -135,6 +135,11 @@ const EditTaskScreen = () => {
             showAlert('Error', 'Task Name and Task Description are required.');
             return;
           }
+
+          if (taskEndDate < taskStartDate) {
+            showAlert('Error', 'End date need to be higher than start date.');
+            return;
+          }
       
           if (!selectedProject) {
             showAlert('Error', 'Project is required.');

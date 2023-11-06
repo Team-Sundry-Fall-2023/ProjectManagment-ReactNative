@@ -88,6 +88,11 @@ const CreateTaskScreen = ({ navigation, route }) => {
       return;
     }
 
+    if (taskEndDate < taskStartDate) {
+      showAlert('Error', 'End date need to be higher than start date.');
+      return;
+    }
+
     if (!selectedProject) {
       showAlert('Error', 'Project is required.');
       return;
@@ -171,6 +176,32 @@ const CreateTaskScreen = ({ navigation, route }) => {
     </>
   );
 
+    // Render function for the Date Picker
+    const renderEndDatePicker = (date, setDate, showDatePicker, setShowDatePicker) => (
+      <>
+        <Button
+          label={taskEndDate.toDateString()}
+          onPress={() => setShowEndDatePicker(true)}
+          style={styles.dateButton}
+          labelStyle={styles.dateLabel} // Apply the custom label style here
+        />
+        {showDatePicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              if (selectedDate) {
+                setDate(selectedDate);
+              }
+              setShowDatePicker(false);
+            }}
+            minimumDate={new Date()}
+          />
+        )}
+      </>
+    );
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.fieldContainer}>
@@ -199,7 +230,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
 
       <View style={styles.fieldContainer}>
         <Text style={styles.label}>End Date</Text>
-        {renderDatePicker(taskEndDate, setTaskEndDate, showEndDatePicker, setShowEndDatePicker)}
+        {renderEndDatePicker(taskEndDate, setTaskEndDate, showEndDatePicker, setShowEndDatePicker)}
       </View>
 
       <View style={styles.fieldContainer}>
