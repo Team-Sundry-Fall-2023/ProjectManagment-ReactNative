@@ -158,7 +158,7 @@ const EditProjectScreen = () => {
         <Button title="Edit Project" onPress={handleEditProject} />
         <Button
           title="Create Task"
-          onPress={() => navigation.navigate('CreateTask', { projectObj: project,tasks, setTasks })}
+          onPress={() => navigation.navigate('Create Task', { projectObj: project,tasks, setTasks })}
         />
         {tasks.length > 0 ? (
           <FlatList

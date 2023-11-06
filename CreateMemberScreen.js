@@ -167,8 +167,10 @@ const CreateMemberScreen = ({ navigation, route }) => {
           style={styles.input}
           editable={memberToEdit ? false : true}
         />
-
-        <Text style={styles.label}>Password</Text>
+ { !memberToEdit && (
+    <Text style={styles.label}>Password</Text>
+ )}
+      
         {!memberToEdit && (
           <TextField
             placeholder="Password"

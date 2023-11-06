@@ -43,7 +43,7 @@ console.log('currentUser ' + currentUserEmail )
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
   const handleViewDetails = (task) => {
-    navigation.navigate('TaskDetail', { taskObj: task });
+    navigation.navigate('Task Detail', { taskObj: task });
   };
 
   return (
@@ -58,7 +58,7 @@ console.log('currentUser ' + currentUserEmail )
           if(item.status == 'Complete'){
             handleViewDetails(item);
           }else{
-          navigation.navigate('CompleteTask', {taskObj:item , tasks, setTasks});
+          navigation.navigate('Complete Task', {taskObj:item , tasks, setTasks});
           }
         }}
       >

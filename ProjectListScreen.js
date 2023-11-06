@@ -112,7 +112,11 @@ const ProjectListScreen = () => {
   };
 
   const handleViewDetails = (project) => {
-    navigation.navigate('ProjectDetail', { projectObj: project });
+    navigation.navigate('Project Detail', { projectObj: project });
+  };
+
+  const handleEditDetails = (project) => {
+    navigation.navigate('Edit Project', { projectObj: project , projects, setProjects  });
   };
 
   // const handleRightButtonPress = () => {
@@ -123,7 +127,7 @@ const ProjectListScreen = () => {
     // This callback function ensures that navigation occurs after the state update
     setProjects(updatedProjects => {
       console.log('create projects', updatedProjects);
-      navigation.navigate('AddProject', { projects: updatedProjects, setProjects });
+      navigation.navigate('Add Project', { projects: updatedProjects, setProjects });
       return updatedProjects; // Return the updated projects for the state update
     });
   };
@@ -158,7 +162,7 @@ const ProjectListScreen = () => {
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
             <TouchableOpacity
-              onPress={() => handleViewDetails(item)}
+              onPress={() => handleEditDetails(item)}
               style={styles.cardTouchable}
             >
               <Card containerStyle={styles.card}>

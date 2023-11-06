@@ -103,7 +103,12 @@ const TaskListScreen = () => {
   };
 
   const handleViewDetails = (task) => {
-    navigation.navigate('TaskDetail', { taskObj: task });
+    navigation.navigate('Task Detail', { taskObj: task });
+  };
+
+
+  const handleEditTask = (task) => {
+    navigation.navigate('Edit Task', { taskObj: task,tasks, setTasks  });
   };
 
   const formatDate = (dateString) => {
@@ -112,7 +117,7 @@ const TaskListScreen = () => {
   };
 
   const handleRightButtonPress = () => {
-    navigation.navigate('CreateTask', { projectObj: null, tasks, setTasks });
+    navigation.navigate('Create Task', { projectObj: null, tasks, setTasks });
   };
 
   // New component for swipeout buttons
@@ -145,7 +150,7 @@ const TaskListScreen = () => {
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
             <TouchableOpacity
-              onPress={() => handleViewDetails(item)}
+              onPress={() => handleEditTask(item)}
               style={styles.cardTouchable}
             >
               <Card containerStyle={styles.card}>

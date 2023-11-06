@@ -33,7 +33,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
             tasksList.push(task);
 
           });
-          console.log('taskList ' + tasksList.length)
+          console.log('taskList' + tasksList.length)
           setTasks(tasksList);
         } else {
           setTasks(tasksList);
@@ -89,7 +89,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
             <Text style={styles.projectCost}>Cost: {project.projectCost}</Text>
             <Button
               label="Create Task"
-              onPress={() => navigation.navigate('CreateTask', { projectObj: project, tasks, setTasks })}
+              onPress={() => navigation.navigate('Create Task', { projectObj: project, tasks, setTasks })}
               style={styles.createTaskButton}
             />
           </View>

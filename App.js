@@ -34,23 +34,23 @@ const App = () => {
         <Stack.Screen name="AdminTabNavigator" component={AdminTabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="MemberTabNavigator" component={MemberTabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Registration" component={RegistrationScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="AddProject" component={AddProjectScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Add Project" component={AddProjectScreen} options={{ headerShown: true }} />
 
         <Stack.Screen name="MemberList" component={MemberListScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateMember" component={CreateMemberScreen} options={{ headerShown: true}} />
-        <Stack.Screen name="CreateTask" component={CreateTaskScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="EditProject" component={EditProjectScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Create Member" component={CreateMemberScreen} options={{ headerShown: true}} />
+        <Stack.Screen name="Create Task" component={CreateTaskScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Edit Project" component={EditProjectScreen} options={{ headerShown: true }} />
         <Stack.Screen name="ProfileDetail" component={ProfileDetailScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ProjectDetail" component={ProjectDetailScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Project Detail" component={ProjectDetailScreen} options={{ headerShown: true }} />
         <Stack.Screen name="ProjectList" component={ProjectListScreen} options={{ headerShown: false }} />
         <Stack.Screen name="TaskList" component={TaskListScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="TaskDetail" component={TaskDetailScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="EditTask" component={EditTaskScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Task Detail" component={TaskDetailScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Edit Task" component={EditTaskScreen} options={{ headerShown: true }} />
 
         <Stack.Screen name="MemberTaskList" component={MemberTaskListScreen} options={{ headerShown: false }} />
 
-        <Stack.Screen name="CompleteTask" component={CompleteTaskScreen} options={{ headerShown: true }} />
-        <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Complete Task" component={CompleteTaskScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Edit Profile" component={EditProfileScreen} options={{ headerShown: true }} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>

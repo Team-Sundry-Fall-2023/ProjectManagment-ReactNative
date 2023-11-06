@@ -84,7 +84,7 @@ const ProfileDetailScreen = ({ navigation }) => {
           <Text style={styles.category}>{userDetails.category}</Text>
           <Text style={styles.email}>{userDetails.email}</Text>
         </View>
-        <Button label="Edit Profile" onPress={() => navigation.navigate('EditProfile', { profileObj: userDetails })} style={styles.button} />
+        <Button label="Edit Profile" onPress={() => navigation.navigate('Edit Profile', { profileObj: userDetails })} style={styles.button} />
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>

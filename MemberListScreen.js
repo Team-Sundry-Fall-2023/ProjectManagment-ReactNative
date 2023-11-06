@@ -27,7 +27,7 @@ const MemberListScreen = () => {
   }, []);
 
   const handleRightButtonPress = () => {
-    navigation.navigate('CreateMember', { members, setMembers });
+    navigation.navigate('Create Member', { members, setMembers });
   };
 
   const getMemberIdByEmail = async (email) => {
@@ -85,7 +85,7 @@ const MemberListScreen = () => {
   };
 
   const handleViewDetails = (member) => {
-    navigation.navigate('CreateMember', { members, setMembers, memberToEdit: member });
+    navigation.navigate('Create Member', { members, setMembers, memberToEdit: member });
   };
 
   const showAlert = (title, message) => {
