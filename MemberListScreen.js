@@ -102,21 +102,22 @@ const MemberListScreen = () => {
     {
       component: (
         <View style={styles.swipeButton}>
+          <FontAwesome name="pencil" size={25} color="#FFF" />
+        </View>
+      ),
+      backgroundColor: '#FF9500',
+      onPress: () => handleViewDetails(item),
+    },
+    {
+      component: (
+        <View style={styles.swipeButton}>
           <FontAwesome name="trash" size={25} color="#FFF" />
         </View>
       ),
       backgroundColor: '#FF3B30',
       onPress: () => handleDelete(item),
     },
-    {
-      component: (
-        <View style={styles.swipeButton}>
-          <FontAwesome name="pencil" size={25} color="#FFF" />
-        </View>
-      ),
-      backgroundColor: '#007AFF',
-      onPress: () => handleViewDetails(item),
-    },
+    
   ];
 
   const filterMembers = () => {
