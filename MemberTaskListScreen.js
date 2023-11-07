@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button, Alert,  StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Alert,  StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { firebase ,auth, database} from './firebase';
 import {  ref, query, orderByChild, equalTo, get} from "firebase/database";
@@ -7,6 +7,8 @@ import {  ref, query, orderByChild, equalTo, get} from "firebase/database";
 const MemberTaskListScreen = () => {
   const navigation = useNavigation();
   const [tasks, setTasks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
   useEffect(() => {
     const taskList = [];
@@ -38,6 +40,10 @@ console.log('currentUser ' + currentUserEmail )
          return null;
        });
   }, []);
+
+  useEffect(() => {
+    filterTasks();
+  }, [searchQuery, tasks]);
   
   const showAlert = (title, message) => {
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
@@ -46,10 +52,26 @@ console.log('currentUser ' + currentUserEmail )
     navigation.navigate('Task Detail', { taskObj: task });
   };
 
+  const filterTasks = () => {
+    const query = searchQuery.toLowerCase();
+  
+    // Filter tasks based on the query
+    const filtered = tasks.filter((task) => {
+      return task.taskName.toLowerCase().includes(query) || task.taskDescription.toLowerCase().includes(query);
+    });
+  
+    setFilteredTasks(filtered);
+  };
+
   return (
     <View>
+      <TextInput
+      style={styles.searchInput}
+      placeholder="Search tasks..."
+      value={searchQuery}
+      onChangeText={(text) => setSearchQuery(text)}/>
  <FlatList
-  data={tasks}
+   data={searchQuery ? filteredTasks : tasks}
   keyExtractor={(item) => item.id}
   renderItem={({ item }) => (
       <TouchableOpacity
@@ -99,6 +121,14 @@ const styles = StyleSheet.create({
     },
     taskDescription: {
       marginBottom: 5,
+    },
+    searchInput: {
+      height: 40,
+      borderColor: 'gray',
+      borderWidth: 1,
+      margin: 10,
+      paddingLeft: 10,
+      borderRadius: 20,
     },
   });
 

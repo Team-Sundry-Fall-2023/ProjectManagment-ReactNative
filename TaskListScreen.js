@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
 import { Card } from 'react-native-elements';
@@ -11,6 +11,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 const TaskListScreen = () => {
   const navigation = useNavigation();
   const [tasks, setTasks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
   useEffect(() => {
     const taskList = [];
@@ -42,6 +44,10 @@ const TaskListScreen = () => {
       return null;
     });
   }, []);
+
+  useEffect(() => {
+    filterTasks();
+  }, [searchQuery, tasks]);
 
   const handleDelete = async (task) => {
     if (task.status == 'Complete') {
@@ -142,10 +148,27 @@ const TaskListScreen = () => {
     },
   ];
 
+  const filterTasks = () => {
+    const query = searchQuery.toLowerCase();
+  
+    // Filter tasks based on the query
+    const filtered = tasks.filter((task) => {
+      return task.taskName.toLowerCase().includes(query) || task.taskDescription.toLowerCase().includes(query)|| task.member.toLowerCase().includes(query);
+    });
+  
+    setFilteredTasks(filtered);
+  };
+
   return (
     <View style={styles.container}>
+          <TextInput
+      style={styles.searchInput}
+      placeholder="Search tasks..."
+      value={searchQuery}
+      onChangeText={(text) => setSearchQuery(text)}
+    />
       <FlatList
-        data={tasks}
+        data={searchQuery ? filteredTasks : tasks}
         keyExtractor={(item) => item.id?.toString() ?? ''}
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
@@ -249,6 +272,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: 10,
+    paddingLeft: 10,
+    borderRadius: 20,
   },
 });
 

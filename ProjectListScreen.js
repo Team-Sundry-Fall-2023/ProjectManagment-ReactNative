@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
 import { firebase ,auth, database} from './firebase';
@@ -11,7 +11,8 @@ import { StyleSheet } from 'react-native';
 const ProjectListScreen = () => {
   const navigation = useNavigation();
   const [projects, setProjects] = useState([]);
-  // const [updatedProjects, setUpdatedProjects] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredProjects, setFilteredProjects] = useState([]);
 
   useEffect(() => {
     const projectList = [];
@@ -38,6 +39,10 @@ const ProjectListScreen = () => {
        });
 
   }, []);
+
+  useEffect(() => {
+    filterProjects();
+  }, [searchQuery, projects]);
 
   const handleDelete = async (project) => {
     Alert.alert(
@@ -154,11 +159,28 @@ const ProjectListScreen = () => {
       onPress: () => handleViewDetails(item),
     },
   ];
+
+  const filterProjects = () => {
+    const query = searchQuery.toLowerCase();
+  
+    // Filter projects based on the query
+    const filtered = projects.filter((project) => {
+      return project.name.toLowerCase().includes(query) || project.description.toLowerCase().includes(query);
+    });
+  
+    setFilteredProjects(filtered);
+  };
   
   return (
     <View style={styles.container}>
+      <TextInput
+  style={styles.searchInput}
+  placeholder="Search projects..."
+  value={searchQuery}
+  onChangeText={(text) => setSearchQuery(text)}
+/>
       <FlatList
-        data={projects}
+        data={searchQuery ? filteredProjects : projects}
         keyExtractor={(item) => item.id?.toString() ?? ''}
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
@@ -229,6 +251,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: 10,
+    paddingLeft: 10,
+    borderRadius: 20,
+  },
+  
 });
 
 export default ProjectListScreen;

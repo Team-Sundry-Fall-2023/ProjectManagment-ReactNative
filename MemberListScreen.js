@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
 import { Card } from 'react-native-elements';
@@ -10,6 +10,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 const MemberListScreen = () => {
   const navigation = useNavigation();
   const [members, setMembers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredMembers, setFilteredMembers] = useState([]);
 
   useEffect(() => {
     const memberList = [];
@@ -25,6 +27,10 @@ const MemberListScreen = () => {
     });
 
   }, []);
+
+  useEffect(() => {
+    filterMembers();
+  }, [searchQuery, members]);
 
   const handleRightButtonPress = () => {
     navigation.navigate('Create Member', { members, setMembers });
@@ -113,10 +119,26 @@ const MemberListScreen = () => {
     },
   ];
 
+  const filterMembers = () => {
+    const query = searchQuery.toLowerCase();
+  
+    // Filter Members based on the query
+    const filtered = members.filter((member) => {
+      return member.firstName.toLowerCase().includes(query) || member.lastName.toLowerCase().includes(query)|| member.category.toLowerCase().includes(query);
+    });
+  
+    setFilteredMembers(filtered);
+  };
+
   return (
     <View style={styles.container}>
+          <TextInput
+      style={styles.searchInput}
+      placeholder="Search members..."
+      value={searchQuery}
+      onChangeText={(text) => setSearchQuery(text)}/>
       <FlatList
-        data={members}
+        data={searchQuery ? filteredMembers : members}
         keyExtractor={(item) => item.id?.toString() ?? ''}
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
@@ -189,6 +211,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: 10,
+    paddingLeft: 10,
+    borderRadius: 20,
   },
 });
 
