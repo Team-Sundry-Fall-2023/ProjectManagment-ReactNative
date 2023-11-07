@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert, TextInput } from 'react-native';
 import { Button } from 'react-native-ui-lib';
 import { firebase, auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get } from "firebase/database";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const ProjectDetailScreen = ({ route, navigation }) => {
   const { projectObj } = route.params;
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
   useEffect(() => {
     if (projectObj) {
@@ -48,6 +51,10 @@ const ProjectDetailScreen = ({ route, navigation }) => {
 
   }, [project]);
 
+  useEffect(() => {
+    filterTasks();
+  }, [searchQuery, tasks]);
+
   const formatDate = (dateString) => {
     if (!dateString) {
       return 'N/A';
@@ -61,6 +68,17 @@ const ProjectDetailScreen = ({ route, navigation }) => {
       hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
     };
     return new Intl.DateTimeFormat('en-US', options).format(date);
+  };
+
+  const filterTasks = () => {
+    const query = searchQuery.toLowerCase();
+
+    // Filter tasks based on the query
+    const filtered = tasks.filter((task) => {
+      return task.taskName.toLowerCase().includes(query) || task.taskDescription.toLowerCase().includes(query) || task.member.toLowerCase().includes(query);
+    });
+
+    setFilteredTasks(filtered);
   };
 
   const renderTaskItem = ({ item }) => (
@@ -93,9 +111,16 @@ const ProjectDetailScreen = ({ route, navigation }) => {
               style={styles.createTaskButton}
             />
           </View>
+          <View style={styles.searchInput}>
+        <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
+        <TextInput
+          placeholder="Search tasks..."
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)} />
+      </View>
           {tasks.length > 0 ? (
             <FlatList
-              data={tasks}
+            data={searchQuery ? filteredTasks : tasks}
               keyExtractor={(item) => item.id?.toString() ?? ''}
               renderItem={renderTaskItem}
               showsVerticalScrollIndicator={false}
@@ -177,6 +202,19 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
     color: '#999',
+  },
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: 10,
+    paddingLeft: 10,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchIcon: {
+    padding: 10,
   },
 });
 

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
-import { firebase ,auth, database} from './firebase';
-import {  ref, query, orderByChild, equalTo, get , remove} from "firebase/database";
+import { firebase, auth, database } from './firebase';
+import { ref, query, orderByChild, equalTo, get, remove } from "firebase/database";
 import { Card } from 'react-native-elements';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { StyleSheet } from 'react-native';
@@ -18,25 +18,25 @@ const ProjectListScreen = () => {
     const projectList = [];
     const currentUser = auth.currentUser;
     const currentUserEmail = currentUser.email;
-    const userQuery = query(ref(database, 'projects'),orderByChild('user'),equalTo(currentUserEmail) );
-     get(userQuery).then((snapshot) => {
-         if (snapshot.exists()) {
-           const projects = snapshot.val();
+    const userQuery = query(ref(database, 'projects'), orderByChild('user'), equalTo(currentUserEmail));
+    get(userQuery).then((snapshot) => {
+      if (snapshot.exists()) {
+        const projects = snapshot.val();
 
-           Object.keys(projects).forEach((projectId) => {
-            const project = projects[projectId];
-            projectList.push(project);
-             
-          });
-          setProjects(projectList);
-         } else {
-          setProjects(projectList);
-         }
-       }).catch((error) => {
+        Object.keys(projects).forEach((projectId) => {
+          const project = projects[projectId];
+          projectList.push(project);
+
+        });
         setProjects(projectList);
-        showAlert('Error','Error finding Projects :', error.message);
-        return null;
-       });
+      } else {
+        setProjects(projectList);
+      }
+    }).catch((error) => {
+      setProjects(projectList);
+      showAlert('Error', 'Error finding Projects :', error.message);
+      return null;
+    });
 
   }, []);
 
@@ -55,63 +55,63 @@ const ProjectListScreen = () => {
           onPress: async () => {
             const deleteProjectssPromises = [];
             const deleteTasksPromises = [];
-            const userQuery = query(ref(database, 'tasks'),orderByChild('projectId'),equalTo(project.projectId) );
-                   get(userQuery)
-                   .then((snapshot) => {
-                       if (snapshot.exists()) {
-           
-                       snapshot.forEach((taskData) => {
-                           const taskId = taskData.key;
-                           console.log('taskId ' , taskId)
-                           const taskRef = ref(database, `tasks/${taskId}`);
-                           deleteTasksPromises.push(remove(taskRef));
-                         });          
-                       } else {
-                           console.log('task not found ')
-                       }
-                   })
-                   .catch((error) => {
-                       console.log('Error finding task:' + error)
-                   });
+            const userQuery = query(ref(database, 'tasks'), orderByChild('projectId'), equalTo(project.projectId));
+            get(userQuery)
+              .then((snapshot) => {
+                if (snapshot.exists()) {
+
+                  snapshot.forEach((taskData) => {
+                    const taskId = taskData.key;
+                    console.log('taskId ', taskId)
+                    const taskRef = ref(database, `tasks/${taskId}`);
+                    deleteTasksPromises.push(remove(taskRef));
+                  });
+                } else {
+                  console.log('task not found ')
+                }
+              })
+              .catch((error) => {
+                console.log('Error finding task:' + error)
+              });
 
             Promise.all(deleteTasksPromises)
               .then(async () => {
-            
-                const projectQuery = query(ref(database, 'projects'),orderByChild('projectId'),equalTo(project.projectId) );
+
+                const projectQuery = query(ref(database, 'projects'), orderByChild('projectId'), equalTo(project.projectId));
                 get(projectQuery)
-                .then((snapshot) => {
+                  .then((snapshot) => {
                     if (snapshot.exists()) {
-        
-                    snapshot.forEach((projectData) => {
+
+                      snapshot.forEach((projectData) => {
                         const projectId = projectData.key;
-                        console.log('projectId ' , projectId)
+                        console.log('projectId ', projectId)
                         const taskRef = ref(database, `projects/${projectId}`);
                         deleteProjectssPromises.push(remove(taskRef));
-                      });  
+                      });
                       Promise.all(deleteProjectssPromises).then(() => {
                         showAlert('Success', 'Project deleted');
                         setProjects((prevProjects) =>
-                        prevProjects.filter((item) => item.projectId !== project.projectId)
+                          prevProjects.filter((item) => item.projectId !== project.projectId)
                         );
-                    });        
+                      });
                     } else {
-                        console.log('Project not found ')
+                      console.log('Project not found ')
                     }
-                })
-                .catch((error) => {
+                  })
+                  .catch((error) => {
                     console.log('Error finding project:' + error)
-                });
+                  });
 
               })
               .catch((error) => {
-                console.error('Error deleting project:'+ error);
+                console.error('Error deleting project:' + error);
               });
           },
         },
       ]
     );
   };
-  
+
   const showAlert = (title, message) => {
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
@@ -122,7 +122,7 @@ const ProjectListScreen = () => {
 
   const handleEditDetails = (project) => {
     console.log('project list project ', project)
-    navigation.navigate('Edit Project', { projectObj: project , projects, setProjects  });
+    navigation.navigate('Edit Project', { projectObj: project, projects, setProjects });
   };
 
   // const handleRightButtonPress = () => {
@@ -162,23 +162,25 @@ const ProjectListScreen = () => {
 
   const filterProjects = () => {
     const query = searchQuery.toLowerCase();
-  
+
     // Filter projects based on the query
     const filtered = projects.filter((project) => {
       return project.name.toLowerCase().includes(query) || project.description.toLowerCase().includes(query);
     });
-  
+
     setFilteredProjects(filtered);
   };
-  
+
   return (
     <View style={styles.container}>
-      <TextInput
-  style={styles.searchInput}
-  placeholder="Search projects..."
-  value={searchQuery}
-  onChangeText={(text) => setSearchQuery(text)}
-/>
+      <View style={styles.searchInput}>
+        <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
+        <TextInput
+          placeholder="Search projects..."
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+        />
+      </View>
       <FlatList
         data={searchQuery ? filteredProjects : projects}
         keyExtractor={(item) => item.id?.toString() ?? ''}
@@ -192,7 +194,7 @@ const ProjectListScreen = () => {
                 <Text style={styles.projectName}>{item.name}</Text>
                 <Card.Divider />
                 <Text style={styles.projectDescription}>{item.description}</Text>
-                <Text style={styles.projectCost}>{`Cost: ${item.projectCost}`}</Text> 
+                <Text style={styles.projectCost}>{`Cost: ${item.projectCost}`}</Text>
               </Card>
             </TouchableOpacity>
           </Swipeout>
@@ -258,8 +260,13 @@ const styles = StyleSheet.create({
     margin: 10,
     paddingLeft: 10,
     borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  
+  searchIcon: {
+    padding: 10,
+  },
+
 });
 
 export default ProjectListScreen;

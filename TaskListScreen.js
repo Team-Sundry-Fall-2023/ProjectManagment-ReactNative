@@ -114,7 +114,7 @@ const TaskListScreen = () => {
 
 
   const handleEditTask = (task) => {
-    navigation.navigate('Edit Task', { taskObj: task,tasks, setTasks  });
+    navigation.navigate('Edit Task', { taskObj: task, tasks, setTasks });
   };
 
   const formatDate = (dateString) => {
@@ -150,23 +150,25 @@ const TaskListScreen = () => {
 
   const filterTasks = () => {
     const query = searchQuery.toLowerCase();
-  
+
     // Filter tasks based on the query
     const filtered = tasks.filter((task) => {
-      return task.taskName.toLowerCase().includes(query) || task.taskDescription.toLowerCase().includes(query)|| task.member.toLowerCase().includes(query);
+      return task.taskName.toLowerCase().includes(query) || task.taskDescription.toLowerCase().includes(query) || task.member.toLowerCase().includes(query);
     });
-  
+
     setFilteredTasks(filtered);
   };
 
   return (
     <View style={styles.container}>
-          <TextInput
-      style={styles.searchInput}
-      placeholder="Search tasks..."
-      value={searchQuery}
-      onChangeText={(text) => setSearchQuery(text)}
-    />
+      <View style={styles.searchInput}>
+        <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
+        <TextInput
+          placeholder="Search tasks..."
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+        />
+      </View>
       <FlatList
         data={searchQuery ? filteredTasks : tasks}
         keyExtractor={(item) => item.id?.toString() ?? ''}
@@ -280,6 +282,11 @@ const styles = StyleSheet.create({
     margin: 10,
     paddingLeft: 10,
     borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchIcon: {
+    padding: 10,
   },
 });
 

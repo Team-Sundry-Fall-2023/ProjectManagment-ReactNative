@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, Alert,FlatList} from 'react-
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { firebase, database, auth } from './firebase';
 import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const EditProjectScreen = () => {
   const navigation = useNavigation();
@@ -13,7 +14,8 @@ const EditProjectScreen = () => {
   const [description, setDescription] = useState('');
   const [tasks, setTasks] = useState([]);
   const { projects, setProjects } = route.params;
-
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
   useEffect(() => {
     if (projectObj) {
@@ -65,6 +67,10 @@ const EditProjectScreen = () => {
     }
 
   }, [project]);
+
+  useEffect(() => {
+    filterTasks();
+  }, [searchQuery, tasks]);
 
   const handleEditProject = async () => {
 
@@ -130,25 +136,16 @@ const EditProjectScreen = () => {
     }
   };
 
-  // return (
-  //   <View style={styles.container}>
-  //     <TextInput
-  //      style={styles.input}
-  //       placeholder="Project Name"
-  //       value={name}
-  //       onChangeText={(text) => setName(text)}
-  //     />
-  //     <TextInput
-  //      style={styles.input}
-  //       placeholder="Project Description"
-  //       value={description}
-  //       onChangeText={(text) => setDescription(text)}
-  //     />
-  //     <Button title="Edit Project" onPress={handleEditProject} />
-  //   </View>
-  // );
+  const filterTasks = () => {
+    const query = searchQuery.toLowerCase();
 
+    // Filter tasks based on the query
+    const filtered = tasks.filter((task) => {
+      return task.taskName.toLowerCase().includes(query) || task.taskDescription.toLowerCase().includes(query) || task.member.toLowerCase().includes(query);
+    });
 
+    setFilteredTasks(filtered);
+  };
 
   return (
     <View style={styles.container}>
@@ -171,9 +168,16 @@ const EditProjectScreen = () => {
           title="Create Task"
           onPress={() => navigation.navigate('Create Task', { projectObj: project,tasks, setTasks })}
         />
+        <View style={styles.searchInput}>
+        <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
+        <TextInput
+          placeholder="Search tasks..."
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)} />
+           </View>
         {tasks.length > 0 ? (
           <FlatList
-            data={tasks}
+          data={searchQuery ? filteredTasks : tasks}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.taskItem}>
@@ -236,6 +240,19 @@ const styles = StyleSheet.create({
   },
   taskDescription: {
     marginBottom: 5,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: 10,
+    paddingLeft: 10,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchIcon: {
+    padding: 10,
   },
 });
 

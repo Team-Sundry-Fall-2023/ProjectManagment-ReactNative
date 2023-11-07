@@ -121,22 +121,24 @@ const MemberListScreen = () => {
 
   const filterMembers = () => {
     const query = searchQuery.toLowerCase();
-  
+
     // Filter Members based on the query
     const filtered = members.filter((member) => {
-      return member.firstName.toLowerCase().includes(query) || member.lastName.toLowerCase().includes(query)|| member.category.toLowerCase().includes(query);
+      return member.firstName.toLowerCase().includes(query) || member.lastName.toLowerCase().includes(query) || member.category.toLowerCase().includes(query);
     });
-  
+
     setFilteredMembers(filtered);
   };
 
   return (
     <View style={styles.container}>
-          <TextInput
-      style={styles.searchInput}
-      placeholder="Search members..."
-      value={searchQuery}
-      onChangeText={(text) => setSearchQuery(text)}/>
+      <View style={styles.searchInput}>
+        <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
+        <TextInput
+          placeholder="Search members..."
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)} />
+      </View>
       <FlatList
         data={searchQuery ? filteredMembers : members}
         keyExtractor={(item) => item.id?.toString() ?? ''}
@@ -219,6 +221,11 @@ const styles = StyleSheet.create({
     margin: 10,
     paddingLeft: 10,
     borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchIcon: {
+    padding: 10,
   },
 });
 
