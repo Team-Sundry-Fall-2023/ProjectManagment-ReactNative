@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList } from 'react-native';
+import { View, Alert, ScrollView, StyleSheet } from 'react-native';
+import { Button, TextField, Text } from 'react-native-ui-lib';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import RNPickerSelect from 'react-native-picker-select';
 import { firebase, auth, database } from './firebase';
 import { ref, push, set, query, orderByChild, equalTo, get, update } from 'firebase/database';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import commonStyles from './style';
+import RNPickerSelect from 'react-native-picker-select';
 
 const EditTaskScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const {tasks, setTasks, taskObj} = route.params;
+    const { tasks, setTasks, taskObj } = route.params;
     const [task, setTask] = useState(null);
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
@@ -54,7 +55,7 @@ const EditTaskScreen = () => {
 
     useEffect(() => {
         console.log('taskProjectId 2' + taskProjectId);
-       
+
         // Fetch projects related to the current user and populate projectOptions
         if (auth.currentUser) {
             const currentUserEmail = auth.currentUser.email;
@@ -72,7 +73,7 @@ const EditTaskScreen = () => {
                             label: projects[projectId].name,
                             value: projects[projectId],
                         }
-                        
+
                         ));
                         setProjectOptions(options);
                     }
@@ -83,7 +84,7 @@ const EditTaskScreen = () => {
 
         }
         console.log('projectOptions' + projectOptions);
-        
+
         const userQuery = query(
             ref(database, 'users'),
             orderByChild('category'),
@@ -98,33 +99,33 @@ const EditTaskScreen = () => {
                         label: users[email].email,
                         value: users[email],
                     }));
-                    setUserOptions(options);                    
+                    setUserOptions(options);
                 }
             })
             .catch((error) => {
                 console.error('Error fetching Users:', error);
             });
-            console.log('taskProjectId 3' + taskProjectId);
-            if (taskProjectId) {
-                console.log('projectOptions' + projectOptions);
-                const projectMatch = projectOptions.find((option) => option.value.projectId === taskProjectId);
-                if (projectMatch) {
-                  setSelectedProject(projectMatch.value);
-                }
-              }else{
-                //console.error('projectMatch:');
-              }
+        console.log('taskProjectId 3' + taskProjectId);
+        if (taskProjectId) {
+            console.log('projectOptions' + projectOptions);
+            const projectMatch = projectOptions.find((option) => option.value.projectId === taskProjectId);
+            if (projectMatch) {
+                setSelectedProject(projectMatch.value);
+            }
+        } else {
+            //console.error('projectMatch:');
+        }
 
 
-              if (taskMemebr) {
-                const userMatch = userOptions.find((option) => option.value.email === taskMemebr);
-                if (userMatch) {
-                  setSelectedUser(userMatch.value);
-                }
-            }else{
-                //console.error('userMatch:');
-              }
-              
+        if (taskMemebr) {
+            const userMatch = userOptions.find((option) => option.value.email === taskMemebr);
+            if (userMatch) {
+                setSelectedUser(userMatch.value);
+            }
+        } else {
+            //console.error('userMatch:');
+        }
+
 
 
     }, [task]);
@@ -134,27 +135,27 @@ const EditTaskScreen = () => {
         if (!taskName || !taskDescription) {
             showAlert('Error', 'Task Name and Task Description are required.');
             return;
-          }
+        }
 
-          if (taskEndDate < taskStartDate) {
+        if (taskEndDate < taskStartDate) {
             showAlert('Error', 'End date need to be higher than start date.');
             return;
-          }
-      
-          if (!selectedProject) {
+        }
+
+        if (!selectedProject) {
             showAlert('Error', 'Project is required.');
             return;
-          }
+        }
 
-          if (!selectedUser) {
+        if (!selectedUser) {
             showAlert('Error', 'Member is required.');
             return;
-          }
+        }
 
-          if(task.status == 'Complete'){
+        if (task.status == 'Complete') {
             showAlert('Error', 'Task already completed. You cannot edit now');
             navigation.goBack();
-          }
+        }
 
         const userQuery = query(ref(database, 'tasks'), orderByChild('taskId'), equalTo(task.taskId));
 
@@ -169,7 +170,7 @@ const EditTaskScreen = () => {
                     const updatedtaskData = {
                         taskName: taskName,
                         taskDescription: taskDescription,
-                        taskStartDate: task.taskStartDate, 
+                        taskStartDate: task.taskStartDate,
                         taskEndDate: taskEndDate.toISOString(), // Store as ISO string
                         taskCost: task.taskCost,
                         projectId: selectedProject ? selectedProject.projectId : null,
@@ -177,8 +178,8 @@ const EditTaskScreen = () => {
                         owner: task.owner,
                         member: selectedUser ? selectedUser.email.toLowerCase() : null,
                         actualEndDate: task.actualEndDate || '',
-                        noOfHours : task.noOfHours,
-                        taskId : task.taskId
+                        noOfHours: task.noOfHours,
+                        taskId: task.taskId
                     };
 
                     // Update the task in the database
@@ -211,138 +212,227 @@ const EditTaskScreen = () => {
     };
 
     const updateTask = (updatedTask) => {
-        console.log( 'updatedTask ',updatedTask)
+        console.log('updatedTask ', updatedTask)
         // Find the index of the task to be updated in the tasks array
         const taskIndex = tasks.findIndex((taskU) => taskU.taskId === task.taskId);
-        console.log( 'taskIndex ',taskIndex)
+        console.log('taskIndex ', taskIndex)
         if (taskIndex !== -1) {
-          // Create a copy of the tasks array
-          const updatedTasks = [...tasks];
-    
-          // Update the task in the copied array
-          updatedTasks[taskIndex] = updatedTask;
-          console.log( 'updatedTasks ',updatedTasks)
-          // Set the state to trigger a re-render with the updated tasks
-          setTasks(updatedTasks);
+            // Create a copy of the tasks array
+            const updatedTasks = [...tasks];
+
+            // Update the task in the copied array
+            updatedTasks[taskIndex] = updatedTask;
+            console.log('updatedTasks ', updatedTasks)
+            // Set the state to trigger a re-render with the updated tasks
+            setTasks(updatedTasks);
         }
-      };
+    };
+
+    // Function to show an alert with the error message
+    const showAlert = (title, message) => {
+        Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
+    };
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
-          headerLeft: () => (
-            <View style={commonStyles.customHeaderLeft}>
-              <Button
-                onPress={() => navigation.goBack()}
-                title="< Back"
-                color="#007BFF"
-              />
-            </View>
-          ),
-          headerTitle: () => (
-            <View style={commonStyles.customHeader}>
-              <Text style={commonStyles.headerTitle}>Edit Task</Text>
-            </View>
-          ),
+            headerBackTitle: "Back",
+            headerTitle: () => (
+                <View style={commonStyles.customHeader}>
+                    <Text style={commonStyles.headerTitle}>Edit Task</Text>
+                </View>
+            ),
         });
-      }, [navigation]);
+    }, [navigation]);
 
-    return (
-        <View style={styles.container}>
-            <TextInput
-                style={styles.input}
-                placeholder="Name"
-                value={taskName}
-                onChangeText={setTaskName}
-            />
-            <TextInput
-                style={[styles.input, { height: 4 * 40 }]} 
-                placeholder="Description"
-                value={taskDescription}
-                onChangeText={setTaskDescription}
-                multiline={true}
-                numberOfLines={4}
-            />
-            <Text>Start Date:</Text>
+    // Render function for the Date Picker
+    const renderDatePicker = (date, setDate, showDatePicker, setShowDatePicker) => (
+        <>
             <Button
-                title={taskStartDate.toISOString().split('T')[0]}
+                label={taskStartDate.toDateString()}
+                onPress={() => setShowStartDatePicker(true)}
+                style={styles.dateButton}
+                labelStyle={styles.dateLabel} // Apply the custom label style here
             />
-            <Text>End Date:</Text>
-            <Button
-                title={taskEndDate.toISOString().split('T')[0]}
-                onPress={() => setShowEndDatePicker(true)}
-            />
-            {showEndDatePicker && (
+            {showDatePicker && (
                 <DateTimePicker
-                    value={taskEndDate}
+                    value={date}
                     mode="date"
                     display="default"
                     onChange={(event, selectedDate) => {
                         if (selectedDate) {
-                            setTaskEndDate(selectedDate);
+                            setDate(selectedDate);
                         }
-                        setShowEndDatePicker(false);
+                        setShowDatePicker(false);
                     }}
-                    minimumDate={new Date()} // Disallow past dates
+                    minimumDate={new Date()}
                 />
             )}
+        </>
+    );
 
-            <Text>Assign to:</Text>
-
-            <RNPickerSelect
-                items={userOptions}
-                onValueChange={(value) => setSelectedUser(value)}
-            // Disable the picker if a project is selected
+    // Render function for the Date Picker
+    const renderEndDatePicker = (date, setDate, showDatePicker, setShowDatePicker) => (
+        <>
+            <Button
+                label={taskEndDate.toDateString()}
+                onPress={() => setShowEndDatePicker(true)}
+                style={styles.dateButton}
+                labelStyle={styles.dateLabel} // Apply the custom label style here
             />
-
-            <Text>Project:</Text>
-
-                <RNPickerSelect
-                    items={projectOptions}
-                    onValueChange={(value) => setSelectedProject(value)}                  
+            {showDatePicker && (
+                <DateTimePicker
+                    value={date}
+                    mode="date"
+                    display="default"
+                    onChange={(event, selectedDate) => {
+                        if (selectedDate) {
+                            setDate(selectedDate);
+                        }
+                        setShowDatePicker(false);
+                    }}
+                    minimumDate={new Date()}
                 />
-            <Button title="Update" onPress={handleEditTask} />
-        </View>
+            )}
+        </>
+    );
+
+    return (
+        <ScrollView style={styles.container}>
+            <View style={styles.fieldContainer}>
+                <TextField
+                    placeholder="Enter task name"
+                    value={taskName}
+                    onChangeText={setTaskName}
+                    style={styles.input}
+                />
+            </View>
+
+            <View style={styles.fieldContainer}>
+                <TextField
+                    placeholder="Enter task description"
+                    value={taskDescription}
+                    onChangeText={setTaskDescription}
+                    style={[styles.input, styles.multilineInput]}
+                    multiline={true}
+                />
+            </View>
+
+            <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Start Date</Text>
+                <Text style={styles.dateText}>{taskStartDate.toDateString()}</Text>
+            </View>
+
+            <View style={styles.fieldContainer}>
+                <Text style={styles.label}>End Date</Text>
+                {renderEndDatePicker(taskEndDate, setTaskEndDate, showEndDatePicker, setShowEndDatePicker, "End Date")}
+            </View>
+
+            <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Assign to</Text>
+                <RNPickerSelect
+                    onValueChange={(value) => setSelectedUser(value)}
+                    items={userOptions}
+                    style={pickerSelectStyles}
+                    placeholder={{
+                        label: 'Select a member',
+                        value: null,
+                    }}
+                    value={selectedUser}
+                />
+            </View>
+
+            <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Project</Text>
+                <RNPickerSelect
+                    onValueChange={(value) => setSelectedProject(value)}
+                    items={projectOptions}
+                    style={pickerSelectStyles}
+                    placeholder={{
+                        label: 'Select a project',
+                        value: null,
+                    }}
+                    value={selectedProject}
+                />
+            </View>
+
+            <Button label="Update Task" onPress={handleEditTask} style={styles.saveButton} />
+        </ScrollView>
     );
 
 };
 
-
-
-
-// Function to show an alert with the error message
-const showAlert = (title, message) => {
-    Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
-};
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 20,
+        color: 'black',
+        paddingRight: 30, // to ensure the text is never behind the icon
+    },
+    inputAndroid: {
+        fontSize: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        borderWidth: 0.5,
+        borderColor: 'purple',
+        borderRadius: 20,
+        color: 'black',
+        paddingRight: 30, // to ensure the text is never behind the icon
+    },
+});
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
+        backgroundColor: '#fff',
     },
-    header: {
-        fontSize: 24,
+    fieldContainer: {
         marginBottom: 20,
+    },
+    label: {
+        fontSize: 16,
+        color: '#333',
+        marginBottom: 5,
     },
     input: {
         height: 40,
+        width: '100%',
         borderColor: 'gray',
         borderWidth: 1,
-        marginBottom: 10,
+        borderRadius: 20,
         paddingHorizontal: 10,
+        marginBottom: 20,
     },
-    taskItem: {
+    multilineInput: {
+        paddingTop: 10,
+        minHeight: 100,
+    },
+    dateButton: {
+        backgroundColor: '#fff',
         borderWidth: 1,
         borderColor: 'gray',
+        borderRadius: 20,
         padding: 10,
-        marginBottom: 10,
+        justifyContent: 'flex-start',
+        height: 40,
     },
-    taskName: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 5,
+    dateLabel: {
+        color: 'black',
+        fontSize: 16,
+        textAlign: 'left',
     },
-    taskDescription: {
-        marginBottom: 5,
+    dateText: {
+        fontSize: 16,
+        marginBottom: 20,
+    },
+    saveButton: {
+        marginTop: 20,
+        borderRadius: 20,
+        backgroundColor: '#5848ff',
     },
 });
 

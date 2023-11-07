@@ -131,20 +131,20 @@ const TaskListScreen = () => {
     {
       component: (
         <View style={styles.swipeButton}>
+          <FontAwesome name="pencil" size={25} color="#FFF" />
+        </View>
+      ),
+      backgroundColor: '#FF9500', // Orange color for edit button
+      onPress: () => handleEditTask(item),
+    },
+    {
+      component: (
+        <View style={styles.swipeButton}>
           <FontAwesome name="trash" size={25} color="#FFF" />
         </View>
       ),
       backgroundColor: '#FF3B30',
       onPress: () => handleDelete(item),
-    },
-    {
-      component: (
-        <View style={styles.swipeButton}>
-          <FontAwesome name="info-circle" size={25} color="#FFF" />
-        </View>
-      ),
-      backgroundColor: '#007AFF',
-      onPress: () => handleViewDetails(item),
     },
   ];
 
@@ -175,7 +175,7 @@ const TaskListScreen = () => {
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
             <TouchableOpacity
-              onPress={() => handleEditTask(item)}
+              onPress={() => handleViewDetails(item)}
               style={styles.cardTouchable}
             >
               <Card containerStyle={styles.card}>
