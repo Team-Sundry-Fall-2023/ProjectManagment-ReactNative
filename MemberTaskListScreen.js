@@ -3,6 +3,8 @@ import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, StyleSheet } 
 import { useNavigation } from '@react-navigation/native';
 import { firebase, auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get } from "firebase/database";
+import { FontAwesome } from '@expo/vector-icons';
+import { Card } from 'react-native-elements';
 
 const MemberTaskListScreen = () => {
   const navigation = useNavigation();
@@ -63,37 +65,48 @@ const MemberTaskListScreen = () => {
     setFilteredTasks(filtered);
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'short', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.searchInput}>
         <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
         <TextInput
           placeholder="Search tasks..."
           value={searchQuery}
-          onChangeText={(text) => setSearchQuery(text)} />
+          onChangeText={(text) => setSearchQuery(text)}
+        />
       </View>
       <FlatList
         data={searchQuery ? filteredTasks : tasks}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id?.toString() ?? ''}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              console.log('item edit ' + item)
-              if (item.status == 'Complete') {
+              if (item.status === 'Complete') {
                 handleViewDetails(item);
               } else {
                 navigation.navigate('Complete Task', { taskObj: item, tasks, setTasks });
               }
             }}
+            style={styles.cardTouchable}
           >
-            <View>
-              <Text style={styles.taskName}>{item.taskName}</Text>
+            <Card containerStyle={styles.card}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.taskName}>{item.taskName}</Text>
+                <View style={[styles.statusBadge, styles[`status_${item.status.toLowerCase()}`]]}>
+                  <Text style={styles.statusText}>{item.status}</Text>
+                </View>
+              </View>
+              <Card.Divider />
               <Text style={styles.taskDescription}>{item.taskDescription}</Text>
-              <Text>{`Start Date: ${item.taskStartDate}`}</Text>
-              <Text>{`End Date: ${item.taskEndDate}`}</Text>
-              <Text>{`Status: ${item.status}`}</Text>
-              <Text>{`Actual End Date: ${item.actualEndDate}`}</Text>
-            </View>
+              <Text>{`Start Date: ${formatDate(item.taskStartDate)}`}</Text>
+              <Text>{`End Date: ${formatDate(item.taskEndDate)}`}</Text>
+              <Text>{`Actual End Date: ${item.actualEndDate ? formatDate(item.actualEndDate) : 'N/A'}`}</Text>
+            </Card>
           </TouchableOpacity>
         )}
       />
@@ -102,27 +115,78 @@ const MemberTaskListScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
+  cardTouchable: {
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  card: {
+    borderRadius: 20, // This should match the border radius of the touchable if you have a card style
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10, // Add bottom margin to create space between the badge and the underline
+  },
+  taskName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    flex: 1, // Allows task name to fill the space and push status to the right
+  },
+  statusBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 10,
+    alignSelf: 'flex-start',
+  },
+  statusText: {
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  status_new: {
+    backgroundColor: 'lightblue',
+  },
+  status_inprogress: {
+    backgroundColor: 'yellow',
+  },
+  status_complete: {
+    backgroundColor: 'green',
   },
   header: {
     fontSize: 24,
     marginBottom: 20,
   },
-  taskItem: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
-    marginBottom: 10,
-  },
-  taskName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
+  container: {
+    paddingBottom: 70,
+    flex: 1,
+    backgroundColor: '#EFEFF4',
   },
   taskDescription: {
-    marginBottom: 5,
+    fontSize: 14,
+    color: '#4F4F4F',
+    marginBottom: 10,
+  },
+  swipeButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  fab: {
+    position: 'absolute',
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 20,
+    bottom: 90,
+    backgroundColor: '#5848ff',
+    borderRadius: 28,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   searchInput: {
     height: 40,
