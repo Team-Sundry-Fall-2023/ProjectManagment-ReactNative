@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TextInput, StyleSheet,Alert } from 'react-native';
-import { firebase ,auth, database} from './firebase';
-import {  ref, query, orderByChild, equalTo, get, update} from "firebase/database";
+import { View, Text, Button, TextInput, StyleSheet, Alert } from 'react-native';
+import { Card, Colors, Spacings, Typography, Button as UIButton, TextField } from 'react-native-ui-lib';
+import { firebase, auth, database } from './firebase';
+import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CompleteTaskScreen = ({ route, navigation }) => {
   const { taskObj } = route.params;
-  const {tasks, setTasks} = route.params;
+  const { tasks, setTasks } = route.params;
   const [task, settask] = useState(null);
   const [hours, setHours] = useState(0);
   const [taskEndDate, setTaskEndDate] = useState(new Date());
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [hourlyRate, setHourlyRate] = useState('');
+
   useEffect(() => {
     if (taskObj) {
       settask(taskObj);
       setTasks(tasks);
     }
-  }, [taskObj,task, tasks]);
-
+  }, [taskObj, task, tasks]);
 
   useEffect(() => {
     // Fetch the currently authenticated user's details
@@ -31,21 +32,21 @@ const CompleteTaskScreen = ({ route, navigation }) => {
         orderByChild('email'),
         equalTo(currentUser.email)
       );
-  
+
       get(userQuery)
         .then((snapshot) => {
           if (snapshot.exists()) {
             const users = snapshot.val();
             Object.keys(users).forEach((userId) => {
               const userData = users[userId];
-              if (userData ) {
-    
+              if (userData) {
+
                 setHourlyRate(userData.hourlyRate);
               } else {
                 setError('User not fount', userId);
               }
             });
-            
+
           }
         })
         .catch((error) => {
@@ -66,76 +67,76 @@ const CompleteTaskScreen = ({ route, navigation }) => {
 
     // Fetch the task data
     get(userQuery)
-        .then((snapshot) => {
-            if (snapshot.exists()) {
-                const tasks = snapshot.val();
-                const taskId = Object.keys(tasks)[0]; // Assuming there's only one task with a given ID
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const tasks = snapshot.val();
+          const taskId = Object.keys(tasks)[0]; // Assuming there's only one task with a given ID
 
-                const updatedtaskData = {
-                    // taskName: task.taskName,
-                    // taskDescription: task.taskDescription,
-                    // taskStartDate: task.taskStartDate, // Store as ISO string
-                    // taskEndDate: task.taskEndDate , // Store as ISO string
-                    taskCost: taskCost,
-                    // projectId: task.projectId ,
-                    status: 'Complete',
-                    // taskId : task.taskId,
-                    // owner : task.owner,
-                    // member : task.email,
-                    actualEndDate : taskEndDate.toISOString(),
-                    noOfHours : hours
-                };
-                console.log('updatedtaskData ', updatedtaskData); 
-                // Update the task in the database
-                update(ref(database, `tasks/${taskId}`), updatedtaskData)
-                    .then(() => {
-                        // task data has been successfully updated
-                        showAlert('Success', 'task data updated');
-                         // Update the project's cost
-                        updateProjectCost(task.projectId, taskCost);
-                        console.log('updatedtaskData begin', updatedtaskData); 
-                        updateTask(taskCost);
-                        navigation.goBack();
-                    })
-                    .catch((error) => {
-                        // Handle the error if the update fails
-                        showAlert('Error', 'Error updating task data:' + error);
-                    });
-            } else {
-                console.log('task not found'); // Handle the case where the task is not found
-            }
-        })
-        .catch((error) => {
-            // Handle the error if the fetch fails
-            showAlert('Error', 'Error finding task:' + error);
-        });
+          const updatedtaskData = {
+            // taskName: task.taskName,
+            // taskDescription: task.taskDescription,
+            // taskStartDate: task.taskStartDate, // Store as ISO string
+            // taskEndDate: task.taskEndDate , // Store as ISO string
+            taskCost: taskCost,
+            // projectId: task.projectId ,
+            status: 'Complete',
+            // taskId : task.taskId,
+            // owner : task.owner,
+            // member : task.email,
+            actualEndDate: taskEndDate.toISOString(),
+            noOfHours: hours
+          };
+          console.log('updatedtaskData ', updatedtaskData);
+          // Update the task in the database
+          update(ref(database, `tasks/${taskId}`), updatedtaskData)
+            .then(() => {
+              // task data has been successfully updated
+              showAlert('Success', 'task data updated');
+              // Update the project's cost
+              updateProjectCost(task.projectId, taskCost);
+              console.log('updatedtaskData begin', updatedtaskData);
+              updateTask(taskCost);
+              navigation.goBack();
+            })
+            .catch((error) => {
+              // Handle the error if the update fails
+              showAlert('Error', 'Error updating task data:' + error);
+            });
+        } else {
+          console.log('task not found'); // Handle the case where the task is not found
+        }
+      })
+      .catch((error) => {
+        // Handle the error if the fetch fails
+        showAlert('Error', 'Error finding task:' + error);
+      });
   };
 
   const updateTask = (taskCost) => {
 
     const updatedtaskData = {
-        taskName: task.taskName,
-        taskDescription: task.taskDescription,
-        taskStartDate: task.taskStartDate, // Store as ISO string
-        taskEndDate: task.taskEndDate , // Store as ISO string
-        taskCost: taskCost,
-        projectId: task.projectId ,
-        status: 'Complete',
-        taskId : task.taskId,
-        owner : task.owner,
-        member : task.email,
-        actualEndDate : taskEndDate.toISOString(),
-        noOfHours : hours
+      taskName: task.taskName,
+      taskDescription: task.taskDescription,
+      taskStartDate: task.taskStartDate, // Store as ISO string
+      taskEndDate: task.taskEndDate, // Store as ISO string
+      taskCost: taskCost,
+      projectId: task.projectId,
+      status: 'Complete',
+      taskId: task.taskId,
+      owner: task.owner,
+      member: task.email,
+      actualEndDate: taskEndDate.toISOString(),
+      noOfHours: hours
     };
 
-    console.log( 'updatedTask ',updatedtaskData)
+    console.log('updatedTask ', updatedtaskData)
     // Find the index of the task to be updated in the tasks array
     const taskIndex = tasks.findIndex((task) => task.taskId === updatedtaskData.taskId,);
-    console.log( 'taskIndex ',taskIndex)
+    console.log('taskIndex ', taskIndex)
     if (taskIndex !== -1) {
       // Create a copy of the tasks array
       const updatedTasks = [...tasks];
-      console.log( 'updatedTasks End',updatedTasks)
+      console.log('updatedTasks End', updatedTasks)
       // Update the task in the copied array
       updatedTasks[taskIndex] = updatedtaskData;
 
@@ -176,80 +177,182 @@ const CompleteTaskScreen = ({ route, navigation }) => {
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
 
+  // Render function for the Date Picker
+  const renderDatePicker = () => {
+    return (
+      <>
+        <Button
+          title={taskEndDate.toISOString().split('T')[0]}
+          onPress={() => setShowEndDatePicker(true)}
+          style={styles.dateButton}
+          labelStyle={styles.dateLabel}
+        />
+        {showEndDatePicker && (
+          <DateTimePicker
+            value={taskEndDate}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              const currentDate = selectedDate || taskEndDate;
+              setShowEndDatePicker(Platform.OS === 'ios');
+              setTaskEndDate(currentDate);
+            }}
+            textColor="#000000" // For iOS
+            // For Android, you may need to use a theme or styles.xml to change the picker colors
+            maximumDate={new Date(2300, 10, 20)}
+            minimumDate={new Date()}
+          />
+        )}
+      </>
+    );
+  };
+
   return (
     <View style={styles.container}>
-      {task && (
-        <View>
-          <Text style={styles.header}>Name: {task.taskName}</Text>
-          <Text style={styles.header}>Description: {task.taskDescription}</Text>
-    
-          <Text style={styles.header}>Start Date: {task.taskStartDate}</Text>
-          <Text style={styles.header}>End Date: {task.taskEndDate}</Text>
-          <Text style={styles.header}>Project : {task.projectId}</Text>   
-          <TextInput
-          style={styles.input}
-          placeholder="Hours Spend "
-          value={hours}
-          onChangeText={(text) => setHours(text)}/> 
-    <Text>Actual Task End Date:</Text>
-      <Button
-        title={taskEndDate.toISOString().split('T')[0]}
-        onPress={() => setShowEndDatePicker(true)}
-      />
-      {showEndDatePicker && (
-        <DateTimePicker
-          value={taskEndDate}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            if (selectedDate) {
-              setTaskEndDate(selectedDate);
-            }
-            setShowEndDatePicker(false);
-          }}
-          minimumDate={new Date()} // Disallow past dates
-        />
+      <Card style={styles.card}>
+        {task && (
+          <>
+            <Text style={styles.heading}>Complete Task</Text>
+            <View style={styles.section}>
+              <Text style={styles.label}>Task Name</Text>
+              <Text style={styles.body}>{task.taskName}</Text>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Description</Text>
+              <Text style={styles.body}>{task.taskDescription}</Text>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Start Date</Text>
+              <Text style={styles.body}>{task.taskStartDate}</Text>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>End Date</Text>
+              <Text style={styles.body}>{task.taskEndDate}</Text>
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Project</Text>
+              <Text style={styles.body}>{task.projectId}</Text>
+            </View>
+            <TextField
+              placeholder="Hours Spent"
+              keyboardType="numeric"
+              onChangeText={(text) => setHours(text)}
+              style={styles.input}
+            />
+            <View style={styles.section}>
+              <Text style={styles.label}>Actual Task End Date:</Text>
+              {renderDatePicker()}
+            </View>
+            <UIButton
+              backgroundColor={Colors.primary}
+              label="Complete Task"
+              onPress={handleCompleteTask}
+              style={styles.button}
+            />
+          </>
         )}
-        </View>
-      )}
-       <Button title="Complete Task" onPress={handleCompleteTask} />
+      </Card>
     </View>
   );
 };
 
-const showAlert = (title, message) => {
-  Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
-};
+// Styles for the RNPickerSelect similar to your CreateTaskScreen
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 20,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 20,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+});
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
+    backgroundColor: Colors.background,
   },
-  header: {
-    fontSize: 14,
-    marginBottom: 20,
-  },
-  taskItem: {
-    borderWidth: 1,
-    borderColor: 'gray',
+  card: {
     padding: 10,
-    marginBottom: 10,
+    margin: Spacings.page,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  taskName: {
-    fontSize: 18,
+  heading: {
+    padding: Spacings.s2,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
+    color: Colors.mainText,
+    marginBottom: Spacings.s5,
+    textAlign: 'center',
   },
-  taskDescription: {
-    marginBottom: 5,
+  section: {
+    marginBottom: Spacings.s4,
+  },
+  label: {
+    ...Typography.subheading,
+    color: Colors.mainText,
+    marginBottom: Spacings.s1,
+  },
+  body: {
+    ...Typography.body,
+    color: Colors.subText,
+    backgroundColor: '#f2f2f2',
+    padding: Spacings.s2,
+    borderRadius: 12,
   },
   input: {
+    marginTop: Spacings.input,
     height: 40,
+    width: '100%',
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 10,
+    borderRadius: 20,
     paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  button: {
+    marginTop: Spacings.s5,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dateButton: {
+    backgroundColor: '#fff', // Assuming you want a white background
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 20,
+    padding: 10,
+    justifyContent: 'flex-start', // Aligns button content (icon and text) to the left
+    height: 40, // Set a fixed height
+  },
+  dateLabel: {
+    color: 'black', // Sets the font color to black
+    fontSize: 16, // Sets the font size
+    textAlign: 'left', // Aligns the text to the left
   },
 });
 
