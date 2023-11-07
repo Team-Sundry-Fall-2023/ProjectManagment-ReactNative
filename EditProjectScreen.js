@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert,FlatList} from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, FlatList } from 'react-native';
+import { Button } from 'react-native-ui-lib';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { firebase, database, auth } from './firebase';
 import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
@@ -147,99 +148,170 @@ const EditProjectScreen = () => {
     setFilteredTasks(filtered);
   };
 
-  return (
-    <View style={styles.container}>
-      {/* {project && ( */}
-      <View>
-        <TextInput
-          style={styles.input}
-          placeholder="Project Name"
-          value={name}
-          onChangeText={(text) => setName(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Project Description"
-          value={description}
-          onChangeText={(text) => setDescription(text)}
-        />
-        <Button title="Edit Project" onPress={handleEditProject} />
-        <Button
-          title="Create Task"
-          onPress={() => navigation.navigate('Create Task', { projectObj: project,tasks, setTasks })}
-        />
-        <View style={styles.searchInput}>
-        <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
-        <TextInput
-          placeholder="Search tasks..."
-          value={searchQuery}
-          onChangeText={(text) => setSearchQuery(text)} />
-           </View>
-        {tasks.length > 0 ? (
-          <FlatList
-          data={searchQuery ? filteredTasks : tasks}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.taskItem}>
-                <Text style={styles.taskName}>{item.taskName}</Text>
-                <Text style={styles.taskDescription}>{item.taskDescription}</Text>
-                <Text>{`Start Date: ${item.taskStartDate}`}</Text>
-                <Text>{`End Date: ${item.taskEndDate}`}</Text>
-                <Text>{`Status: ${item.status}`}</Text>
-                <Text>{`Member: ${item.member}`}</Text>
-                <Text>{`Cost: ${item.taskCost}`}</Text>
-                <Text>{`Hours: ${item.taskCost}`}</Text>
-                <Text>{`Actual End Date: ${item.actualEndDate}`}</Text>
-              </View>
-            )}
-          />
-        ) : (
-          <Text>No tasks found for this project.</Text>
-        )}
-      </View>
-      {/* )} */}
-    </View>
-  );
-
-};
-
-
-
-
-// Function to show an alert with the error message
+  // Function to show an alert with the error message
 const showAlert = (title, message) => {
   Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
 };
 
+const formatDate = (dateString) => {
+  if (!dateString) {
+    return 'N/A';
+  }
+  const date = new Date(dateString);
+  if (isNaN(date)) {
+    return 'Invalid date';
+  }
+  const options = {
+    year: 'numeric', month: 'long', day: 'numeric',
+    hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
+  };
+  return new Intl.DateTimeFormat('en-US', options).format(date);
+};
+
+const renderTaskItem = ({ item }) => (
+  <View style={styles.taskItem}>
+    <Text style={styles.taskName}>{item.taskName}</Text>
+    <Text style={styles.taskDescription}>{item.taskDescription}</Text>
+    <View style={styles.taskDetails}>
+      <Text style={styles.taskDetailText}>Start: {formatDate(item.taskStartDate)}</Text>
+      <Text style={styles.taskDetailText}>End: {formatDate(item.taskEndDate)}</Text>
+      <Text style={styles.taskDetailText}>Status: {item.status}</Text>
+      <Text style={styles.taskDetailText}>Member: {item.member}</Text>
+      <Text style={styles.taskDetailText}>Actual End: {formatDate(item.actualEndDate)}</Text>
+      <Text style={styles.taskDetailText}>Cost: {item.taskCost}</Text>
+      <Text style={styles.taskDetailText}>Hours: {item.noOfHours}</Text>
+    </View>
+  </View>
+);
+
+return (
+  <View style={styles.container}>
+    <View style={styles.projectHeader}>
+      <TextInput
+        style={styles.editInput}
+        placeholder="Project Name"
+        value={name}
+        onChangeText={setName}
+      />
+      <TextInput
+        style={[styles.editInput, styles.multilineInput]} // Increase height for multiline input
+        placeholder="Project Description"
+        multiline
+        numberOfLines={4}
+        value={description}
+        onChangeText={setDescription}
+      />
+      <Button
+        label="Edit Project"
+        onPress={handleEditProject}
+        style={styles.button}
+      />
+      <Button
+        label="Create Task"
+        onPress={() => navigation.navigate('Create Task', { projectObj: project, tasks, setTasks })}
+        style={styles.button}
+      />
+    </View>
+    <View style={styles.searchInput}>
+      <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
+      <TextInput
+        placeholder="Search tasks..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        style={styles.input}
+      />
+    </View>
+    {tasks.length > 0 ? (
+            <FlatList
+            data={searchQuery ? filteredTasks : tasks}
+              keyExtractor={(item) => item.id?.toString() ?? ''}
+              renderItem={renderTaskItem}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <Text style={styles.noTasksText}>No tasks found for this project.</Text>
+          )}
+  </View>
+);
+
+};
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  header: {
-    fontSize: 24,
+  editInput: {
+    height: 40,
+    width: '100%', // Set a fixed width for the TextFields
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 20, // This is half of the height to make the TextField rounded
+    paddingHorizontal: 10,
     marginBottom: 20,
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+  multilineInput: {
+    paddingTop: 10,
+    minHeight: 100, // Minimum height for text area
+  },
+  button: {
+    marginTop : 10,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#f7f7f7',
+  },
+  projectHeader: {
+    padding: 16,
+    paddingBottom: 70,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e1e1e1',
+    backgroundColor: 'white',
+  },
+  projectName: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  projectDescription: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 8,
+  },
+  createTaskButton: {
+    marginBottom: 16,
   },
   taskItem: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
-    marginBottom: 10,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    elevation: 2, // for Android shadow
+    shadowOpacity: 0.1, // for iOS shadow
+    shadowRadius: 4,
+    shadowColor: '#000',
+    shadowOffset: { height: 2, width: 0 },
+  },
+  taskDetails: {
+    marginTop: 8,
+  },
+  taskDetailText: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
   },
   taskName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 4,
   },
   taskDescription: {
-    marginBottom: 5,
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  noTasksText: {
+    textAlign: 'center',
+    marginTop: 16,
+    fontSize: 16,
+    color: '#999',
   },
   searchInput: {
     height: 40,
