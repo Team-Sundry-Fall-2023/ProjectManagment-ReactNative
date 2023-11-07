@@ -177,7 +177,8 @@ const EditTaskScreen = () => {
                         owner: task.owner,
                         member: selectedUser ? selectedUser.email.toLowerCase() : null,
                         actualEndDate: task.actualEndDate || '',
-                        noOfHours : task.noOfHours
+                        noOfHours : task.noOfHours,
+                        taskId : task.taskId
                     };
 
                     // Update the task in the database

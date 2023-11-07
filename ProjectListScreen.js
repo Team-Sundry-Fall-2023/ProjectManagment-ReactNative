@@ -116,6 +116,7 @@ const ProjectListScreen = () => {
   };
 
   const handleEditDetails = (project) => {
+    console.log('project list project ', project)
     navigation.navigate('Edit Project', { projectObj: project , projects, setProjects  });
   };
 

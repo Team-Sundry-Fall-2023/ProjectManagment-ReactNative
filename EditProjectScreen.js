@@ -18,13 +18,21 @@ const EditProjectScreen = () => {
   useEffect(() => {
     if (projectObj) {
       setProject(projectObj);
+      console.log('useEffect projectObj' , projectObj)
+      console.log('useEffect project' , project)
       setProjects(projects);
     }
   }, [projectObj, project,projects]);
 
+  useEffect(() => {
+    if (project) {
+      console.log('useEffect project' , project)
+      setProjects(projects);
+    }
+  }, [projectObj, project,projects]);
 
   useEffect(() => {
-    console.log(project)
+    console.log('tasks userQuery',project)
     if (project) {
       const tasksList = [];
       setDescription(project.description);
@@ -78,6 +86,9 @@ const EditProjectScreen = () => {
           const updatedProjectData = {
             name: name,
             description: description,
+            projectId : project.projectId,
+            user : project.user,
+            projectCost : project.projectCost
           };
 
           // Update the project in the database
