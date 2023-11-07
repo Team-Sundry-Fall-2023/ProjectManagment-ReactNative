@@ -181,11 +181,11 @@ const CompleteTaskScreen = ({ route, navigation }) => {
   const renderDatePicker = () => {
     return (
       <>
-        <Button
-          title={taskEndDate.toISOString().split('T')[0]}
+        <UIButton // Use UIButton from react-native-ui-lib
+          label={taskEndDate.toDateString()} // Use label prop instead of title
           onPress={() => setShowEndDatePicker(true)}
           style={styles.dateButton}
-          labelStyle={styles.dateLabel}
+          labelStyle={styles.dateLabel} // Ensure this is defined in your styles
         />
         {showEndDatePicker && (
           <DateTimePicker
@@ -194,13 +194,13 @@ const CompleteTaskScreen = ({ route, navigation }) => {
             display="default"
             onChange={(event, selectedDate) => {
               const currentDate = selectedDate || taskEndDate;
-              setShowEndDatePicker(Platform.OS === 'ios');
               setTaskEndDate(currentDate);
+              setShowEndDatePicker(false); // Hide picker right after selection
+              if (selectedDate) {
+                setTaskEndDate(selectedDate);
+              }
             }}
-            textColor="#000000" // For iOS
-            // For Android, you may need to use a theme or styles.xml to change the picker colors
-            maximumDate={new Date(2300, 10, 20)}
-            minimumDate={new Date()}
+            // ... other props
           />
         )}
       </>
