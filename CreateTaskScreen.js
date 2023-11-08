@@ -114,7 +114,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
       taskEndDate: taskEndDate.toISOString(), // Store as ISO string
       taskCost: 0,
       projectId: selectedProject ? selectedProject.projectId : null,
-      status: 'New',
+      status: 'InProgress',
       taskId: taskId,
       owner: currentUserEmail,
       member: selectedUser ? selectedUser.email.toLowerCase() : null,
