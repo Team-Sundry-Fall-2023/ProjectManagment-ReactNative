@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { auth, database } from './firebase';
+import { ref, query, orderByChild, equalTo, get, remove } from "firebase/database";
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Card } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,10 +8,12 @@ import { Ionicons } from '@expo/vector-icons';
 const TaskDetailScreen = ({ route, navigation }) => {
   const { taskObj } = route.params;
   const [task, setTask] = useState(null);
+  const [project, setProject] = useState([]);
 
   useEffect(() => {
     if (taskObj) {
       setTask(taskObj);
+      getProjectFromId(taskObj);
     }
   }, [taskObj]);
 
@@ -23,6 +27,22 @@ const TaskDetailScreen = ({ route, navigation }) => {
     }
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' };
     return new Intl.DateTimeFormat('en-US', options).format(date);
+  };
+
+  const getProjectFromId = (task) => {
+    const userQuery = query(ref(database, 'projects'), orderByChild('projectId'), equalTo(task.projectId));
+    get(userQuery).then((snapshot) => {
+      if (snapshot.exists()) {
+        const projects = snapshot.val();
+        Object.keys(projects).forEach((projectId) => {
+          const project = projects[projectId];
+          setProject(project);
+        });
+      }
+    }).catch((error) => {
+      showAlert('Error', 'Error finding project :', error.message);
+      return null;
+    });
   };
 
   // An icon wrapper for convenience
@@ -48,7 +68,7 @@ const TaskDetailScreen = ({ route, navigation }) => {
           <IconRow name="ios-checkmark-circle-outline" size={24} color="#666" text={`Status: ${task.status}`} />
           <IconRow name="ios-person" size={24} color="#666" text={`Member: ${task.member}`} />
           <IconRow name="ios-calendar" size={24} color="#666" text={`Actual End Date: ${formatDate(task.actualEndDate)}`} />
-          <IconRow name="ios-business" size={24} color="#666" text={`Project: ${task.projectId}`} />
+          <IconRow name="ios-business" size={24} color="#666" text={`Project: ${project.name}`} />
         </Card>
       )}
     </ScrollView>
