@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Card, Colors, Spacings, Typography, Button as UIButton, TextField } from 'react-native-ui-lib';
-import { firebase, auth, database } from './firebase';
+import { auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -22,11 +22,8 @@ const CompleteTaskScreen = ({ route, navigation }) => {
   }, [taskObj, task, tasks]);
 
   useEffect(() => {
-    // Fetch the currently authenticated user's details
     const currentUser = auth.currentUser;
-
     if (currentUser) {
-
       const userQuery = query(
         ref(database, 'users'),
         orderByChild('email'),
@@ -56,7 +53,6 @@ const CompleteTaskScreen = ({ route, navigation }) => {
   }, []);
 
   const handleCompleteTask = () => {
-    // Validate input fields
     if (!hours) {
       showAlert('Error', 'No of hours are required.');
       return;
@@ -65,12 +61,11 @@ const CompleteTaskScreen = ({ route, navigation }) => {
     const taskCost = hours * hourlyRate;
     const userQuery = query(ref(database, 'tasks'), orderByChild('taskId'), equalTo(task.taskId));
 
-    // Fetch the task data
     get(userQuery)
       .then((snapshot) => {
         if (snapshot.exists()) {
           const tasks = snapshot.val();
-          const taskId = Object.keys(tasks)[0]; // Assuming there's only one task with a given ID
+          const taskId = Object.keys(tasks)[0];
 
           const updatedtaskData = {
             // taskName: task.taskName,
@@ -87,27 +82,22 @@ const CompleteTaskScreen = ({ route, navigation }) => {
             noOfHours: hours
           };
           console.log('updatedtaskData ', updatedtaskData);
-          // Update the task in the database
           update(ref(database, `tasks/${taskId}`), updatedtaskData)
             .then(() => {
-              // task data has been successfully updated
               showAlert('Success', 'task data updated');
-              // Update the project's cost
               updateProjectCost(task.projectId, taskCost);
               console.log('updatedtaskData begin', updatedtaskData);
               updateTask(taskCost);
               navigation.goBack();
             })
             .catch((error) => {
-              // Handle the error if the update fails
               showAlert('Error', 'Error updating task data:' + error);
             });
         } else {
-          console.log('task not found'); // Handle the case where the task is not found
+          console.log('task not found');
         }
       })
       .catch((error) => {
-        // Handle the error if the fetch fails
         showAlert('Error', 'Error finding task:' + error);
       });
   };
@@ -130,17 +120,12 @@ const CompleteTaskScreen = ({ route, navigation }) => {
     };
 
     console.log('updatedTask ', updatedtaskData)
-    // Find the index of the task to be updated in the tasks array
     const taskIndex = tasks.findIndex((task) => task.taskId === updatedtaskData.taskId,);
     console.log('taskIndex ', taskIndex)
     if (taskIndex !== -1) {
-      // Create a copy of the tasks array
       const updatedTasks = [...tasks];
       console.log('updatedTasks End', updatedTasks)
-      // Update the task in the copied array
       updatedTasks[taskIndex] = updatedtaskData;
-
-      // Set the state to trigger a re-render with the updated tasks
       setTasks(updatedTasks);
     }
   };
@@ -181,11 +166,11 @@ const CompleteTaskScreen = ({ route, navigation }) => {
   const renderDatePicker = () => {
     return (
       <>
-        <UIButton // Use UIButton from react-native-ui-lib
-          label={taskEndDate.toDateString()} // Use label prop instead of title
+        <UIButton
+          label={taskEndDate.toDateString()}
           onPress={() => setShowEndDatePicker(true)}
           style={styles.dateButton}
-          labelStyle={styles.dateLabel} // Ensure this is defined in your styles
+          labelStyle={styles.dateLabel}
         />
         {showEndDatePicker && (
           <DateTimePicker
@@ -195,12 +180,11 @@ const CompleteTaskScreen = ({ route, navigation }) => {
             onChange={(event, selectedDate) => {
               const currentDate = selectedDate || taskEndDate;
               setTaskEndDate(currentDate);
-              setShowEndDatePicker(false); // Hide picker right after selection
+              setShowEndDatePicker(false);
               if (selectedDate) {
                 setTaskEndDate(selectedDate);
               }
             }}
-            // ... other props
           />
         )}
       </>
@@ -256,7 +240,6 @@ const CompleteTaskScreen = ({ route, navigation }) => {
   );
 };
 
-// Styles for the RNPickerSelect similar to your CreateTaskScreen
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     fontSize: 16,
@@ -266,7 +249,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: 'gray',
     borderRadius: 20,
     color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    paddingRight: 30,
   },
   inputAndroid: {
     fontSize: 16,
@@ -276,7 +259,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: 'purple',
     borderRadius: 20,
     color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    paddingRight: 30,
   },
 });
 
@@ -341,18 +324,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dateButton: {
-    backgroundColor: '#fff', // Assuming you want a white background
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 20,
     padding: 10,
-    justifyContent: 'flex-start', // Aligns button content (icon and text) to the left
-    height: 40, // Set a fixed height
+    justifyContent: 'flex-start',
+    height: 40,
   },
   dateLabel: {
-    color: 'black', // Sets the font color to black
-    fontSize: 16, // Sets the font size
-    textAlign: 'left', // Aligns the text to the left
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'left',
   },
 });
 

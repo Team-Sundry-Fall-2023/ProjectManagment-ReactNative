@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Alert, ScrollView, StyleSheet } from 'react-native';
 import { Button, TextField, Text } from 'react-native-ui-lib';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { firebase, auth, database } from './firebase';
-import { ref, push, set, query, orderByChild, equalTo, get, update } from 'firebase/database';
+import { auth, database } from './firebase';
+import { ref, query, orderByChild, equalTo, get, update } from 'firebase/database';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import commonStyles from './style';
 import RNPickerSelect from 'react-native-picker-select';
@@ -25,7 +25,6 @@ const EditTaskScreen = () => {
     const [taskProjectId, setTaskProjectId] = useState('');
     const [taskMemebr, setTaskMember] = useState('');
 
-    // console.log('taskObj 1' + taskObj);
     useEffect(() => {
         if (taskObj) {
             setTask(taskObj);
@@ -33,16 +32,14 @@ const EditTaskScreen = () => {
         }
     }, [taskObj, task, tasks]);
 
-    // console.log('task 1' + task);
-
     useEffect(() => {
         if (task) {
             setTaskDescription(task.taskDescription);
             setTaskName(task.taskName)
-            const startDateString = task.taskStartDate; // Replace this with your date string
+            const startDateString = task.taskStartDate;
             const startDateObject = new Date(startDateString);
             setTaskStartDate(startDateObject);
-            const endDateString = task.taskEndDate; // Replace this with your date string
+            const endDateString = task.taskEndDate;
             const dateObject = new Date(endDateString);
             setTaskEndDate(dateObject);
             setTaskProjectId(task.projectId);
@@ -53,12 +50,7 @@ const EditTaskScreen = () => {
 
     }, [task]);
 
-    // console.log('taskProjectId 1' + taskProjectId);
-
     useEffect(() => {
-        // console.log('taskProjectId 2' + taskProjectId);
-
-        // Fetch projects related to the current user and populate projectOptions
         if (auth.currentUser) {
             const currentUserEmail = auth.currentUser.email;
             const userProjectsQuery = query(
@@ -80,7 +72,7 @@ const EditTaskScreen = () => {
                         setProjectOptions(options);
                         console.log('setProjectOptions 1', options)
                         console.log('taskProjectId 1 :' + taskObj.projectId);
-                        setSelectedProjectOptions(options , taskObj.projectId);
+                        setSelectedProjectOptions(options, taskObj.projectId);
                     }
                 })
                 .catch((error) => {
@@ -88,7 +80,6 @@ const EditTaskScreen = () => {
                 });
 
         }
-        // console.log('projectOptions' + projectOptions);
 
         const userQuery = query(
             ref(database, 'users'),
@@ -125,8 +116,6 @@ const EditTaskScreen = () => {
                 console.log('userMatch', userMatch)
                 setSelectedUser(userMatch.value);
             }
-        } else {
-            //console.error('userMatch:');
         }
     }
 
@@ -139,8 +128,6 @@ const EditTaskScreen = () => {
                 console.log('projectMatch' + projectMatch);
                 setSelectedProject(projectMatch.value);
             }
-        } else {
-            //console.error('projectMatch:');
         }
     }
 
@@ -178,7 +165,7 @@ const EditTaskScreen = () => {
             .then((snapshot) => {
                 if (snapshot.exists()) {
                     const tasks = snapshot.val();
-                    const taskId = Object.keys(tasks)[0]; // Assuming there's only one task with a given ID
+                    const taskId = Object.keys(tasks)[0];
 
 
                     const updatedtaskData = {
@@ -199,7 +186,6 @@ const EditTaskScreen = () => {
                     // Update the task in the database
                     update(ref(database, `tasks/${taskId}`), updatedtaskData)
                         .then(() => {
-                            // task data has been successfully updated
                             showAlert('Success', 'Task data updated');
                             /* const updatedTask = {
                                 ...updatedtaskData,
@@ -212,15 +198,13 @@ const EditTaskScreen = () => {
                             navigation.goBack();
                         })
                         .catch((error) => {
-                            // Handle the error if the update fails
                             console.log('Error updating task data:' + error);
                         });
                 } else {
-                    console.log('task not found'); // Handle the case where the task is not found
+                    console.log('task not found');
                 }
             })
             .catch((error) => {
-                // Handle the error if the fetch fails
                 console.log('Error updating task data:' + error);
             });
     };
@@ -236,8 +220,6 @@ const EditTaskScreen = () => {
 
             // Update the task in the copied array
             updatedTasks[taskIndex] = updatedTask;
-            console.log('updatedTasks ', updatedTasks)
-            // Set the state to trigger a re-render with the updated tasks
             setTasks(updatedTasks);
         }
     };
@@ -265,7 +247,7 @@ const EditTaskScreen = () => {
                 label={taskStartDate.toDateString()}
                 onPress={() => setShowStartDatePicker(true)}
                 style={styles.dateButton}
-                labelStyle={styles.dateLabel} // Apply the custom label style here
+                labelStyle={styles.dateLabel}
             />
             {showDatePicker && (
                 <DateTimePicker
@@ -291,7 +273,7 @@ const EditTaskScreen = () => {
                 label={taskEndDate.toDateString()}
                 onPress={() => setShowEndDatePicker(true)}
                 style={styles.dateButton}
-                labelStyle={styles.dateLabel} // Apply the custom label style here
+                labelStyle={styles.dateLabel}
             />
             {showDatePicker && (
                 <DateTimePicker
@@ -310,7 +292,7 @@ const EditTaskScreen = () => {
         </>
     );
 
-   return (
+    return (
         <ScrollView style={styles.container}>
             <View style={styles.fieldContainer}>
                 <TextField
@@ -372,70 +354,6 @@ const EditTaskScreen = () => {
             <Button label="Update Task" onPress={handleEditTask} style={styles.saveButton} />
         </ScrollView>
     );
-
-   /* return (
-        <ScrollView style={styles.container}>
-            <View style={styles.fieldContainer}>
-                <TextField
-                    placeholder="Enter task name"
-                    value={taskName}
-                    onChangeText={setTaskName}
-                    style={styles.input}
-                />
-            </View>
-    
-            <View style={styles.fieldContainer}>
-                <TextField
-                    placeholder="Enter task description"
-                    value={taskDescription}
-                    onChangeText={setTaskDescription}
-                    style={[styles.input, styles.multilineInput]}
-                    multiline={true}
-                />
-            </View>
-    
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>Start Date</Text>
-                <Text style={styles.dateText}>{taskStartDate.toDateString()}</Text>
-            </View>
-    
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>End Date</Text>
-                {renderEndDatePicker(taskEndDate, setTaskEndDate, showEndDatePicker, setShowEndDatePicker, "End Date")}
-            </View>
-    
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>Assign to</Text>
-                <RNPickerSelect
-                    onValueChange={(value) => setSelectedUser(value)}
-                    items={userOptions}
-                    style={pickerSelectStyles}
-                    placeholder={{
-                        label: 'Select a member',
-                        value: null,
-                    }}
-                    value={selectedUser}
-                />
-            </View>
-
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>Project</Text>
-                <RNPickerSelect
-                    onValueChange={(value) => setSelectedProject(value)}
-                    items={projectOptions}
-                    style={pickerSelectStyles}
-                    placeholder={{
-                        label: 'Select a project',
-                        value: null,
-                    }}
-                    value={selectedProject}
-                />
-            </View>
-    
-            <Button label="Update Task" onPress={handleEditTask} style={styles.saveButton} />
-        </ScrollView>
-    );*/
-
 };
 
 const pickerSelectStyles = StyleSheet.create({

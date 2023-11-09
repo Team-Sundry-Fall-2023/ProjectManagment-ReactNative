@@ -23,7 +23,6 @@ const TaskListScreen = () => {
     console.log('userQuery' + userQuery)
     get(userQuery).then((snapshot) => {
       if (snapshot.exists()) {
-        // The snapshot contains the user data matching the email
         const tasks = snapshot.val();
 
         Object.keys(tasks).forEach((taskId) => {
@@ -62,7 +61,7 @@ const TaskListScreen = () => {
           {
             text: 'Delete',
             onPress: async () => {
-              // First, fetch all tasks related to the Task
+              // Fetch all tasks related to the Task
               const userQuery = query(ref(database, 'tasks'), orderByChild('taskId'), equalTo(task.taskId));
 
               // Fetch the task data
@@ -82,18 +81,16 @@ const TaskListScreen = () => {
                     });
                     Promise.all(deleteTasksPromises).then(() => {
                       showAlert('Success', 'Task deleted');
-                      // Update the state to trigger a re-render
                       setTasks((prevTasks) =>
                         prevTasks.filter((item) => item.taskId !== task.taskId)
                       );
                     });
                   } else {
                     console.log('task not found ')
-                    showAlert('Error', 'task not found'); // Handle the case where the task is not found
+                    showAlert('Error', 'task not found');
                   }
                 })
                 .catch((error) => {
-                  // Handle the error if the fetch fails
                   console.log('Error finding task:' + error)
                   showAlert('Error', 'Error finding task:' + error);
                 });
@@ -113,9 +110,9 @@ const TaskListScreen = () => {
   };
 
   const handleViewEditTask = (task) => {
-    if(task.status === 'Complete'){
+    if (task.status === 'Complete') {
       handleViewDetails(task);
-    }else{
+    } else {
       handleEditTask(task);
     }
   };
@@ -214,18 +211,18 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   card: {
-    borderRadius: 20, // This should match the border radius of the touchable if you have a card style
+    borderRadius: 20,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10, // Add bottom margin to create space between the badge and the underline
+    marginBottom: 10,
   },
   taskName: {
     fontSize: 18,
     fontWeight: 'bold',
-    flex: 1, // Allows task name to fill the space and push status to the right
+    flex: 1,
   },
   statusBadge: {
     paddingHorizontal: 6,

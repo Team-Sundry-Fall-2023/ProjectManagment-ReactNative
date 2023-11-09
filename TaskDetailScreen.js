@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Card, Button } from 'react-native-elements';
+import { Card } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 
 const TaskDetailScreen = ({ route, navigation }) => {
@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 20,
   },
-  // Add other styles as needed
 });
 
 export default TaskDetailScreen;

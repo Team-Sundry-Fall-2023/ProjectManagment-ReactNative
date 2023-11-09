@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { firebase, auth, database } from './firebase';
+import { auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get } from "firebase/database";
 import { FontAwesome } from '@expo/vector-icons';
 import { Card } from 'react-native-elements';
@@ -28,8 +28,6 @@ const MemberTaskListScreen = () => {
           const task = tasks[taskId];
           console.log('Task item', task);
           taskList.push(task);
-          // console.log('TaskList ' + TaskList.length )
-
         });
         console.log('TaskList ' + taskList.length)
         setTasks(taskList);
@@ -120,18 +118,18 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   card: {
-    borderRadius: 20, // This should match the border radius of the touchable if you have a card style
+    borderRadius: 20,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10, // Add bottom margin to create space between the badge and the underline
+    marginBottom: 10,
   },
   taskName: {
     fontSize: 18,
     fontWeight: 'bold',
-    flex: 1, // Allows task name to fill the space and push status to the right
+    flex: 1,
   },
   statusBadge: {
     paddingHorizontal: 6,

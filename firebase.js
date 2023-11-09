@@ -1,6 +1,3 @@
-// import * as firebase from 'firebase/app';
-// import 'firebase/auth';
-// import 'firebase/database'; // or 'firebase/firestore' for Firestore
 import * as firebase  from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';

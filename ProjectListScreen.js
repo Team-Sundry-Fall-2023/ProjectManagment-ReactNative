@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
-import { firebase, auth, database } from './firebase';
+import { auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get, remove } from "firebase/database";
 import { Card } from 'react-native-elements';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -125,12 +125,7 @@ const ProjectListScreen = () => {
     navigation.navigate('Edit Project', { projectObj: project, projects, setProjects });
   };
 
-  // const handleRightButtonPress = () => {
-  //   console.log('create projects' + projects)
-  //   navigation.navigate('AddProject', { projects, setProjects});
-  // };
   const handleRightButtonPress = () => {
-    // This callback function ensures that navigation occurs after the state update
     setProjects(updatedProjects => {
       console.log('create projects', updatedProjects);
       navigation.navigate('Add Project', { projects: updatedProjects, setProjects });
@@ -213,7 +208,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   card: {
-    borderRadius: 20, // This should match the border radius of the touchable if you have a card style
+    borderRadius: 20,
   },
   projectName: {
     alignItems: 'center',

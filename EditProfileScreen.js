@@ -4,9 +4,9 @@ import { Button, TextField, Text } from 'react-native-ui-lib'; // Import from 'r
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
 import { updatePassword } from "firebase/auth";
-import { firebase ,auth, database} from './firebase';
+import { auth, database } from './firebase';
 import 'firebase/auth';
-import 'firebase/database'; 
+import 'firebase/database';
 
 const EditProfileScreen = ({ }) => {
   const navigation = useNavigation();
@@ -48,44 +48,38 @@ const EditProfileScreen = ({ }) => {
       return;
     }
 
-    const user = auth.currentUser; // Get the current authenticated user
+    const user = auth.currentUser;
 
-    // Use the `updatePassword` method to update the user's password
     updatePassword(user, password)
       .then(() => {
         showAlert('Success', 'Password updated');
 
         const userQuery = query(ref(database, 'users'), orderByChild('email'), equalTo(user.email));
 
-        // Fetch the project data
         get(userQuery)
           .then((snapshot) => {
             if (snapshot.exists()) {
               const users = snapshot.val();
-              const userEmail = Object.keys(users)[0]; // Assuming there's only one project with a given ID
+              const userEmail = Object.keys(users)[0];
 
               const updatedUsertData = {
                 firstName: firstName,
                 lastName: lastName,
               };
 
-              // Update the project in the database
               update(ref(database, `users/${userEmail}`), updatedUsertData)
                 .then(() => {
-                  // Project data has been successfully updated
                   showAlert('Success', 'User data updated');
                   navigation.goBack();
                 })
                 .catch((error) => {
-                  // Handle the error if the update fails
                   showAlert('Error', 'Error updating user data:' + error);
                 });
             } else {
-              console.log('User not found'); // Handle the case where the project is not found
+              console.log('User not found');
             }
           })
           .catch((error) => {
-            // Handle the error if the fetch fails
             showAlert('Error', 'Error finding user:' + error);
           });
       })
@@ -100,7 +94,6 @@ const EditProfileScreen = ({ }) => {
 
   // Email validation function
   const validateEmail = (email) => {
-    // Use a regular expression to validate email format
     const emailPattern = /\S+@\S+\.\S+/;
     return emailPattern.test(email);
   };
@@ -109,7 +102,7 @@ const EditProfileScreen = ({ }) => {
     <ScrollView style={styles.container}>
       <View style={styles.fieldContainer}>
         <Text style={styles.labelEmail}>Account: {email}</Text>
-        
+
         <Text style={styles.label}>First Name</Text>
         <TextField
           placeholder="First Name"

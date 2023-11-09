@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert, TextInput } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Alert, TextInput } from 'react-native';
 import { Button } from 'react-native-ui-lib';
-import { firebase, auth, database } from './firebase';
+import { database } from './firebase';
 import { ref, query, orderByChild, equalTo, get } from "firebase/database";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -27,7 +27,6 @@ const ProjectDetailScreen = ({ route, navigation }) => {
       console.log('userQuery' + userQuery)
       get(userQuery).then((snapshot) => {
         if (snapshot.exists()) {
-          // The snapshot contains the user data matching the email
           const tasks = snapshot.val();
 
           Object.keys(tasks).forEach((taskId) => {
@@ -112,15 +111,15 @@ const ProjectDetailScreen = ({ route, navigation }) => {
             />
           </View>
           <View style={styles.searchInput}>
-        <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
-        <TextInput
-          placeholder="Search tasks..."
-          value={searchQuery}
-          onChangeText={(text) => setSearchQuery(text)} />
-      </View>
+            <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
+            <TextInput
+              placeholder="Search tasks..."
+              value={searchQuery}
+              onChangeText={(text) => setSearchQuery(text)} />
+          </View>
           {tasks.length > 0 ? (
             <FlatList
-            data={searchQuery ? filteredTasks : tasks}
+              data={searchQuery ? filteredTasks : tasks}
               keyExtractor={(item) => item.id?.toString() ?? ''}
               renderItem={renderTaskItem}
               showsVerticalScrollIndicator={false}

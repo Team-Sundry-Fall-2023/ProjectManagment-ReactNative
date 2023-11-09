@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert, ScrollView } from 'react-native';
-import { Button, TextField, Text } from 'react-native-ui-lib'; // Importing required components
+import { Button, TextField, Text } from 'react-native-ui-lib';
 import { useNavigation } from '@react-navigation/native';
 import { auth, database } from './firebase';
 import { ref, push, set } from "firebase/database";
-import commonStyles from './style'; // Assuming this is where your common styles are defined
+import commonStyles from './style';
 
 const AddProjectScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -108,25 +108,24 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    width: '100%', // Set a fixed width for the TextFields
+    width: '100%',
     borderColor: 'gray',
     borderWidth: 1,
-    borderRadius: 20, // This is half of the height to make the TextField rounded
+    borderRadius: 20,
     paddingHorizontal: 10,
     marginBottom: 20,
   },
   multilineInput: {
-    marginBottom: 30, 
+    marginBottom: 30,
     marginTop: 10,
     paddingTop: 10,
-    minHeight: 100, // Set minimum height for the description TextField
+    minHeight: 100,
   },
   button: {
-    backgroundColor: '#5848ff', // Button color as per your design
-    borderRadius: 10, // Adjust to match the button border-radius in CreateTaskScreen
-    // Add padding, margin, or any other styles if necessary
+    backgroundColor: '#5848ff',
+    borderRadius: 10,
+
   },
-  // Include other styles from CreateTaskScreen that may apply
 });
 
 export default AddProjectScreen;

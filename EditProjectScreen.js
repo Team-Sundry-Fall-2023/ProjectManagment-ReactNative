@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, FlatList } from 'react-native';
 import { Button } from 'react-native-ui-lib';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { firebase, database, auth } from './firebase';
+import { database } from './firebase';
 import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -21,21 +21,21 @@ const EditProjectScreen = () => {
   useEffect(() => {
     if (projectObj) {
       setProject(projectObj);
-      console.log('useEffect projectObj' , projectObj)
-      console.log('useEffect project' , project)
+      console.log('useEffect projectObj', projectObj)
+      console.log('useEffect project', project)
       setProjects(projects);
     }
-  }, [projectObj, project,projects]);
+  }, [projectObj, project, projects]);
 
   useEffect(() => {
     if (project) {
-      console.log('useEffect project' , project)
+      console.log('useEffect project', project)
       setProjects(projects);
     }
-  }, [projectObj, project,projects]);
+  }, [projectObj, project, projects]);
 
   useEffect(() => {
-    console.log('tasks userQuery',project)
+    console.log('tasks userQuery', project)
     if (project) {
       const tasksList = [];
       setDescription(project.description);
@@ -44,7 +44,6 @@ const EditProjectScreen = () => {
       console.log('userQuery' + userQuery)
       get(userQuery).then((snapshot) => {
         if (snapshot.exists()) {
-          // The snapshot contains the user data matching the email
           const tasks = snapshot.val();
 
           Object.keys(tasks).forEach((taskId) => {
@@ -76,63 +75,54 @@ const EditProjectScreen = () => {
   const handleEditProject = async () => {
 
     if (!name || !description) {
-      showAlert('Error','All fields are required.'); // Show an alert
+      showAlert('Error', 'All fields are required.');
       return;
     }
-    
+
     const userQuery = query(ref(database, 'projects'), orderByChild('projectId'), equalTo(project.projectId));
 
-    // Fetch the project data
     get(userQuery)
       .then((snapshot) => {
         if (snapshot.exists()) {
           const projects = snapshot.val();
-          const projectId = Object.keys(projects)[0]; // Assuming there's only one project with a given ID
-
+          const projectId = Object.keys(projects)[0];
 
           const updatedProjectData = {
             name: name,
             description: description,
-            projectId : project.projectId,
-            user : project.user,
-            projectCost : project.projectCost
+            projectId: project.projectId,
+            user: project.user,
+            projectCost: project.projectCost
           };
 
-          // Update the project in the database
           update(ref(database, `projects/${projectId}`), updatedProjectData)
             .then(() => {
-              // Project data has been successfully updated
               showAlert('Success', 'Project data updated');
               updateProject(updatedProjectData);
               navigation.goBack();
             })
             .catch((error) => {
-              // Handle the error if the update fails
               showAlert('Error', 'Error updating project data:' + error);
             });
         } else {
-          console.log('Project not found'); // Handle the case where the project is not found
+          console.log('Project not found');
         }
       })
       .catch((error) => {
-        // Handle the error if the fetch fails
         showAlert('Error', 'Error finding project:' + error);
       });
   };
 
   const updateProject = (updatedProject) => {
-    console.log( 'updatedProject ',updatedProject)
+    console.log('updatedProject ', updatedProject)
 
     const projectIndex = projects.findIndex((projectU) => projectU.projectId === project.projectId);
-    console.log( 'projectIndex ',projectIndex)
+    console.log('projectIndex ', projectIndex)
     if (projectIndex !== -1) {
-      // Create a copy of the tasks array
       const updatedProjects = [...projects];
 
-      // Update the task in the copied array
       updatedProjects[projectIndex] = updatedProject;
-      console.log( 'updatedProject ',updatedProjects)
-      // Set the state to trigger a re-render with the updated tasks
+      console.log('updatedProject ', updatedProjects)
       setProjects(updatedProjects);
     }
   };
@@ -140,7 +130,6 @@ const EditProjectScreen = () => {
   const filterTasks = () => {
     const query = searchQuery.toLowerCase();
 
-    // Filter tasks based on the query
     const filtered = tasks.filter((task) => {
       return task.taskName.toLowerCase().includes(query) || task.taskDescription.toLowerCase().includes(query) || task.member.toLowerCase().includes(query);
     });
@@ -148,91 +137,90 @@ const EditProjectScreen = () => {
     setFilteredTasks(filtered);
   };
 
-  // Function to show an alert with the error message
-const showAlert = (title, message) => {
-  Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
-};
-
-const formatDate = (dateString) => {
-  if (!dateString) {
-    return 'N/A';
-  }
-  const date = new Date(dateString);
-  if (isNaN(date)) {
-    return 'Invalid date';
-  }
-  const options = {
-    year: 'numeric', month: 'long', day: 'numeric',
-    hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
+  const showAlert = (title, message) => {
+    Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
-  return new Intl.DateTimeFormat('en-US', options).format(date);
-};
 
-const renderTaskItem = ({ item }) => (
-  <View style={styles.taskItem}>
-    <Text style={styles.taskName}>{item.taskName}</Text>
-    <Text style={styles.taskDescription}>{item.taskDescription}</Text>
-    <View style={styles.taskDetails}>
-      <Text style={styles.taskDetailText}>Start: {formatDate(item.taskStartDate)}</Text>
-      <Text style={styles.taskDetailText}>End: {formatDate(item.taskEndDate)}</Text>
-      <Text style={styles.taskDetailText}>Status: {item.status}</Text>
-      <Text style={styles.taskDetailText}>Member: {item.member}</Text>
-      <Text style={styles.taskDetailText}>Actual End: {formatDate(item.actualEndDate)}</Text>
-      <Text style={styles.taskDetailText}>Cost: {item.taskCost}</Text>
-      <Text style={styles.taskDetailText}>Hours: {item.noOfHours}</Text>
-    </View>
-  </View>
-);
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return 'N/A';
+    }
+    const date = new Date(dateString);
+    if (isNaN(date)) {
+      return 'Invalid date';
+    }
+    const options = {
+      year: 'numeric', month: 'long', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
+    };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  };
 
-return (
-  <View style={styles.container}>
-    <View style={styles.projectHeader}>
-      <TextInput
-        style={styles.editInput}
-        placeholder="Project Name"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={[styles.editInput, styles.multilineInput]} // Increase height for multiline input
-        placeholder="Project Description"
-        multiline
-        numberOfLines={4}
-        value={description}
-        onChangeText={setDescription}
-      />
-      <Button
-        label="Edit Project"
-        onPress={handleEditProject}
-        style={styles.button}
-      />
-      <Button
-        label="Create Task"
-        onPress={() => navigation.navigate('Create Task', { projectObj: project, tasks, setTasks })}
-        style={styles.button}
-      />
+  const renderTaskItem = ({ item }) => (
+    <View style={styles.taskItem}>
+      <Text style={styles.taskName}>{item.taskName}</Text>
+      <Text style={styles.taskDescription}>{item.taskDescription}</Text>
+      <View style={styles.taskDetails}>
+        <Text style={styles.taskDetailText}>Start: {formatDate(item.taskStartDate)}</Text>
+        <Text style={styles.taskDetailText}>End: {formatDate(item.taskEndDate)}</Text>
+        <Text style={styles.taskDetailText}>Status: {item.status}</Text>
+        <Text style={styles.taskDetailText}>Member: {item.member}</Text>
+        <Text style={styles.taskDetailText}>Actual End: {formatDate(item.actualEndDate)}</Text>
+        <Text style={styles.taskDetailText}>Cost: {item.taskCost}</Text>
+        <Text style={styles.taskDetailText}>Hours: {item.noOfHours}</Text>
+      </View>
     </View>
-    <View style={styles.searchInput}>
-      <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
-      <TextInput
-        placeholder="Search tasks..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        style={styles.input}
-      />
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.projectHeader}>
+        <TextInput
+          style={styles.editInput}
+          placeholder="Project Name"
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          style={[styles.editInput, styles.multilineInput]} // Increase height for multiline input
+          placeholder="Project Description"
+          multiline
+          numberOfLines={4}
+          value={description}
+          onChangeText={setDescription}
+        />
+        <Button
+          label="Edit Project"
+          onPress={handleEditProject}
+          style={styles.button}
+        />
+        <Button
+          label="Create Task"
+          onPress={() => navigation.navigate('Create Task', { projectObj: project, tasks, setTasks })}
+          style={styles.button}
+        />
+      </View>
+      <View style={styles.searchInput}>
+        <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
+        <TextInput
+          placeholder="Search tasks..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          style={styles.input}
+        />
+      </View>
+      {tasks.length > 0 ? (
+        <FlatList
+          data={searchQuery ? filteredTasks : tasks}
+          keyExtractor={(item) => item.id?.toString() ?? ''}
+          renderItem={renderTaskItem}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <Text style={styles.noTasksText}>No tasks found for this project.</Text>
+      )}
     </View>
-    {tasks.length > 0 ? (
-            <FlatList
-            data={searchQuery ? filteredTasks : tasks}
-              keyExtractor={(item) => item.id?.toString() ?? ''}
-              renderItem={renderTaskItem}
-              showsVerticalScrollIndicator={false}
-            />
-          ) : (
-            <Text style={styles.noTasksText}>No tasks found for this project.</Text>
-          )}
-  </View>
-);
+  );
 
 };
 
@@ -251,7 +239,7 @@ const styles = StyleSheet.create({
     minHeight: 100, // Minimum height for text area
   },
   button: {
-    marginTop : 10,
+    marginTop: 10,
   },
   container: {
     flex: 1,

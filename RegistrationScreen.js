@@ -72,21 +72,11 @@ const RegistrationScreen = ({ navigation }) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           showAlert('Error', 'Error adding user:', error.message);
-          // ..
         });
-      // Create the user in Firebase Authentication
-      // const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-
-      // Store additional user data in Firebase Firestore
-
-
-
-      // Navigate to another screen (e.g., the main app screen) upon successful registration
 
     } catch (error) {
       console.error('Error registering user:' + error);
       showAlert('Error', 'Error adding user:', error.message);
-      // Handle registration error and show an error message
     }
   };
 
@@ -154,7 +144,6 @@ const RegistrationScreen = ({ navigation }) => {
       </View>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <Button label="Register" onPress={handleRegistration} style={styles.button} />
-      {/* <Button label="Back to Login" onPress={() => navigation.navigate('Login')} style={[styles.button, styles.lastButton]} /> */}
     </View>
   );
 };

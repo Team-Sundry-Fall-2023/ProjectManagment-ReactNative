@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome5 } from '@expo/vector-icons';
-
 import ProfileDetailScreen from './ProfileDetailScreen';
 import MemberTaskListScreen from './MemberTaskListScreen';
 
@@ -13,7 +12,6 @@ const MemberTabNavigator = () => {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          // You need to define the icons for each route just like in TabNavigator
           if (route.name === 'MemberTaskList') {
             iconName = focused ? 'tasks' : 'tasks';
           } else if (route.name === 'ProfileDetail') {

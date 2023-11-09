@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, StyleSheet } 
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
 import { Card } from 'react-native-elements';
-import { firebase, auth, database } from './firebase';
+import { database } from './firebase';
 import { ref, query, orderByChild, get, remove } from "firebase/database";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -117,7 +117,7 @@ const MemberListScreen = () => {
       backgroundColor: '#FF3B30',
       onPress: () => handleDelete(item),
     },
-    
+
   ];
 
   const filterMembers = () => {
@@ -152,7 +152,6 @@ const MemberListScreen = () => {
               <Card containerStyle={styles.card}>
                 <View style={styles.cardHeader}>
                   <Text style={styles.memberName}>{`${item.firstName} ${item.lastName}`}</Text>
-                  {/* Add any additional member details here */}
                 </View>
                 <Card.Divider />
                 <Text style={styles.memberDetail}>{item.email}</Text>
@@ -175,7 +174,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   card: {
-    borderRadius: 20, // This should match the border radius of the touchable if you have a card style
+    borderRadius: 20,
   },
   memberName: {
     alignItems: 'center',

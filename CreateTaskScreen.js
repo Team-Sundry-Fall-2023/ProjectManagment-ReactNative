@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert, ScrollView } from 'react-native';
-import { Button, TextField, Picker, Text } from 'react-native-ui-lib';
+import { Button, TextField, Text } from 'react-native-ui-lib';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { firebase, auth, database } from './firebase';
+import { auth, database } from './firebase';
 import { ref, push, set, query, orderByChild, equalTo, get } from 'firebase/database';
 import commonStyles from './style';
 import RNPickerSelect from 'react-native-picker-select';
@@ -82,7 +82,6 @@ const CreateTaskScreen = ({ navigation, route }) => {
   }, [project]);
 
   const handleCreateTask = () => {
-    // Validate input fields
     if (!taskName || !taskDescription) {
       showAlert('Error', 'Task Name and Task Description are required.');
       return;
@@ -106,7 +105,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
     const tasksRef = push(ref(database, "tasks"));
     // console.log('Register ref' + userRef)
     const taskId = tasksRef.key;
-    // Create a new task with the selected project and other details
+
     const newTask = {
       taskName: taskName,
       taskDescription: taskDescription,
@@ -157,7 +156,7 @@ const CreateTaskScreen = ({ navigation, route }) => {
         label={taskStartDate.toDateString()}
         onPress={() => setShowStartDatePicker(true)}
         style={styles.dateButton}
-        labelStyle={styles.dateLabel} // Apply the custom label style here
+        labelStyle={styles.dateLabel}
       />
       {showDatePicker && (
         <DateTimePicker
@@ -176,31 +175,31 @@ const CreateTaskScreen = ({ navigation, route }) => {
     </>
   );
 
-    // Render function for the Date Picker
-    const renderEndDatePicker = (date, setDate, showDatePicker, setShowDatePicker) => (
-      <>
-        <Button
-          label={taskEndDate.toDateString()}
-          onPress={() => setShowEndDatePicker(true)}
-          style={styles.dateButton}
-          labelStyle={styles.dateLabel} // Apply the custom label style here
+  // Render function for the Date Picker
+  const renderEndDatePicker = (date, setDate, showDatePicker, setShowDatePicker) => (
+    <>
+      <Button
+        label={taskEndDate.toDateString()}
+        onPress={() => setShowEndDatePicker(true)}
+        style={styles.dateButton}
+        labelStyle={styles.dateLabel}
+      />
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            if (selectedDate) {
+              setDate(selectedDate);
+            }
+            setShowDatePicker(false);
+          }}
+          minimumDate={new Date()}
         />
-        {showDatePicker && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => {
-              if (selectedDate) {
-                setDate(selectedDate);
-              }
-              setShowDatePicker(false);
-            }}
-            minimumDate={new Date()}
-          />
-        )}
-      </>
-    );
+      )}
+    </>
+  );
 
   return (
     <ScrollView style={styles.container}>
@@ -281,7 +280,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: 'gray',
     borderRadius: 20,
     color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    paddingRight: 30,
   },
   inputAndroid: {
     fontSize: 16,
@@ -291,7 +290,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: 'purple',
     borderRadius: 20,
     color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    paddingRight: 30,
   },
 });
 
@@ -311,35 +310,35 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    width: '100%', // Set a fixed width for the TextFields
+    width: '100%',
     borderColor: 'gray',
     borderWidth: 1,
-    borderRadius: 20, // This is half of the height to make the TextField rounded
+    borderRadius: 20,
     paddingHorizontal: 10,
     marginBottom: 20,
   },
   multilineInput: {
     paddingTop: 10,
-    minHeight: 100, // Minimum height for text area
+    minHeight: 100,
   },
   dateButton: {
-    backgroundColor: '#fff', // Assuming you want a white background
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 20,
     padding: 10,
-    justifyContent: 'flex-start', // Aligns button content (icon and text) to the left
-    height: 40, // Set a fixed height
+    justifyContent: 'flex-start',
+    height: 40,
   },
   dateLabel: {
-    color: 'black', // Sets the font color to black
-    fontSize: 16, // Sets the font size
-    textAlign: 'left', // Aligns the text to the left
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'left',
   },
   saveButton: {
     marginTop: 20,
     borderRadius: 20,
-    backgroundColor: '#5848ff', // Purple color from your tab bar design
+    backgroundColor: '#5848ff',
   },
 });
 

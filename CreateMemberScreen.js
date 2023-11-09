@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert, ScrollView } from 'react-native';
-import { Button, TextField, Picker, Text } from 'react-native-ui-lib'; // Import from 'react-native-ui-lib'
-import { firebase, auth, database } from './firebase';
+import { Button, TextField, Text } from 'react-native-ui-lib';
+import { auth, database } from './firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, query, orderByChild, equalTo, get, push, update } from "firebase/database";
 import RNPickerSelect from 'react-native-picker-select';
@@ -167,10 +167,10 @@ const CreateMemberScreen = ({ navigation, route }) => {
           style={styles.input}
           editable={memberToEdit ? false : true}
         />
- { !memberToEdit && (
-    <Text style={styles.label}>Password</Text>
- )}
-      
+        {!memberToEdit && (
+          <Text style={styles.label}>Password</Text>
+        )}
+
         {!memberToEdit && (
           <TextField
             placeholder="Password"
@@ -217,7 +217,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: 'gray',
     borderRadius: 20,
     color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    paddingRight: 30,
   },
   inputAndroid: {
     fontSize: 16,
@@ -227,7 +227,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: 'purple',
     borderRadius: 20,
     color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    paddingRight: 30,
   },
 });
 

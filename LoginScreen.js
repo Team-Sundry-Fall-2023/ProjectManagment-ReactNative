@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { View, Text, TextField, Button, Image, Colors } from 'react-native-ui-lib';
 import { auth, database } from './firebase';
-import { getUserRoleFromUserTable } from './FirebaseFunctions';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ref, orderByChild, query, equalTo, get } from "firebase/database";
 import UserContext from './UserContext';
@@ -43,17 +42,6 @@ export default function LoginScreen({ navigation }) {
               const userData = user[userId];
               if (userData && userData.category) {
                 const category = userData.category;
-                // const fn = userData.firstName;
-                // const ln = userData.lastName;
-                //                 console.log(fn);
-                //                 console.log(ln);
-                //  const userData = {
-                //    firstName: userData.firstName,
-                //   lastName: userData.lastName,
-                //   email: email,
-                // };
-                //  login(userData);
-
 
                 if (category === 'Admin') {
                   navigation.navigate('AdminTabNavigator'); // Navigate to the admin tab bar
@@ -69,12 +57,9 @@ export default function LoginScreen({ navigation }) {
           }
         }).catch((error) => {
 
-          setError('Error finding user:'+ error);
+          setError('Error finding user:' + error);
           return null;
         });
-
-
-        // Determine which tab navigator to navigate to based on the user's role
 
       } else {
         setError('User not exist!');
@@ -96,7 +81,7 @@ export default function LoginScreen({ navigation }) {
         value={email}
         onChangeText={setEmail}
         enableErrors={true} // RNUILib TextField specific props
-        error={error} // You can display the error directly in the TextField
+        error={error} // Display the error directly in the TextField
       />
       <TextField
         style={styles.input}
@@ -144,18 +129,18 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    borderRadius: 20, // Adds roundness to the TextField
+    borderRadius: 20,
     paddingHorizontal: 10,
     maxWidth: 340, // Ensures the TextField is not wider than the buttons
-    alignSelf: 'center', // Centers the TextField
+    alignSelf: 'center',
   },
   errorText: {
     color: 'red',
-    marginBottom: 10, // Adds space above the error text
+    marginBottom: 10,
   },
   button: {
-    alignSelf: 'center', // Centers the TextField
+    alignSelf: 'center',
     width: 250, // Set a fixed width for the buttons to match the TextFields
-    marginBottom: 10, // Adds space below the login button
+    marginBottom: 10,
   }
 });

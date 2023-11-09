@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, Image, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Button } from 'react-native-ui-lib';
 import UserContext from './UserContext';
-import { firebase, auth, database } from './firebase';
+import { auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get } from "firebase/database";
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -75,7 +75,7 @@ const ProfileDetailScreen = ({ navigation }) => {
       <View style={styles.content}>
         <View style={styles.avatarContainer}>
           <Image
-            source={require('./assets/img/avatar.jpg')} // Replace with the user's avatar image if available
+            source={require('./assets/img/avatar.jpg')}
             style={styles.avatar}
           />
         </View>
@@ -97,17 +97,17 @@ const ProfileDetailScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f7f7', // or any background color you want for the rest of the screen
+    backgroundColor: '#f7f7f7',
   },
   gradientHeader: {
     position: 'absolute',
     left: 0,
     right: 0,
     top: 0,
-    height: 265, // This is the height of your gradient header
+    height: 265,
   },
   content: {
-    paddingTop: 200, // This should be the same as the height of your gradient header
+    paddingTop: 200,
   },
   headerTitle: {
     color: 'white',
@@ -116,11 +116,11 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     width: '100%',
-    height: 200, // Adjust based on your header image aspect ratio
+    height: 200,
   },
   avatarContainer: {
     position: 'absolute',
-    top: 150, // Adjust based on your header image height
+    top: 150,
     alignSelf: 'center',
   },
   avatar: {
