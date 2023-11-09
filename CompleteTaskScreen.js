@@ -13,11 +13,13 @@ const CompleteTaskScreen = ({ route, navigation }) => {
   const [taskEndDate, setTaskEndDate] = useState(new Date());
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [hourlyRate, setHourlyRate] = useState('');
+  const [project, setProject] = useState([]);
 
   useEffect(() => {
     if (taskObj) {
       settask(taskObj);
       setTasks(tasks);
+       getProjectFromId(taskObj.projectId);
     }
   }, [taskObj, task, tasks]);
 
@@ -51,6 +53,23 @@ const CompleteTaskScreen = ({ route, navigation }) => {
         });
     }
   }, []);
+
+  const getProjectFromId = (projectId) => {
+    console.log('task' , task)
+    const userQuery = query(ref(database, 'projects'), orderByChild('projectId'), equalTo(projectId));
+    get(userQuery).then((snapshot) => {
+      if (snapshot.exists()) {
+        const projects = snapshot.val();
+        Object.keys(projects).forEach((projectId) => {
+          const project = projects[projectId];
+          setProject(project);
+        });
+      }
+    }).catch((error) => {
+      showAlert('Error', 'Error finding project :', error.message);
+      return null;
+    });
+  };
 
   const handleCompleteTask = () => {
     if (!hours) {
@@ -215,7 +234,7 @@ const CompleteTaskScreen = ({ route, navigation }) => {
             </View>
             <View style={styles.section}>
               <Text style={styles.label}>Project</Text>
-              <Text style={styles.body}>{task.projectId}</Text>
+              <Text style={styles.body}>{project.name}</Text>
             </View>
             <TextField
               placeholder="Hours Spent"

@@ -142,10 +142,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   status_new: {
-    backgroundColor: 'lightblue',
+    backgroundColor: 'yellow',
   },
   status_inprogress: {
-    backgroundColor: 'yellow',
+    backgroundColor: 'lightblue',
   },
   status_complete: {
     backgroundColor: 'green',
