@@ -25,7 +25,7 @@ const EditTaskScreen = () => {
     const [taskProjectId, setTaskProjectId] = useState('');
     const [taskMemebr, setTaskMember] = useState('');
 
-    console.log('taskObj 1' + taskObj);
+    // console.log('taskObj 1' + taskObj);
     useEffect(() => {
         if (taskObj) {
             setTask(taskObj);
@@ -33,7 +33,7 @@ const EditTaskScreen = () => {
         }
     }, [taskObj, task, tasks]);
 
-    console.log('task 1' + task);
+    // console.log('task 1' + task);
 
     useEffect(() => {
         if (task) {
@@ -46,15 +46,17 @@ const EditTaskScreen = () => {
             const dateObject = new Date(endDateString);
             setTaskEndDate(dateObject);
             setTaskProjectId(task.projectId);
+            console.log('taskProjectId 0 :' + taskProjectId);
+            console.log('taskMemebr 0 :' + taskMemebr);
             setTaskMember(task.member);
         }
 
     }, [task]);
 
-    console.log('taskProjectId 1' + taskProjectId);
+    // console.log('taskProjectId 1' + taskProjectId);
 
     useEffect(() => {
-        console.log('taskProjectId 2' + taskProjectId);
+        // console.log('taskProjectId 2' + taskProjectId);
 
         // Fetch projects related to the current user and populate projectOptions
         if (auth.currentUser) {
@@ -76,6 +78,9 @@ const EditTaskScreen = () => {
 
                         ));
                         setProjectOptions(options);
+                        console.log('setProjectOptions 1', options)
+                        console.log('taskProjectId 1 :' + taskObj.projectId);
+                        setSelectedProjectOptions(options , taskObj.projectId);
                     }
                 })
                 .catch((error) => {
@@ -83,7 +88,7 @@ const EditTaskScreen = () => {
                 });
 
         }
-        console.log('projectOptions' + projectOptions);
+        // console.log('projectOptions' + projectOptions);
 
         const userQuery = query(
             ref(database, 'users'),
@@ -100,35 +105,44 @@ const EditTaskScreen = () => {
                         value: users[email],
                     }));
                     setUserOptions(options);
+                    console.log('userOptions 1', options)
+                    console.log('taskMemebr 1', taskObj.member)
+                    setSelectedUserOptions(options, taskObj.member);
                 }
             })
             .catch((error) => {
                 console.error('Error fetching Users:', error);
             });
-        console.log('taskProjectId 3' + taskProjectId);
-        if (taskProjectId) {
-            console.log('projectOptions' + projectOptions);
-            const projectMatch = projectOptions.find((option) => option.value.projectId === taskProjectId);
-            if (projectMatch) {
-                setSelectedProject(projectMatch.value);
-            }
-        } else {
-            //console.error('projectMatch:');
-        }
+    }, [task, taskObj]);
 
-
-        if (taskMemebr) {
-            const userMatch = userOptions.find((option) => option.value.email === taskMemebr);
+    const setSelectedUserOptions = (userOptions, taskMember) => {
+        if (taskMember) {
+            console.log('taskMemebr', taskMember)
+            console.log('userOptions', userOptions)
+            const userMatch = userOptions.find((option) => option.value.email === taskMember);
+            console.log('userMatch', userMatch)
             if (userMatch) {
+                console.log('userMatch', userMatch)
                 setSelectedUser(userMatch.value);
             }
         } else {
             //console.error('userMatch:');
         }
+    }
 
-
-
-    }, [task]);
+    const setSelectedProjectOptions = (projectOptions, taskProjectId) => {
+        console.log('taskProjectId ' + taskProjectId);
+        if (taskProjectId) {
+            console.log('projectOptions' + projectOptions);
+            const projectMatch = projectOptions.find((option) => option.value.projectId === taskProjectId);
+            if (projectMatch) {
+                console.log('projectMatch' + projectMatch);
+                setSelectedProject(projectMatch.value);
+            }
+        } else {
+            //console.error('projectMatch:');
+        }
+    }
 
     const handleEditTask = async () => {
 
@@ -153,7 +167,7 @@ const EditTaskScreen = () => {
         }
 
         if (task.status == 'Complete') {
-            showAlert('Error', 'Task already completed. You cannot edit now');
+            showAlert('Error', ' Task already completed. You cannot edit now');
             navigation.goBack();
         }
 
@@ -296,7 +310,7 @@ const EditTaskScreen = () => {
         </>
     );
 
-    return (
+   return (
         <ScrollView style={styles.container}>
             <View style={styles.fieldContainer}>
                 <TextField
@@ -358,6 +372,69 @@ const EditTaskScreen = () => {
             <Button label="Update Task" onPress={handleEditTask} style={styles.saveButton} />
         </ScrollView>
     );
+
+   /* return (
+        <ScrollView style={styles.container}>
+            <View style={styles.fieldContainer}>
+                <TextField
+                    placeholder="Enter task name"
+                    value={taskName}
+                    onChangeText={setTaskName}
+                    style={styles.input}
+                />
+            </View>
+    
+            <View style={styles.fieldContainer}>
+                <TextField
+                    placeholder="Enter task description"
+                    value={taskDescription}
+                    onChangeText={setTaskDescription}
+                    style={[styles.input, styles.multilineInput]}
+                    multiline={true}
+                />
+            </View>
+    
+            <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Start Date</Text>
+                <Text style={styles.dateText}>{taskStartDate.toDateString()}</Text>
+            </View>
+    
+            <View style={styles.fieldContainer}>
+                <Text style={styles.label}>End Date</Text>
+                {renderEndDatePicker(taskEndDate, setTaskEndDate, showEndDatePicker, setShowEndDatePicker, "End Date")}
+            </View>
+    
+            <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Assign to</Text>
+                <RNPickerSelect
+                    onValueChange={(value) => setSelectedUser(value)}
+                    items={userOptions}
+                    style={pickerSelectStyles}
+                    placeholder={{
+                        label: 'Select a member',
+                        value: null,
+                    }}
+                    value={selectedUser}
+                />
+            </View>
+
+            <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Project</Text>
+                <RNPickerSelect
+                    onValueChange={(value) => setSelectedProject(value)}
+                    items={projectOptions}
+                    style={pickerSelectStyles}
+                    placeholder={{
+                        label: 'Select a project',
+                        value: null,
+                    }}
+                    value={selectedProject}
+                />
+            </View>
+    
+            <Button label="Update Task" onPress={handleEditTask} style={styles.saveButton} />
+        </ScrollView>
+    );*/
 
 };
 
@@ -427,7 +504,6 @@ const styles = StyleSheet.create({
     },
     dateText: {
         fontSize: 16,
-        marginBottom: 20,
     },
     saveButton: {
         marginTop: 20,

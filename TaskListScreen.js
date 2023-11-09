@@ -112,6 +112,13 @@ const TaskListScreen = () => {
     navigation.navigate('Task Detail', { taskObj: task });
   };
 
+  const handleViewEditTask = (task) => {
+    if(task.status === 'Complete'){
+      handleViewDetails(task);
+    }else{
+      handleEditTask(task);
+    }
+  };
 
   const handleEditTask = (task) => {
     navigation.navigate('Edit Task', { taskObj: task, tasks, setTasks });
@@ -135,7 +142,7 @@ const TaskListScreen = () => {
         </View>
       ),
       backgroundColor: '#FF9500', // Orange color for edit button
-      onPress: () => handleEditTask(item),
+      onPress: () => handleViewEditTask(item),
     },
     {
       component: (
