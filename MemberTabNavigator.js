@@ -18,7 +18,7 @@ const MemberTabNavigator = () => {
           } else if (route.name === 'ProfileDetail') {
             iconName = focused ? 'user-circle' : 'user-circle';
           }else if (route.name === 'MemberIncome') {
-            iconName = focused ? 'user-circle' : 'user-circle';
+            iconName = focused ? 'dollar-sign' : 'dollar-sign';
           }
 
           // Return the icon component
@@ -52,7 +52,7 @@ const MemberTabNavigator = () => {
         name="MemberIncome"
         component={MemberIncomeScreen}
         options={{
-          title: 'Income'
+          title: 'Member Income'
         }}
       />
       <Tab.Screen

@@ -8,7 +8,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import { BarChart } from 'react-native-chart-kit';
 
-const MemberIncomeScreen = ({ }) => {
+const MemberIncomeScreen = () => {
     const navigation = useNavigation();
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -19,30 +19,29 @@ const MemberIncomeScreen = ({ }) => {
         const taskList = [];
         const currentUser = auth.currentUser;
         const currentUserEmail = currentUser.email;
-        console.log('currentUser ' + currentUserEmail)
+
         const userQuery = query(ref(database, 'tasks'), orderByChild('member'), equalTo(currentUserEmail));
-        console.log('userQuery' + userQuery)
-        get(userQuery).then((snapshot) => {
-            if (snapshot.exists()) {
-                const tasks = snapshot.val();
 
-                Object.keys(tasks).forEach((taskId) => {
-                    const task = tasks[taskId];
-                    console.log('Task item', task);
-                    taskList.push(task);
-                });
-                console.log('TaskList ' + taskList.length)
+        get(userQuery)
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    const tasks = snapshot.val();
+
+                    Object.keys(tasks).forEach((taskId) => {
+                        const task = tasks[taskId];
+                        taskList.push(task);
+                    });
+
+                    setTasks(taskList);
+                } else {
+                    setTasks(taskList);
+                }
+            })
+            .catch((error) => {
                 setTasks(taskList);
-            } else {
-                setTasks(taskList);
-            }
-        }).catch((error) => {
-            setTasks(taskList);
-            showAlert('Error', 'Error finding Tasks :', error.message);
-            return null;
-        });
+                showAlert('Error', 'Error finding Tasks :', error.message);
+            });
     }, []);
-
 
     useEffect(() => {
         // Filter tasks based on the selected date
@@ -53,12 +52,6 @@ const MemberIncomeScreen = ({ }) => {
             return (
                 (selectedMoment.isSame(taskDate, 'month') && taskDate.isSame(selectedMoment, 'year'))
             );
-            // return (
-            //   taskDate.isSame(selectedMoment, 'day') ||
-            //   (selectedMoment.isSame(taskDate, 'week') && taskDate.isSame(selectedMoment, 'year')) ||
-            //   (selectedMoment.isSame(taskDate, 'month') && taskDate.isSame(selectedMoment, 'year')) ||
-            //   taskDate.isSame(selectedMoment, 'year')
-            // );
         });
 
         setMemberIncomeData(filteredTasks);
@@ -74,6 +67,20 @@ const MemberIncomeScreen = ({ }) => {
         ],
     };
 
+    // Customize bar chart colors
+    const chartConfig = {
+        backgroundGradientFrom: '#ffffff',
+        backgroundGradientTo: '#ffffff',
+        decimalPlaces: 0,
+        color: (opacity = 1) => `rgba(88, 72, 255, ${opacity})`, // Bar color
+        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Label color
+        style: {
+            borderRadius: 16,
+        },
+        propsForLabels: {
+            fontWeight: 'bold', // Make the label text bold
+          },
+    };
 
     // Render function for the Date Picker
     const renderEndDatePicker = (date, setDate, showDatePicker, setShowDatePicker) => (
@@ -101,34 +108,26 @@ const MemberIncomeScreen = ({ }) => {
     );
 
     return (
+        <View style={styles.container}>
 
-        <View style={styles.container} >
-
-            <View style={styles.fieldContainer}>
-                <Text>Member Income</Text>
-                <Text style={styles.label}>Date</Text>
+            <View style={styles.dateContainer}>
+                <Text style={styles.label}>Select Date</Text>
                 {renderEndDatePicker(selectedDate, setSelectedDate, showDatePicker, setShowDatePicker, "Date")}
             </View>
 
-            <Text>Income for {moment(selectedDate).format('MMMM YYYY')}:</Text>
-
+            <Text style={styles.chartTitle}>Income for {moment(selectedDate).format('MMMM YYYY')}:</Text>
 
             {memberIncomeData.length === 0 ? (
-                <Text>No data available for the selected date.</Text>
+                <Text style={styles.noDataText}>No data available for the selected date.</Text>
             ) : (
                 <ScrollView horizontal>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.chartContainer}>
                         <BarChart
                             data={chartData}
-                            width={800} 
+                            width={800}
                             height={500}
                             yAxisLabel="$"
-                            chartConfig={{
-                                backgroundGradientFrom: '#ffffff',
-                                backgroundGradientTo: '#ffffff',
-                                decimalPlaces: 0,
-                                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                            }}
+                            chartConfig={chartConfig}
                         />
                     </View>
                 </ScrollView>
@@ -143,7 +142,16 @@ const styles = StyleSheet.create({
         padding: 16,
         backgroundColor: '#fff',
     },
-    fieldContainer: {
+    header: {
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    headerText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    dateContainer: {
         marginBottom: 20,
     },
     label: {
@@ -151,7 +159,6 @@ const styles = StyleSheet.create({
         color: '#333',
         marginBottom: 5,
     },
-
     dateButton: {
         backgroundColor: '#fff',
         borderWidth: 1,
@@ -166,10 +173,21 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'left',
     },
-    dateText: {
+    chartTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 10,
+    },
+    noDataText: {
         fontSize: 16,
+        color: '#333',
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    chartContainer: {
+        flexDirection: 'row',
     },
 });
 
 export default MemberIncomeScreen;
-
