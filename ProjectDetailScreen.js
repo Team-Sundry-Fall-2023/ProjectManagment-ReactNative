@@ -46,8 +46,6 @@ const ProjectDetailScreen = ({ route, navigation }) => {
         return null;
       });
     }
-
-
   }, [project]);
 
   useEffect(() => {
@@ -104,6 +102,11 @@ const ProjectDetailScreen = ({ route, navigation }) => {
             <Text style={styles.projectName}>{project.name}</Text>
             <Text style={styles.projectDescription}>{project.description}</Text>
             <Text style={styles.projectCost}>Cost: {project.projectCost}</Text>
+            <Button
+              label="Project Income"
+              onPress={() => navigation.navigate('Project Income', { tasksObj: tasks})}
+              style={styles.createTaskButton}
+            />
             <Button
               label="Create Task"
               onPress={() => navigation.navigate('Create Task', { projectObj: project, tasks, setTasks })}

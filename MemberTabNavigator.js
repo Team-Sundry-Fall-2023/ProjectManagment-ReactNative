@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome5 } from '@expo/vector-icons';
 import ProfileDetailScreen from './ProfileDetailScreen';
 import MemberTaskListScreen from './MemberTaskListScreen';
+import MemberIncomeScreen from './MemberIncomeScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,6 +16,8 @@ const MemberTabNavigator = () => {
           if (route.name === 'MemberTaskList') {
             iconName = focused ? 'tasks' : 'tasks';
           } else if (route.name === 'ProfileDetail') {
+            iconName = focused ? 'user-circle' : 'user-circle';
+          }else if (route.name === 'MemberIncome') {
             iconName = focused ? 'user-circle' : 'user-circle';
           }
 
@@ -44,6 +47,13 @@ const MemberTabNavigator = () => {
         name="MemberTaskList"
         component={MemberTaskListScreen}
         options={{ title: 'Tasks' }}
+      />
+      <Tab.Screen
+        name="MemberIncome"
+        component={MemberIncomeScreen}
+        options={{
+          title: 'Income'
+        }}
       />
       <Tab.Screen
         name="ProfileDetail"

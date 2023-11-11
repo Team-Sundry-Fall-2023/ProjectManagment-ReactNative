@@ -20,6 +20,8 @@ import TaskListScreen from './TaskListScreen';
 import MemberTaskListScreen from './MemberTaskListScreen';
 import CompleteTaskScreen from './CompleteTaskScreen';
 import EditProfileScreen from './EditProfileScreen';
+import ProjectIncomeScreen from './ProjectIncomeScreen';
+import MemberIncomeScreen from './MemberIncomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -47,6 +49,8 @@ const App = () => {
         <Stack.Screen name="MemberTaskList" component={MemberTaskListScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Complete Task" component={CompleteTaskScreen} options={{ headerShown: true }} />
         <Stack.Screen name="Edit Profile" component={EditProfileScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Project Income" component={ProjectIncomeScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Member Income" component={MemberIncomeScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>
