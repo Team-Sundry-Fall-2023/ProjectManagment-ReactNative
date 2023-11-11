@@ -102,16 +102,19 @@ const ProjectDetailScreen = ({ route, navigation }) => {
             <Text style={styles.projectName}>{project.name}</Text>
             <Text style={styles.projectDescription}>{project.description}</Text>
             <Text style={styles.projectCost}>Cost: {project.projectCost}</Text>
+            <Text style={styles.projectCost}>Hours: {project.noOfHours}</Text>
             <Button
               label="Project Income"
               onPress={() => navigation.navigate('Project Income', { tasksObj: tasks})}
               style={styles.createTaskButton}
             />
+          {project.status !== 'Complete' && (
             <Button
               label="Create Task"
               onPress={() => navigation.navigate('Create Task', { projectObj: project, tasks, setTasks })}
               style={styles.createTaskButton}
             />
+          )}
           </View>
           <View style={styles.searchInput}>
             <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />

@@ -92,7 +92,9 @@ const EditProjectScreen = () => {
             description: description,
             projectId: project.projectId,
             user: project.user,
-            projectCost: project.projectCost
+            projectCost: project.projectCost,
+            noOfHours: project.noOfHours,
+            status : project.status,
           };
 
           update(ref(database, `projects/${projectId}`), updatedProjectData)

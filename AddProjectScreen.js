@@ -33,8 +33,10 @@ const AddProjectScreen = ({ route }) => {
       name: name,
       description: description,
       projectCost: 0,
+      status: 'InProgress',
       user: currentUser.email,
-      projectId: projectId
+      projectId: projectId,
+      noOfHours: 0
     };
     set(projectRef, projectData)
       .then(() => {

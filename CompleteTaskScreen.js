@@ -14,6 +14,7 @@ const CompleteTaskScreen = ({ route, navigation }) => {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [hourlyRate, setHourlyRate] = useState('');
   const [project, setProject] = useState([]);
+  const [projectTasks, setProjectTasks] = useState([]);
 
   useEffect(() => {
     if (taskObj) {
@@ -104,7 +105,7 @@ const CompleteTaskScreen = ({ route, navigation }) => {
           update(ref(database, `tasks/${taskId}`), updatedtaskData)
             .then(() => {
               showAlert('Success', 'task data updated');
-              updateProjectCost(task.projectId, taskCost);
+              updateProjectCost(task.projectId, taskCost , hours);
               console.log('updatedtaskData begin', updatedtaskData);
               updateTask(taskCost);
               navigation.goBack();
@@ -149,30 +150,57 @@ const CompleteTaskScreen = ({ route, navigation }) => {
     }
   };
 
-  const updateProjectCost = (projectId, taskCost) => {
+  const updateProjectCost = (projectId, taskCost, hours) => {
     const projectQuery = query(ref(database, 'projects'), orderByChild('projectId'), equalTo(projectId));
-
+  
     get(projectQuery)
       .then((snapshot) => {
         if (snapshot.exists()) {
           const projects = snapshot.val();
           const projectId = Object.keys(projects)[0];
-
-          const updatedProjectData = {
-            projectCost: projects[projectId].projectCost + taskCost, // Update the project cost
-          };
-
-          update(ref(database, `projects/${projectId}`), updatedProjectData)
-            .then(() => {
-              // Project cost has been successfully updated
+  
+          // Check if all tasks in the project are complete
+          areAllTasksCompleted()
+            .then(allTasksComplete => {
+              const updatedProjectData = {
+                projectCost: projects[projectId].projectCost + taskCost, // Update the project cost
+                noOfHours: projects[projectId].noOfHours + hours, // Update the project hours
+                status: allTasksComplete ? 'Complete' : projects[projectId].status, // Update the project status
+              };
+  
+              update(ref(database, `projects/${projectId}`), updatedProjectData)
+                .then(() => {
+                  // Project cost and status have been successfully updated
+                })
+                .catch((error) => {
+                  showAlert('Error', 'Error updating project cost: ' + error);
+                });
             })
-            .catch((error) => {
-              showAlert('Error', 'Error updating project cost: ' + error);
+            .catch(error => {
+              showAlert('Error', 'Error checking if all tasks are completed: ' + error);
             });
         }
       })
       .catch((error) => {
         showAlert('Error', 'Error finding project: ' + error);
+      });
+  };
+
+  const areAllTasksCompleted = () => {
+    const userQuery = query(ref(database, 'tasks'), orderByChild('projectId'), equalTo(project.projectId));
+  
+    return get(userQuery)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const tasks = snapshot.val();
+          // Check if all tasks are completed
+          return Object.values(tasks).every(task => task.status === 'Complete');
+        }
+        return false;
+      })
+      .catch((error) => {
+        console.error('Error getting tasks:', error);
+        return false;
       });
   };
 

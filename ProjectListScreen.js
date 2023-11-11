@@ -45,6 +45,9 @@ const ProjectListScreen = () => {
   }, [searchQuery, projects]);
 
   const handleDelete = async (project) => {
+    if (project.status == 'Complete') {
+      showAlert('Error', 'Project already completed. You cannot delete now');
+    } else {
     Alert.alert(
       'Confirmation',
       'Are you sure you want to delete this project?',
@@ -110,6 +113,7 @@ const ProjectListScreen = () => {
         },
       ]
     );
+    }
   };
 
   const showAlert = (title, message) => {
@@ -121,8 +125,12 @@ const ProjectListScreen = () => {
   };
 
   const handleEditDetails = (project) => {
+    if (project.status == 'Complete') {
+      showAlert('Error', 'Project already completed. You cannot edit now');
+    } else {
     console.log('project list project ', project)
     navigation.navigate('Edit Project', { projectObj: project, projects, setProjects });
+    }
   };
 
   const handleRightButtonPress = () => {
@@ -185,11 +193,17 @@ const ProjectListScreen = () => {
               onPress={() => handleViewDetails(item)}
               style={styles.cardTouchable}
             >
-              <Card containerStyle={styles.card}>
-                <Text style={styles.projectName}>{item.name}</Text>
+                  <Card containerStyle={styles.card}>
+                <View style={styles.cardHeader}>
+                  <Text style={styles.projectName}>{item.name}</Text>
+                  <View style={[styles.statusBadge, styles[`status_${item.status.toLowerCase()}`]]}>
+                    <Text style={styles.statusText}>{item.status}</Text>
+                  </View>
+                </View>
                 <Card.Divider />
                 <Text style={styles.projectDescription}>{item.description}</Text>
-                <Text style={styles.projectCost}>{`Cost: ${item.projectCost}`}</Text>
+                <Text style={styles.projectDescription}>{`Cost: ${item.projectCost}`}</Text>
+                <Text style={styles.projectDescription}>{`Hours: ${item.noOfHours}`}</Text>
               </Card>
             </TouchableOpacity>
           </Swipeout>
@@ -209,6 +223,12 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: 20,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   projectName: {
     alignItems: 'center',
@@ -260,6 +280,25 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     padding: 10,
+  },
+  statusBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 10,
+    alignSelf: 'flex-start',
+  },
+  statusText: {
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  status_new: {
+    backgroundColor: 'yellow',
+  },
+  status_inprogress: {
+    backgroundColor: 'lightblue',
+  },
+  status_complete: {
+    backgroundColor: 'green',
   },
 
 });

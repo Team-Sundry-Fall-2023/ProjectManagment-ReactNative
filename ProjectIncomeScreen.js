@@ -4,6 +4,7 @@ import { Button, Text } from 'react-native-ui-lib';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import { BarChart } from 'react-native-chart-kit';
+import commonStyles from './style';
 
 const ProjectIncomeScreen = ({ route, navigation }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -33,6 +34,17 @@ const ProjectIncomeScreen = ({ route, navigation }) => {
 
     setFilteredTasks(filteredTasks);
   }, [selectedDate, tasks]);
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackTitle: "Back",
+      headerTitle: () => (
+        <View style={commonStyles.customHeader}>
+          <Text style={commonStyles.headerTitle}>Project Income</Text>
+        </View>
+      ),
+    });
+  }, [navigation]);
 
   // Extract task names and costs for chart data
   const chartData = {
@@ -101,7 +113,7 @@ const ProjectIncomeScreen = ({ route, navigation }) => {
           <View style={styles.chartContainer}>
             <BarChart
               data={chartData}
-              width={800}
+              width={600}
               height={500}
               yAxisLabel="$"
               chartConfig={chartConfig}
