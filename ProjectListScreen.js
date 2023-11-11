@@ -203,7 +203,7 @@ const ProjectListScreen = () => {
                 <Card.Divider />
                 <Text style={styles.projectDescription}>{item.description}</Text>
                 <Text style={styles.projectDescription}>{`Cost: ${item.projectCost}`}</Text>
-                <Text style={styles.projectDescription}>{`Hours: ${item.noOfHours}`}</Text>
+                <Text style={styles.projectDescription}>{`Hours: ${item.noOfHours} Hours`}</Text>
               </Card>
             </TouchableOpacity>
           </Swipeout>

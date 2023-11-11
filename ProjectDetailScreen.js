@@ -89,7 +89,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
         <Text style={styles.taskDetailText}>Member: {item.member}</Text>
         <Text style={styles.taskDetailText}>Actual End: {formatDate(item.actualEndDate)}</Text>
         <Text style={styles.taskDetailText}>Cost: {item.taskCost}</Text>
-        <Text style={styles.taskDetailText}>Hours: {item.noOfHours}</Text>
+        <Text style={styles.taskDetailText}>Hours: {`${item.noOfHours} Hours`}</Text>
       </View>
     </View>
   );
@@ -102,7 +102,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
             <Text style={styles.projectName}>{project.name}</Text>
             <Text style={styles.projectDescription}>{project.description}</Text>
             <Text style={styles.projectCost}>Cost: {project.projectCost}</Text>
-            <Text style={styles.projectCost}>Hours: {project.noOfHours}</Text>
+            <Text style={styles.projectCost}>Hours: {`${project.noOfHours} Hours`}</Text>
             <Button
               label="Project Income"
               onPress={() => navigation.navigate('Project Income', { tasksObj: tasks})}
