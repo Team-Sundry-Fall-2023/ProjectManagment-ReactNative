@@ -94,6 +94,10 @@ const MemberListScreen = () => {
     navigation.navigate('Create Member', { members, setMembers, memberToEdit: member });
   };
 
+  const handleViewTasksOfMember = (member) => {
+    navigation.navigate('Task of Member', { member});
+  };
+  
   const showAlert = (title, message) => {
     Alert.alert(title, message, [{ text: 'OK' }], { cancelable: false });
   };
@@ -146,7 +150,7 @@ const MemberListScreen = () => {
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
             <TouchableOpacity
-              onPress={() => handleViewDetails(item)}
+              onPress={() => handleViewTasksOfMember(item)}
               style={styles.cardTouchable}
             >
               <Card containerStyle={styles.card}>

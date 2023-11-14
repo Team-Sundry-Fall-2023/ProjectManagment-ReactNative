@@ -8,6 +8,7 @@ import MemberTabNavigator from './MemberTabNavigator';
 import CreateMemberScreen from './CreateMemberScreen';
 import MemberListScreen from './MemberListScreen';
 import CreateTaskScreen from './CreateTaskScreen';
+import TaskOfMemberScreen from './TaskOfMemberScreen';
 import EditProjectScreen from './EditProjectScreen';
 import ProfileDetailScreen from './ProfileDetailScreen';
 import ProjectDetailScreen from './ProjectDetailScreen';
@@ -38,6 +39,7 @@ const App = () => {
         <Stack.Screen name="Add Project" component={AddProjectScreen} options={{ headerShown: true }} />
         <Stack.Screen name="MemberList" component={MemberListScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Create Member" component={CreateMemberScreen} options={{ headerShown: true}} />
+        <Stack.Screen name="Task of Member" component={TaskOfMemberScreen} options={{ headerShown: true}} />
         <Stack.Screen name="Create Task" component={CreateTaskScreen} options={{ headerShown: true }} />
         <Stack.Screen name="Edit Project" component={EditProjectScreen} options={{ headerShown: true }} />
         <Stack.Screen name="ProfileDetail" component={ProfileDetailScreen} options={{ headerShown: false }} />
