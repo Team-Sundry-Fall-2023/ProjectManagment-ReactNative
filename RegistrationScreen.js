@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { View, Text, TextField, Button } from 'react-native-ui-lib';
+import { View, Text, TextField, Button, Image } from 'react-native-ui-lib';
 import { auth, database } from './firebase';
 import { ref, push } from "firebase/database";
 import 'firebase/auth';
@@ -82,6 +82,11 @@ const RegistrationScreen = ({ navigation }) => {
         backgroundColor='#87CEEB'
       />
       <ScrollView style={styles.scrollViewContainer}>
+        <Image
+          source={require('./assets/img/tiny_people.png')}
+          style={styles.logo}
+        />
+        <Text style={styles.appTitle}>PROJECT MANAGEMENT</Text>
         <View style={styles.fieldContainer}>
           <Text text70 style={styles.label}>First Name</Text>
           <TextField
@@ -89,8 +94,8 @@ const RegistrationScreen = ({ navigation }) => {
             placeholder="First Name"
             value={firstName}
             onChangeText={setFirstName}
-            enableErrors={true}
-            error={error}
+            validate={{ presence: true }}
+            validationMessage={error}
           />
         </View>
         <View style={styles.fieldContainer}>
@@ -100,8 +105,8 @@ const RegistrationScreen = ({ navigation }) => {
             placeholder="Last Name"
             value={lastName}
             onChangeText={setLastName}
-            enableErrors={true}
-            error={error}
+            validate={{ presence: true }}
+            validationMessage={error}
           />
         </View>
         <View style={styles.fieldContainer}>
@@ -112,8 +117,8 @@ const RegistrationScreen = ({ navigation }) => {
             placeholder="Email"
             value={email}
             onChangeText={setEmail}
-            enableErrors={true}
-            error={error}
+            validate={{ email: true }}
+            validationMessage={error}
           />
         </View>
         <View style={styles.fieldContainer}>
@@ -125,8 +130,8 @@ const RegistrationScreen = ({ navigation }) => {
             secureTextEntry
             value={password}
             onChangeText={setPassword}
-            enableErrors={true}
-            error={error}
+            validate={{ email: true }}
+            validationMessage={error}
           />
         </View>
         <View style={styles.fieldContainer}>
@@ -138,8 +143,8 @@ const RegistrationScreen = ({ navigation }) => {
             secureTextEntry
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            enableErrors={true}
-            error={error}
+            validate={{ email: true }}
+            validationMessage={error}
           />
         </View>
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -173,6 +178,18 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff',
   },
+  logo: {
+    width: 300,
+    height: 210,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  appTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#007BFF',
+    marginBottom: 20,
+  },
   input: {
     height: 40,
     width: 280, 
@@ -180,6 +197,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20, 
     paddingHorizontal: 10,
+    marginBottom: 10
   },
   errorText: {
     color: 'red',
