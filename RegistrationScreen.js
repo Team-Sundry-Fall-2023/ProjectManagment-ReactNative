@@ -88,7 +88,6 @@ const RegistrationScreen = ({ navigation }) => {
         />
         <Text style={styles.appTitle}>PROJECT MANAGEMENT</Text>
         <View style={styles.fieldContainer}>
-          <Text text70 style={styles.label}>First Name</Text>
           <TextField
             style={styles.input}
             placeholder="First Name"
@@ -99,7 +98,6 @@ const RegistrationScreen = ({ navigation }) => {
           />
         </View>
         <View style={styles.fieldContainer}>
-          <Text text70 style={styles.label}>Last Name</Text>
           <TextField
             style={styles.input}
             placeholder="Last Name"
@@ -110,8 +108,6 @@ const RegistrationScreen = ({ navigation }) => {
           />
         </View>
         <View style={styles.fieldContainer}>
-          <Text text70 style={styles.label}>Email</Text>
-
           <TextField
             style={styles.input}
             placeholder="Email"
@@ -122,8 +118,6 @@ const RegistrationScreen = ({ navigation }) => {
           />
         </View>
         <View style={styles.fieldContainer}>
-          <Text text70 style={styles.label}>Password</Text>
-
           <TextField
             style={styles.input}
             placeholder="Password"
@@ -135,8 +129,6 @@ const RegistrationScreen = ({ navigation }) => {
           />
         </View>
         <View style={styles.fieldContainer}>
-          <Text text70 style={styles.label}>Confirm Password</Text>
-
           <TextField
             style={styles.input}
             placeholder="Confirm Password"
@@ -189,15 +181,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#007BFF',
     marginBottom: 20,
+    alignSelf: 'center',
   },
   input: {
+    width: 400,
     height: 40,
-    width: 280, 
-    borderColor: 'gray',
+    borderColor: '#87CEEB',
     borderWidth: 1,
-    borderRadius: 20, 
+    borderRadius: 20,
     paddingHorizontal: 10,
-    marginBottom: 10
+    maxWidth: 340,
+    alignSelf: 'center',
+    marginBottom: 10,
+    color: '#87CEEB',
+    placeholderTextColor: '#87CEEB',
   },
   errorText: {
     color: 'red',
