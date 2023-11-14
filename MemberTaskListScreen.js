@@ -77,6 +77,11 @@ const MemberTaskListScreen = () => {
           value={searchQuery}
           onChangeText={(text) => setSearchQuery(text)}
         />
+        {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearSearchButton}>
+              <FontAwesome name="times" size={20} color="gray" />
+            </TouchableOpacity>
+          )}
       </View>
       <FlatList
         data={searchQuery ? filteredTasks : tasks}
@@ -197,6 +202,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchIcon: {
+    padding: 10,
+  },
+  clearSearchButton: {
+    position: 'absolute',
+    right: 10,
     padding: 10,
   },
 });
