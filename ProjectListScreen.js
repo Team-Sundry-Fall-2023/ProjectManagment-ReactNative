@@ -27,7 +27,7 @@ const ProjectListScreen = () => {
         Object.keys(projects).forEach((projectId) => {
           const project = projects[projectId];
           projectList.push(project);
-
+          console.log(project);
         });
         setProjects(projectList);
       } else {
@@ -210,7 +210,7 @@ const ProjectListScreen = () => {
       </View>
       <FlatList
         data={searchQuery ? filteredProjects : projects}
-        keyExtractor={(item) => item.index}
+        keyExtractor={(item) => item.projectId.toString()}
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
             <TouchableOpacity
