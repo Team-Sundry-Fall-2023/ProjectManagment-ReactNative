@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   dateButton: {
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: '#87CEEB',
     borderRadius: 20,
     padding: 10,
     justifyContent: 'flex-start',

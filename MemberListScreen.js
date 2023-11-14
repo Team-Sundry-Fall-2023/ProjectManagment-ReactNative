@@ -169,7 +169,7 @@ const MemberListScreen = () => {
           onChangeText={(text) => setSearchQuery(text)} />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearSearchButton}>
-              <FontAwesome name="times" size={20} color="gray" />
+              <FontAwesome name="times" size={20} color="#87CEEB" />
             </TouchableOpacity>
           )}
       </View>
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#87CEEB',
     borderWidth: 1,
     margin: 10,
     paddingLeft: 10,
@@ -297,6 +297,7 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     padding: 10,
+    color: '#87CEEB',
   },
   clearSearchButton: {
     position: 'absolute',
