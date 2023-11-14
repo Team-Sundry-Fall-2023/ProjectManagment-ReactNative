@@ -127,9 +127,11 @@ const MemberListScreen = () => {
   const filterMembers = () => {
     const query = searchQuery.toLowerCase();
 
-    // Filter Members based on the query
     const filtered = members.filter((member) => {
-      return member.firstName.toLowerCase().includes(query) || member.lastName.toLowerCase().includes(query) || member.category.toLowerCase().includes(query);
+      return member.firstName.toLowerCase().includes(query) 
+            || member.lastName.toLowerCase().includes(query) 
+            || member.email.toLowerCase().includes(query) 
+            || member.category.toLowerCase().includes(query);
     });
 
     setFilteredMembers(filtered);
