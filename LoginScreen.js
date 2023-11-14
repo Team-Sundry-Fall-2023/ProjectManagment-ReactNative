@@ -5,7 +5,7 @@ import { auth, database } from './firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ref, orderByChild, query, equalTo, get } from "firebase/database";
 import UserContext from './UserContext';
-
+import { Header } from 'react-native-elements';
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,10 +70,16 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <Header
+            containerStyle={styles.headerContainer}
+            centerComponent={{ text: ' ', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+            backgroundColor='#87CEEB'
+          />
       <Image
-        source={require('./assets/img/tiny_people.jpg')}
+        source={require('./assets/img/tiny_people.png')}
         style={styles.logo}
       />
+      <Text style={styles.appTitle}>PROJECT MANAGEMENT</Text>
       <TextField
         style={styles.input}
         placeholder="Email"
@@ -108,15 +114,16 @@ const validateEmail = (email) => {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    fontSize: 24,
-    marginBottom: 20,
+  headerContainer: {
+    backgroundColor: '#87CEEB',
+    borderBottomWidth: 0,
+    marginBottom: 100
   },
   container: {
+    paddingBottom: 70,
     flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#87CEEB',
+    alignItems: 'center',
   },
   logo: {
     width: 300,
@@ -124,16 +131,24 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
   },
+  appTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 20,
+  },
   input: {
     width: 400,
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#fff',
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 10,
     maxWidth: 340,
     alignSelf: 'center',
-    marginBottom: 10
+    marginBottom: 10,
+    color: '#fff',
+    placeholderTextColor: '#fff',
   },
   errorText: {
     color: 'red',
