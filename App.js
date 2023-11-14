@@ -32,10 +32,10 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="OnBoardingScreen">
         <Stack.Screen name="OnBoardingScreen" component={OnBoardingScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="AdminTabNavigator" component={AdminTabNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="MemberTabNavigator" component={MemberTabNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="Registration" component={RegistrationScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false , gestureEnabled: false }} />
+        <Stack.Screen name="AdminTabNavigator" component={AdminTabNavigator} options={{ headerShown: false , gestureEnabled: false }} />
+        <Stack.Screen name="MemberTabNavigator" component={MemberTabNavigator} options={{ headerShown: false  ,gestureEnabled: false }} />
+        <Stack.Screen name="Registration" component={RegistrationScreen} options={{ headerShown: false , gestureEnabled: false }} />
         <Stack.Screen name="Add Project" component={AddProjectScreen} options={{ headerShown: false }} />
         <Stack.Screen name="MemberList" component={MemberListScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Create Member" component={CreateMemberScreen} options={{ headerShown: false}} />
