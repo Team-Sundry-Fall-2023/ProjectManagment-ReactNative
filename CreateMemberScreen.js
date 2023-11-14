@@ -6,6 +6,8 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, query, orderByChild, equalTo, get, push, update } from "firebase/database";
 import RNPickerSelect from 'react-native-picker-select';
 import commonStyles from './style';
+import { Ionicons } from '@expo/vector-icons';
+import { Header } from 'react-native-elements';
 
 const CreateMemberScreen = ({ navigation, route }) => {
   const { members, setMembers, memberToEdit } = route.params;
@@ -140,7 +142,23 @@ const CreateMemberScreen = ({ navigation, route }) => {
   }, [navigation]);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ 
+                    text: memberToEdit ? 'Edit member' : 'Add member',
+                    style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#87CEEB'
+      />
+      <ScrollView style={styles.scrollViewContainer}>
       <View style={styles.fieldContainer}>
 
         <Text style={styles.label}>First Name</Text>
@@ -202,9 +220,10 @@ const CreateMemberScreen = ({ navigation, route }) => {
             style={pickerSelectStyles}
           />
         </View>
-        <Button label={memberToEdit ? "Update" : "Save"} onPress={memberToEdit ? handleUpdateMember : handleCreateMember} style={styles.button} />
+        <Button label={memberToEdit ? "Update" : "+ Add"} onPress={memberToEdit ? handleUpdateMember : handleCreateMember} style={styles.button} />
       </View>
     </ScrollView>
+    </View>
   );
 };
 
@@ -233,6 +252,11 @@ const pickerSelectStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   container: {
+    paddingBottom: 70,
+    flex: 1,
+    backgroundColor: '#EFEFF4',
+  },
+  scrollViewContainer: {
     flex: 1,
     padding: 16,
     backgroundColor: '#fff',
@@ -255,9 +279,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    marginTop: 20,
-    borderRadius: 20,
     backgroundColor: '#5848ff',
+    borderRadius: 10,
+    alignSelf: 'center',
+    width: '50%',
   },
   pickerContainer: {
     marginBottom: 20,

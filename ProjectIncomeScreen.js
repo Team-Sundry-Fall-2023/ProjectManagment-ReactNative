@@ -5,6 +5,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import { BarChart } from 'react-native-chart-kit';
 import commonStyles from './style';
+import { Ionicons } from '@expo/vector-icons';
+import { Header } from 'react-native-elements';
 
 const ProjectIncomeScreen = ({ route, navigation }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -98,38 +100,60 @@ const ProjectIncomeScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-
-      <View style={styles.dateContainer}>
-        <Text style={styles.label}>Select Date</Text>
-        {renderEndDatePicker(selectedDate, setSelectedDate, showDatePicker, setShowDatePicker)}
-      </View>
-
-      <Text style={styles.chartTitle}>Filtered Costs:</Text>
-
-      {filteredTasks.length === 0 ? (
-        <Text style={styles.noDataText}>No data available for the selected date.</Text>
-      ) : (
-        <ScrollView horizontal>
-          <View style={styles.chartContainer}>
-            <BarChart
-              data={chartData}
-              width={600}
-              height={500}
-              yAxisLabel="$"
-              chartConfig={chartConfig}
+            <Header
+                containerStyle={styles.headerContainer}
+                leftComponent={
+                <Ionicons
+                    name='ios-arrow-back'
+                    size={24}
+                    color='#fff'
+                    onPress={() => navigation.goBack()}
+                />
+                }
+                centerComponent={{ text: 'Project Income', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+                backgroundColor='#87CEEB'
             />
-          </View>
-        </ScrollView>
-      )}
-    </View>
+            <ScrollView style={styles.scrollViewContainer}>
+                <View style={styles.dateContainer}>
+                  {renderEndDatePicker(selectedDate, setSelectedDate, showDatePicker, setShowDatePicker)}
+                </View>
+
+                <Text style={styles.chartTitle}>Income for {moment(selectedDate).format('MMMM YYYY')}</Text>
+
+                {filteredTasks.length === 0 ? (
+                  <Text style={styles.noDataText}>No data available for the selected date.</Text>
+                ) : (
+                  <ScrollView horizontal>
+                    <View style={styles.chartContainer}>
+                      <BarChart
+                        data={chartData}
+                        width={600}
+                        height={500}
+                        yAxisLabel="$"
+                        chartConfig={chartConfig}
+                      />
+                    </View>
+                  </ScrollView>
+                )}
+                </ScrollView>
+              </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    paddingBottom: 70,
+    flex: 1,
+    backgroundColor: '#EFEFF4',
+  },
+  scrollViewContainer: {
     flex: 1,
     padding: 16,
     backgroundColor: '#fff',
+  },
+  headerContainer: {
+    backgroundColor: '#87CEEB',
+    borderBottomWidth: 0, 
   },
   header: {
     alignItems: 'center',
@@ -166,7 +190,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 10,
+    margin: 20,
   },
   noDataText: {
     fontSize: 16,

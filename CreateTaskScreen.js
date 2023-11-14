@@ -6,6 +6,8 @@ import { auth, database } from './firebase';
 import { ref, push, set, query, orderByChild, equalTo, get } from 'firebase/database';
 import commonStyles from './style';
 import RNPickerSelect from 'react-native-picker-select';
+import { Ionicons } from '@expo/vector-icons';
+import { Header } from 'react-native-elements';
 
 const CreateTaskScreen = ({ navigation, route }) => {
   const { tasks, setTasks } = route.params;
@@ -202,7 +204,21 @@ const CreateTaskScreen = ({ navigation, route }) => {
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: 'Add task', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#87CEEB'
+      />
+      <ScrollView style={styles.scrollViewContainer}>
       <View style={styles.fieldContainer}>
         <TextField
           placeholder="Enter task name"
@@ -266,8 +282,9 @@ const CreateTaskScreen = ({ navigation, route }) => {
         )}
       </View>
 
-      <Button label="Save Task" onPress={handleCreateTask} style={styles.saveButton} />
+      <Button label="+ Add" onPress={handleCreateTask} style={styles.saveButton} />
     </ScrollView>
+    </View>
   );
 };
 
@@ -296,6 +313,11 @@ const pickerSelectStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   container: {
+    paddingBottom: 70,
+    flex: 1,
+    backgroundColor: '#EFEFF4',
+  },
+  scrollViewContainer: {
     flex: 1,
     padding: 16,
     backgroundColor: '#fff',
@@ -336,9 +358,10 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   saveButton: {
-    marginTop: 20,
-    borderRadius: 20,
     backgroundColor: '#5848ff',
+    borderRadius: 20,
+    alignSelf: 'center',
+    width: '50%',
   },
 });
 

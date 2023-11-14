@@ -4,9 +4,10 @@ import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
 import { auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get, remove } from "firebase/database";
-import { Card } from 'react-native-elements';
+import { Card, Header } from 'react-native-elements';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const ProjectListScreen = () => {
   const navigation = useNavigation();
@@ -176,6 +177,27 @@ const ProjectListScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: 'Projects', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        rightComponent={
+          <Ionicons
+            name='ios-add'
+            size={24}
+            color='#fff'
+            onPress={handleRightButtonPress}
+          />
+        }
+        backgroundColor='#87CEEB'
+      />
       <View style={styles.searchInput}>
         <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
         <TextInput
@@ -206,10 +228,11 @@ const ProjectListScreen = () => {
                   </View>
                 </View>
                 <Card.Divider />
-                <Text style={styles.projectDescription}>{item.description}</Text>
-                <Text style={styles.projectDescription}>{`Cost: ${item.projectCost}`}</Text>
-                <Text style={styles.projectDescription}>{`Hours: ${item.noOfHours} Hours`}</Text>
-              </Card>
+                <View style={styles.projectDetailsContainer}>
+                  <Text style={styles.projectCost}><Ionicons name='ios-cash' size='16' color='blue' /> {`$${item.projectCost}`}</Text>
+                  <Text style={styles.projectHours}><Ionicons name='ios-time' size='16' color='blue' /> {`${item.noOfHours} Hours`}</Text>
+                </View>
+                </Card>
             </TouchableOpacity>
           </Swipeout>
         )}
@@ -222,6 +245,10 @@ const ProjectListScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: '#87CEEB',
+    borderBottomWidth: 0, 
+  },
   cardTouchable: {
     borderRadius: 20,
     overflow: 'hidden',
@@ -246,10 +273,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EFEFF4',
   },
-  projectDescription: {
+  projectDetailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  projectCost: {
+    flex: 1,
     fontSize: 14,
-    color: '#4F4F4F',
-    marginBottom: 10,
+    color: '#555',
+    marginRight: 8,
+  },
+  projectHours: {
+    flex: 1,
+    fontSize: 14,
+    color: '#555',
+    textAlign: 'right',
   },
   swipeButton: {
     flex: 1,

@@ -5,6 +5,7 @@ import UserContext from './UserContext';
 import { auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get } from "firebase/database";
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 const ProfileDetailScreen = ({ navigation }) => {
   const [userDetails, setUserDetails] = useState(null);
@@ -81,8 +82,8 @@ const ProfileDetailScreen = ({ navigation }) => {
         </View>
         <View style={styles.detailContainer}>
           <Text style={styles.name}>{userDetails.firstName} {userDetails.lastName}</Text>
-          <Text style={styles.category}>{userDetails.category}</Text>
-          <Text style={styles.email}>{userDetails.email}</Text>
+          <Text style={styles.email}><Ionicons name='ios-person' size={16}/>  {userDetails.email}</Text>
+          <Text style={styles.category}><Ionicons name='ios-briefcase' size={16}/>  {userDetails.category}</Text>
         </View>
         <Button label="Edit Profile" onPress={() => navigation.navigate('Edit Profile', { profileObj: userDetails })} style={styles.button} />
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>

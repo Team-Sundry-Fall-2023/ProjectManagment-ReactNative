@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
-import { Card } from 'react-native-elements';
+import { Card, Avatar, Header } from 'react-native-elements';
 import { database } from './firebase';
 import { ref, query, orderByChild, get, remove } from "firebase/database";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Ionicons } from '@expo/vector-icons';
 
 const MemberListScreen = () => {
   const navigation = useNavigation();
@@ -139,6 +140,27 @@ const MemberListScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: 'Members', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        rightComponent={
+          <Ionicons
+            name='ios-add'
+            size={24}
+            color='#fff'
+            onPress={handleRightButtonPress}
+          />
+        }
+        backgroundColor='#87CEEB'
+      />
       <View style={styles.searchInput}>
         <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
         <TextInput
@@ -162,11 +184,20 @@ const MemberListScreen = () => {
             >
               <Card containerStyle={styles.card}>
                 <View style={styles.cardHeader}>
-                  <Text style={styles.memberName}>{`${item.firstName} ${item.lastName}`}</Text>
+                  <Avatar
+                    rounded
+                    size="large"
+                    source={require('./assets/img/avatar.jpg')} 
+                  />
+                  <View style={styles.memberInfo}>
+                    <Text style={styles.memberName}>{`${item.firstName} ${item.lastName}`}</Text>
+                  </View>
                 </View>
                 <Card.Divider />
-                <Text style={styles.memberDetail}>{item.email}</Text>
-                <Text style={styles.memberDetail}>{item.category}</Text>
+                <View style={styles.memberContainer}>
+                  <Text><Ionicons name='ios-person' size={16} color="blue"/> {`${item.email}`}</Text>
+                  <Text><Ionicons name='ios-briefcase' size={16} color="blue"/> {`${item.category}`}</Text>
+                </View>
               </Card>
             </TouchableOpacity>
           </Swipeout>
@@ -180,12 +211,41 @@ const MemberListScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: '#87CEEB',
+    borderBottomWidth: 0, 
+  },
   cardTouchable: {
     borderRadius: 20,
     overflow: 'hidden',
   },
   card: {
-    borderRadius: 20,
+    borderRadius: 8,
+    padding: 16,
+    margin: 16,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    shadowOpacity: 0.1,
+    elevation: 4,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  memberInfo: {
+    marginLeft: 16,
+  },
+  memberName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  memberEmail: {
+    color: '#666',
+  },
+  memberContainer: {
+    marginTop: 10,
   },
   memberName: {
     alignItems: 'center',
@@ -242,6 +302,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     padding: 10,
+  },
+  memberContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

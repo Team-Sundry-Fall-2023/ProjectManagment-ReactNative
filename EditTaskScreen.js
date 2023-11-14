@@ -7,6 +7,8 @@ import { ref, query, orderByChild, equalTo, get, update } from 'firebase/databas
 import { useNavigation, useRoute } from '@react-navigation/native';
 import commonStyles from './style';
 import RNPickerSelect from 'react-native-picker-select';
+import { Ionicons } from '@expo/vector-icons';
+import { Header } from 'react-native-elements';
 
 const EditTaskScreen = () => {
     const navigation = useNavigation();
@@ -293,7 +295,21 @@ const EditTaskScreen = () => {
     );
 
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
+            <Header
+                containerStyle={styles.headerContainer}
+                leftComponent={
+                <Ionicons
+                    name='ios-arrow-back'
+                    size={24}
+                    color='#fff'
+                    onPress={() => navigation.goBack()}
+                />
+                }
+                centerComponent={{ text: 'Edit task', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+                backgroundColor='#87CEEB'
+            />
+            <ScrollView style={styles.scrollViewContainer}>
             <View style={styles.fieldContainer}>
                 <TextField
                     placeholder="Enter task name"
@@ -351,8 +367,9 @@ const EditTaskScreen = () => {
                 />
             </View>
 
-            <Button label="Update Task" onPress={handleEditTask} style={styles.saveButton} />
+            <Button label="Update" onPress={handleEditTask} style={styles.saveButton} />
         </ScrollView>
+        </View>
     );
 };
 
@@ -381,10 +398,15 @@ const pickerSelectStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
     container: {
+        paddingBottom: 70,
+        flex: 1,
+        backgroundColor: '#EFEFF4',
+      },
+      scrollViewContainer: {
         flex: 1,
         padding: 16,
         backgroundColor: '#fff',
-    },
+      },
     fieldContainer: {
         marginBottom: 20,
     },
@@ -424,9 +446,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     saveButton: {
-        marginTop: 20,
-        borderRadius: 20,
         backgroundColor: '#5848ff',
+        borderRadius: 20,
+        alignSelf: 'center',
+        width: '50%',
     },
 });
 

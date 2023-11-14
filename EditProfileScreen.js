@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, StyleSheet, Alert, ScrollView } from 'react-native';
 import { Button, TextField, Text } from 'react-native-ui-lib'; // Import from 'react-native-ui-lib'
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -7,6 +7,8 @@ import { updatePassword } from "firebase/auth";
 import { auth, database } from './firebase';
 import 'firebase/auth';
 import 'firebase/database';
+import { Ionicons } from '@expo/vector-icons';
+import { Header } from 'react-native-elements';
 
 const EditProfileScreen = ({ }) => {
   const navigation = useNavigation();
@@ -26,7 +28,6 @@ const EditProfileScreen = ({ }) => {
   }, [profileObj, profile]);
 
   useEffect(() => {
-
     if (profile) {
       setLastName(profile.lastName);
       setFirstName(profile.firstName)
@@ -99,10 +100,22 @@ const EditProfileScreen = ({ }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: profileObj.email, style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#87CEEB'
+      />
+      <ScrollView style={styles.scrollViewContainer}>
       <View style={styles.fieldContainer}>
-        <Text style={styles.labelEmail}>Account: {email}</Text>
-
         <Text style={styles.label}>First Name</Text>
         <TextField
           placeholder="First Name"
@@ -139,11 +152,17 @@ const EditProfileScreen = ({ }) => {
         <Button label="Update" onPress={handleEditProfile} style={styles.button} />
       </View>
     </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    paddingBottom: 70,
+    flex: 1,
+    backgroundColor: '#EFEFF4',
+  },
+  scrollViewContainer: {
     flex: 1,
     padding: 16,
     backgroundColor: '#fff',
@@ -175,6 +194,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 20,
     backgroundColor: '#5848ff',
+    alignSelf: 'center',
+    width: '50%',
   },
 });
 

@@ -46,20 +46,22 @@ const MemberTabNavigator = () => {
       <Tab.Screen
         name="MemberTaskList"
         component={MemberTaskListScreen}
-        options={{ title: 'Tasks' }}
+        options={{
+          headerShown: false,
+        }}
       />
       <Tab.Screen
         name="MemberIncome"
         component={MemberIncomeScreen}
         options={{
-          title: 'Member Income'
+          headerShown: false,
         }}
       />
       <Tab.Screen
         name="ProfileDetail"
         component={ProfileDetailScreen}
         options={{
-          headerShown: false, // This hides the navigation bar on the top
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

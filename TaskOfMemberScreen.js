@@ -2,23 +2,17 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
-import { Card } from 'react-native-elements';
+import { Card, Header } from 'react-native-elements';
 import { database } from './firebase';
 import { ref, query, orderByChild, equalTo, get, remove } from "firebase/database";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const TaskOfMemberScreen = ({ route }) => {
   const { member } = route.params;
   const navigation = useNavigation();
   const [tasks, setTasks] = useState([]);
-
-  console.log('member:', member);
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: `Tasks of ${member.firstName} ${member.lastName}`,
-    });
-  }, [navigation, member]);
 
   useEffect(() => {
     const taskList = [];
@@ -150,6 +144,19 @@ const TaskOfMemberScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: `Tasks of ${member.firstName} ${member.lastName}`, style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#87CEEB'
+      />
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id?.toString() ?? ''}
@@ -167,9 +174,10 @@ const TaskOfMemberScreen = ({ route }) => {
                   </View>
                 </View>
                 <Card.Divider />
-                <Text style={styles.taskDescription}>{item.taskDescription}</Text>
-                <Text>{`Member: ${item.member}`}</Text>
-                <Text>{`End Date: ${formatDate(item.taskEndDate)}`}</Text>
+                <View style={styles.taskDescription}>
+                  <Text><Ionicons name='ios-person' size='16' color='blue' /> {`${item.member}`}</Text>
+                  <Text><Ionicons name='ios-calendar' size='16' color='blue' /> {`${formatDate(item.taskEndDate)}`}</Text>
+                </View>
               </Card>
             </TouchableOpacity>
           </Swipeout>
@@ -183,6 +191,10 @@ const TaskOfMemberScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: '#87CEEB',
+    borderBottomWidth: 0, 
+  },
   cardTouchable: {
     borderRadius: 20,
     overflow: 'hidden',
@@ -268,6 +280,10 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     padding: 10,
+  },
+  taskDescription: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

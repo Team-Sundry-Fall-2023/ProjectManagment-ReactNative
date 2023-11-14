@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Alert, TextInput, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-ui-lib';
 import { database } from './firebase';
 import { ref, query, orderByChild, equalTo, get } from "firebase/database";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Header } from 'react-native-elements';
 
 const ProjectDetailScreen = ({ route, navigation }) => {
   const { projectObj } = route.params;
@@ -11,6 +13,8 @@ const ProjectDetailScreen = ({ route, navigation }) => {
   const [tasks, setTasks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredTasks, setFilteredTasks] = useState([]);
+
+
 
   useEffect(() => {
     if (projectObj) {
@@ -61,8 +65,9 @@ const ProjectDetailScreen = ({ route, navigation }) => {
       return 'Invalid date';
     }
     const options = {
-      year: 'numeric', month: 'long', day: 'numeric',
-      hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
+      timeZone: 'America/Toronto',
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
     };
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
@@ -83,38 +88,86 @@ const ProjectDetailScreen = ({ route, navigation }) => {
       <Text style={styles.taskName}>{item.taskName}</Text>
       <Text style={styles.taskDescription}>{item.taskDescription}</Text>
       <View style={styles.taskDetails}>
-        <Text style={styles.taskDetailText}>Start: {formatDate(item.taskStartDate)}</Text>
-        <Text style={styles.taskDetailText}>End: {formatDate(item.taskEndDate)}</Text>
-        <Text style={styles.taskDetailText}>Status: {item.status}</Text>
-        <Text style={styles.taskDetailText}>Member: {item.member}</Text>
-        <Text style={styles.taskDetailText}>Actual End: {formatDate(item.actualEndDate)}</Text>
-        <Text style={styles.taskDetailText}>Cost: {item.taskCost}</Text>
-        <Text style={styles.taskDetailText}>Hours: {`${item.noOfHours} Hours`}</Text>
+        <View style={styles.detailRow}>
+          <Ionicons name='ios-person' size={16} style={styles.icon} />
+          <Text style={styles.taskDetailText}>Assign to: {item.member}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Ionicons name='ios-calendar' size={16} style={styles.icon} />
+          <Text style={styles.taskDetailText}>Start: {formatDate(item.taskStartDate)}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Ionicons name='ios-calendar' size={16} style={styles.icon} />
+          <Text style={styles.taskDetailText}>End: {formatDate(item.taskEndDate)}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Ionicons name='ios-checkmark-circle' size={16} style={styles.icon} />
+          <Text style={styles.taskDetailText}>Status: {item.status}</Text>
+        </View>
+        
+        <View style={styles.detailRow}>
+          <Ionicons name='ios-calendar-sharp' size={16} style={styles.icon} />
+          <Text style={styles.taskDetailText}>Complete Date: {formatDate(item.actualEndDate)}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Ionicons name='ios-cash' size={16} style={styles.icon} />
+          <Text style={styles.taskDetailText}>Cost: {item.taskCost}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Ionicons name='ios-time' size={16} style={styles.icon} />
+          <Text style={styles.taskDetailText}>Hours: {`${item.noOfHours} Hours`}</Text>
+        </View>
       </View>
     </View>
+
   );
 
   return (
     <View style={styles.container}>
       {project && (
         <>
+          <Header
+            containerStyle={styles.headerContainer}
+            leftComponent={
+              <Ionicons
+                name='ios-arrow-back'
+                size={24}
+                color='#fff'
+                onPress={() => navigation.goBack()}
+              />
+            }
+            centerComponent={{ text: 'Tasks', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+            rightComponent={
+              <View style={{ flexDirection: 'row' }}>
+                <Ionicons
+                  name='ios-cash'
+                  size={24}
+                  color='#fff'
+                  style={{ marginRight: 15 }}
+                  onPress={() => {
+                    navigation.navigate('Project Income', { tasksObj: tasks})
+                  }}
+                />
+                <Ionicons
+                  name='ios-add'
+                  size={24}
+                  color='#fff'
+                  onPress={() => {
+                    navigation.navigate('Create Task', { projectObj: project, tasks, setTasks })
+                  }}
+                />
+              </View>
+            }
+            backgroundColor='#87CEEB'
+          />
           <View style={styles.projectHeader}>
-            <Text style={styles.projectName}>{project.name}</Text>
-            <Text style={styles.projectDescription}>{project.description}</Text>
-            <Text style={styles.projectCost}>Cost: {project.projectCost}</Text>
-            <Text style={styles.projectCost}>Hours: {`${project.noOfHours} Hours`}</Text>
-            <Button
-              label="Project Income"
-              onPress={() => navigation.navigate('Project Income', { tasksObj: tasks})}
-              style={styles.createTaskButton}
-            />
-          {project.status !== 'Complete' && (
-            <Button
-              label="Create Task"
-              onPress={() => navigation.navigate('Create Task', { projectObj: project, tasks, setTasks })}
-              style={styles.createTaskButton}
-            />
-          )}
+            <View style={styles.projectInfoContainer}>
+              <Text style={styles.projectDescription}>{project.description}</Text>
+            </View>
+            <View style={styles.projectDetailsContainer}>
+              <Text style={styles.projectCost}><Ionicons name='ios-cash' size='16' color="blue"/> ${project.projectCost}</Text>
+              <Text style={styles.projectHours}><Ionicons name='ios-time' size='16' color="blue"/> {`${project.noOfHours}`}</Text>
+            </View>
           </View>
           <View style={styles.searchInput}>
             <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
@@ -150,62 +203,76 @@ const showAlert = (title, message) => {
 
 const styles = StyleSheet.create({
   container: {
+    paddingBottom: 70,
     flex: 1,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#EFEFF4',
   },
   projectHeader: {
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#e1e1e1',
-    backgroundColor: 'white',
   },
-  projectName: {
-    fontSize: 22,
-    fontWeight: 'bold',
+  projectInfoContainer: {
     marginBottom: 8,
+  },
+  projectDetailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   projectDescription: {
     fontSize: 16,
     color: '#333',
-    marginBottom: 8,
+    fontWeight: 'bold',
+    alignSelf: 'center',
   },
   projectCost: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 16,
+    flex: 1,
+    fontSize: 14,
+    color: '#555',
   },
-  createTaskButton: {
-    marginBottom: 16,
+  projectHours: {
+    flex: 1,
+    fontSize: 14,
+    color: '#555',
+    textAlign: 'right',
   },
   taskItem: {
-    backgroundColor: 'white',
-    borderRadius: 8,
+    backgroundColor: '#fff',
+    borderRadius: 10,
     padding: 16,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    elevation: 2, // for Android shadow
-    shadowOpacity: 0.1, // for iOS shadow
-    shadowRadius: 4,
+    marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { height: 2, width: 0 },
-  },
-  taskDetails: {
-    marginTop: 8,
-  },
-  taskDetailText: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
   taskName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: 8,
+    color: '#333',
   },
   taskDescription: {
-    fontSize: 14,
+    fontSize: 16,
+    marginBottom: 16,
     color: '#666',
+  },
+  taskDetails: {
+    marginTop: 8,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 4,
+  },
+  icon: {
+    marginRight: 8,
+    color: '#2196F3',
+  },
+  taskDetailText: {
+    fontSize: 14,
+    color: '#444',
   },
   noTasksText: {
     textAlign: 'center',
@@ -230,6 +297,26 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     padding: 10,
+  },
+  headerContainer: {
+    backgroundColor: '#87CEEB',
+    borderBottomWidth: 0, 
+  },
+  headerRightButton: {
+    marginRight: 16,
+    padding: 10,
+  },
+  headerRightButtonText: {
+    fontSize: 16,
+    color: 'blue',
+  },
+  headerLeftButton: {
+    marginLeft: 16,
+    padding: 10,
+  },
+  headerLeftButtonText: {
+    fontSize: 16,
+    color: 'blue',
   },
 });
 

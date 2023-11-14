@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from '@react-navigation/native';
-import { Card } from 'react-native-elements';
+import { Card, Header } from 'react-native-elements';
 import { auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get, remove } from "firebase/database";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-
+import { Ionicons } from '@expo/vector-icons';
 
 const TaskListScreen = () => {
   const navigation = useNavigation();
@@ -165,6 +165,27 @@ const TaskListScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: 'Tasks', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        rightComponent={
+          <Ionicons
+            name='ios-add'
+            size={24}
+            color='#fff'
+            onPress={handleRightButtonPress}
+          />
+        }
+        backgroundColor='#87CEEB'
+      />
       <View style={styles.searchInput}>
         <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
         <TextInput
@@ -195,9 +216,10 @@ const TaskListScreen = () => {
                   </View>
                 </View>
                 <Card.Divider />
-                <Text style={styles.taskDescription}>{item.taskDescription}</Text>
-                <Text>{`Member: ${item.member}`}</Text>
-                <Text>{`End Date: ${formatDate(item.taskEndDate)}`}</Text>
+                <View style={styles.taskDescription}>
+                  <Text><Ionicons name='ios-person' size='16' color='blue' /> {`${item.member}`}</Text>
+                  <Text><Ionicons name='ios-calendar' size='16' color='blue' /> {`${formatDate(item.taskEndDate)}`}</Text>
+                </View>
               </Card>
             </TouchableOpacity>
           </Swipeout>
@@ -211,6 +233,10 @@ const TaskListScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: '#87CEEB',
+    borderBottomWidth: 0, 
+  },
   cardTouchable: {
     borderRadius: 20,
     overflow: 'hidden',
@@ -258,9 +284,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFEFF4',
   },
   taskDescription: {
-    fontSize: 14,
-    color: '#4F4F4F',
-    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   swipeButton: {
     flex: 1,

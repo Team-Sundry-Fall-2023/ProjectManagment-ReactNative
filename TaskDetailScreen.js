@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { auth, database } from './firebase';
+import { database } from './firebase';
 import { ref, query, orderByChild, equalTo, get, remove } from "firebase/database";
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Card } from 'react-native-elements';
+import { Card, Header } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 
 const TaskDetailScreen = ({ route, navigation }) => {
@@ -25,9 +25,10 @@ const TaskDetailScreen = ({ route, navigation }) => {
     if (isNaN(date)) {
       return 'Invalid date';
     }
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' };
+    const options = { timeZone: 'America/Toronto', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'};
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
+  
 
   const getProjectFromId = (task) => {
     const userQuery = query(ref(database, 'projects'), orderByChild('projectId'), equalTo(task.projectId));
@@ -48,35 +49,55 @@ const TaskDetailScreen = ({ route, navigation }) => {
   // An icon wrapper for convenience
   const IconRow = ({ name, size, color, text }) => (
     <View style={styles.detailRow}>
-      <Ionicons name={name} size={size} color={color} />
+      <Ionicons name={name} size={size} color={color}  style={styles.icon} />
       <Text style={styles.detailText}>{text}</Text>
     </View>
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: 'Detail', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#87CEEB'
+      />
+      <ScrollView style={styles.scrollViewContainer}>
       {task && (
         <Card containerStyle={styles.card}>
           <Card.Title style={styles.cardTitle}>{task.taskName}</Card.Title>
           <Card.Divider />
 
           <IconRow name="ios-list" size={24} color="#666" text={task.taskDescription} />
-          <IconRow name="ios-cash" size={24} color="#666" text={`$${task.taskCost}`} />
-          <IconRow name="ios-time" size={24} color="#666" text={`${task.noOfHours} Hours`} />
+          <IconRow name="ios-business" size={24} color="#666" text={`Project: ${project.name}`} />
+          <IconRow name="ios-person" size={24} color="#666" text={`Assign to: ${task.member}`} />
           <IconRow name="ios-calendar" size={24} color="#666" text={`Start Date: ${formatDate(task.taskStartDate)}`} />
           <IconRow name="ios-calendar" size={24} color="#666" text={`End Date: ${formatDate(task.taskEndDate)}`} />
           <IconRow name="ios-checkmark-circle-outline" size={24} color="#666" text={`Status: ${task.status}`} />
-          <IconRow name="ios-person" size={24} color="#666" text={`Member: ${task.member}`} />
-          <IconRow name="ios-calendar" size={24} color="#666" text={`Actual End Date: ${formatDate(task.actualEndDate)}`} />
-          <IconRow name="ios-business" size={24} color="#666" text={`Project: ${project.name}`} />
+          <IconRow name="ios-calendar-sharp" size={24} color="#666" text={`Complete Date: ${formatDate(task.actualEndDate)}`} />
+          <IconRow name="ios-time" size={24} color="#666" text={`${task.noOfHours} Hours`} />
+          <IconRow name="ios-cash" size={24} color="#666" text={`$${task.taskCost}`} />
         </Card>
       )}
     </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    paddingBottom: 70,
+    flex: 1,
+    backgroundColor: '#EFEFF4',
+  },
+  scrollViewContainer: {
     flex: 1,
     backgroundColor: '#f2f2f2',
   },
@@ -109,6 +130,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#5848ff',
     borderRadius: 30,
     marginTop: 20,
+  },
+  icon: {
+    marginRight: 8,
+    color: '#2196F3',
   },
 });
 

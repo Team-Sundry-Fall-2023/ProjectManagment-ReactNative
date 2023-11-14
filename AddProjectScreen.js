@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { auth, database } from './firebase';
 import { ref, push, set } from "firebase/database";
 import commonStyles from './style';
+import { Ionicons } from '@expo/vector-icons';
+import { Header } from 'react-native-elements';
 
 const AddProjectScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -67,38 +69,62 @@ const AddProjectScreen = ({ route }) => {
   }, [navigation]);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.fieldContainer}>
-        <TextField
-          placeholder="Project Name"
-          value={name}
-          onChangeText={setName}
-          style={styles.input}
-        />
-      </View>
-      <View style={styles.fieldContainer}>
-        <TextField
-          placeholder="Project Description"
-          value={description}
-          onChangeText={setDescription}
-          style={[styles.input, styles.multilineInput]}
-          multiline={true}
-        />
-      </View>
-      <Button
-        label="Add Project"
-        onPress={handleAddProject}
-        style={styles.button}
+    <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: 'Add project', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#87CEEB'
       />
-    </ScrollView>
+      <ScrollView style={styles.scrollViewContainer}>
+        <View style={styles.fieldContainer}>
+          <TextField
+            placeholder="Project Name"
+            value={name}
+            onChangeText={setName}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.fieldContainer}>
+          <TextField
+            placeholder="Project Description"
+            value={description}
+            onChangeText={setDescription}
+            style={[styles.input, styles.multilineInput]}
+            multiline={true}
+          />
+        </View>
+        <Button
+          label="+ Add"
+          onPress={handleAddProject}
+          style={styles.button}
+        />
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    paddingBottom: 70,
+    flex: 1,
+    backgroundColor: '#EFEFF4',
+  },
+  scrollViewContainer: {
     flex: 1,
     padding: 16,
     backgroundColor: '#fff',
+  },
+  headerContainer: {
+    backgroundColor: '#87CEEB',
+    borderBottomWidth: 0, 
   },
   fieldContainer: {
     marginBottom: 20,
@@ -125,8 +151,9 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#5848ff',
-    borderRadius: 10,
-
+    borderRadius: 20,
+    alignSelf: 'center',
+    width: '50%',
   },
 });
 

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, FlatList } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, ScrollView } from 'react-native';
 import { Button } from 'react-native-ui-lib';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { database } from './firebase';
 import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Ionicons } from '@expo/vector-icons';
+import { Header } from 'react-native-elements';
 
 const EditProjectScreen = () => {
   const navigation = useNavigation();
@@ -158,24 +159,22 @@ const EditProjectScreen = () => {
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
 
-  const renderTaskItem = ({ item }) => (
-    <View style={styles.taskItem}>
-      <Text style={styles.taskName}>{item.taskName}</Text>
-      <Text style={styles.taskDescription}>{item.taskDescription}</Text>
-      <View style={styles.taskDetails}>
-        <Text style={styles.taskDetailText}>Start: {formatDate(item.taskStartDate)}</Text>
-        <Text style={styles.taskDetailText}>End: {formatDate(item.taskEndDate)}</Text>
-        <Text style={styles.taskDetailText}>Status: {item.status}</Text>
-        <Text style={styles.taskDetailText}>Member: {item.member}</Text>
-        <Text style={styles.taskDetailText}>Actual End: {formatDate(item.actualEndDate)}</Text>
-        <Text style={styles.taskDetailText}>Cost: {item.taskCost}</Text>
-        <Text style={styles.taskDetailText}>Hours: {item.noOfHours}</Text>
-      </View>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: 'Update project', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#87CEEB'
+      />
+      <ScrollView style={styles.scrollViewContainer}>
       <View style={styles.projectHeader}>
         <TextInput
           style={styles.editInput}
@@ -184,7 +183,7 @@ const EditProjectScreen = () => {
           onChangeText={setName}
         />
         <TextInput
-          style={[styles.editInput, styles.multilineInput]} // Increase height for multiline input
+          style={[styles.editInput, styles.multilineInput]} 
           placeholder="Project Description"
           multiline
           numberOfLines={4}
@@ -192,41 +191,28 @@ const EditProjectScreen = () => {
           onChangeText={setDescription}
         />
         <Button
-          label="Edit Project"
+          label="Update"
           onPress={handleEditProject}
           style={styles.button}
         />
-        <Button
-          label="Create Task"
-          onPress={() => navigation.navigate('Create Task', { projectObj: project, tasks, setTasks })}
-          style={styles.button}
-        />
       </View>
-      <View style={styles.searchInput}>
-        <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
-        <TextInput
-          placeholder="Search tasks..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          style={styles.input}
-        />
-      </View>
-      {tasks.length > 0 ? (
-        <FlatList
-          data={searchQuery ? filteredTasks : tasks}
-          keyExtractor={(item) => item.id?.toString() ?? ''}
-          renderItem={renderTaskItem}
-          showsVerticalScrollIndicator={false}
-        />
-      ) : (
-        <Text style={styles.noTasksText}>No tasks found for this project.</Text>
-      )}
+      </ScrollView>
     </View>
   );
 
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 70,
+    flex: 1,
+    backgroundColor: '#EFEFF4',
+  },
+  scrollViewContainer: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff',
+  },
   editInput: {
     height: 40,
     width: '100%', // Set a fixed width for the TextFields
@@ -241,11 +227,10 @@ const styles = StyleSheet.create({
     minHeight: 100, // Minimum height for text area
   },
   button: {
-    marginTop: 10,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#5848ff',
+    borderRadius: 20,
+    alignSelf: 'center',
+    width: '50%',
   },
   projectHeader: {
     padding: 16,
@@ -263,9 +248,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     marginBottom: 8,
-  },
-  createTaskButton: {
-    marginBottom: 16,
   },
   taskItem: {
     backgroundColor: 'white',

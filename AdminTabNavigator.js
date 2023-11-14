@@ -47,17 +47,23 @@ const TabNavigator = () => {
       <Tab.Screen
         name="TaskList"
         component={TaskListScreen}
-        options={{ title: 'Tasks' }}
+        options={{
+          headerShown: false,
+        }}
       />
       <Tab.Screen
         name="ProjectList"
         component={ProjectListScreen}
-        options={{ title: 'Projects' }}
+        options={{
+          headerShown: false,
+        }}
       />
       <Tab.Screen
         name="MemberList"
         component={MemberListScreen}
-        options={{ title: 'Members' }}
+        options={{
+          headerShown: false,
+        }}
       />
       <Tab.Screen
         name="ProfileDetail"

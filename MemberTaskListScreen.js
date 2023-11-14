@@ -4,7 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get } from "firebase/database";
 import { FontAwesome } from '@expo/vector-icons';
-import { Card } from 'react-native-elements';
+import { Card, Header } from 'react-native-elements';
+import { Ionicons } from '@expo/vector-icons';
 
 const MemberTaskListScreen = () => {
   const navigation = useNavigation();
@@ -70,6 +71,19 @@ const MemberTaskListScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: 'Tasks', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#87CEEB'
+      />
       <View style={styles.searchInput}>
         <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
         <TextInput
@@ -105,10 +119,10 @@ const MemberTaskListScreen = () => {
                 </View>
               </View>
               <Card.Divider />
-              <Text style={styles.taskDescription}>{item.taskDescription}</Text>
-              <Text>{`Start Date: ${formatDate(item.taskStartDate)}`}</Text>
-              <Text>{`End Date: ${formatDate(item.taskEndDate)}`}</Text>
-              <Text>{`Actual End Date: ${item.actualEndDate ? formatDate(item.actualEndDate) : 'N/A'}`}</Text>
+                <View style={styles.taskDescription}>
+                  <Text><Ionicons name='ios-calendar' size='16' color='blue' /> {`${formatDate(item.taskStartDate)} - ${formatDate(item.taskEndDate)}`}</Text>
+                  <Text><Ionicons name='ios-calendar-sharp' size='16' color='blue' /> {`${item.actualEndDate ? formatDate(item.actualEndDate) : 'N/A'}`}</Text>
+                </View>
             </Card>
           </TouchableOpacity>
         )}
@@ -118,6 +132,10 @@ const MemberTaskListScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: '#87CEEB',
+    borderBottomWidth: 0, 
+  },
   cardTouchable: {
     borderRadius: 20,
     overflow: 'hidden',
@@ -165,9 +183,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFEFF4',
   },
   taskDescription: {
-    fontSize: 14,
-    color: '#4F4F4F',
-    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   swipeButton: {
     flex: 1,

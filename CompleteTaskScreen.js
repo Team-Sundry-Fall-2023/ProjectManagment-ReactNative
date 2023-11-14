@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native';
 import { Card, Colors, Spacings, Typography, Button as UIButton, TextField } from 'react-native-ui-lib';
 import { auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Header } from 'react-native-elements';
+import { Ionicons } from '@expo/vector-icons';
 
 const CompleteTaskScreen = ({ route, navigation }) => {
   const { taskObj } = route.params;
@@ -240,49 +242,61 @@ const CompleteTaskScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Card style={styles.card}>
-        {task && (
-          <>
-            <Text style={styles.heading}>Complete Task</Text>
-            <View style={styles.section}>
-              <Text style={styles.label}>Task Name</Text>
-              <Text style={styles.body}>{task.taskName}</Text>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Description</Text>
-              <Text style={styles.body}>{task.taskDescription}</Text>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Start Date</Text>
-              <Text style={styles.body}>{task.taskStartDate}</Text>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>End Date</Text>
-              <Text style={styles.body}>{task.taskEndDate}</Text>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.label}>Project</Text>
-              <Text style={styles.body}>{project.name}</Text>
-            </View>
-            <TextField
-              placeholder="Hours Spent"
-              keyboardType="numeric"
-              onChangeText={(text) => setHours(text)}
-              style={styles.input}
-            />
-            <View style={styles.section}>
-              <Text style={styles.label}>Actual Task End Date:</Text>
-              {renderDatePicker()}
-            </View>
-            <UIButton
-              backgroundColor={Colors.primary}
-              label="Complete Task"
-              onPress={handleCompleteTask}
-              style={styles.button}
-            />
-          </>
-        )}
-      </Card>
+      <Header
+        containerStyle={styles.headerContainer}
+        leftComponent={
+          <Ionicons
+            name='ios-arrow-back'
+            size={24}
+            color='#fff'
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{ text: 'Complete Task', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#87CEEB'
+      />
+      <ScrollView style={styles.scrollViewContainer}>
+          {task && (
+            <>
+              <View style={styles.section}>
+                <Text style={styles.label}>Task Name</Text>
+                <Text style={styles.body}>{task.taskName}</Text>
+              </View>
+              <View style={styles.section}>
+                <Text style={styles.label}>Description</Text>
+                <Text style={styles.body}>{task.taskDescription}</Text>
+              </View>
+              <View style={styles.section}>
+                <Text style={styles.label}>Start Date</Text>
+                <Text style={styles.body}>{task.taskStartDate}</Text>
+              </View>
+              <View style={styles.section}>
+                <Text style={styles.label}>End Date</Text>
+                <Text style={styles.body}>{task.taskEndDate}</Text>
+              </View>
+              <View style={styles.section}>
+                <Text style={styles.label}>Project</Text>
+                <Text style={styles.body}>{project.name}</Text>
+              </View>
+              <TextField
+                placeholder="Hours Spent"
+                keyboardType="numeric"
+                onChangeText={(text) => setHours(text)}
+                style={styles.input}
+              />
+              <View style={styles.section}>
+                <Text style={styles.label}>Complete Date:</Text>
+                {renderDatePicker()}
+              </View>
+              <UIButton
+                backgroundColor={Colors.primary}
+                label="Complete"
+                onPress={handleCompleteTask}
+                style={styles.button}
+              />
+            </>
+          )}
+      </ScrollView>
     </View>
   );
 };
@@ -312,31 +326,18 @@ const pickerSelectStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   container: {
+    paddingBottom: 70,
     flex: 1,
-    padding: 20,
-    backgroundColor: Colors.background,
+    backgroundColor: '#EFEFF4',
   },
-  card: {
-    padding: 10,
-    margin: Spacings.page,
-    borderRadius: 12,
+  scrollViewContainer: {
+    flex: 1,
+    padding: 16,
     backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
-  heading: {
-    padding: Spacings.s2,
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.mainText,
-    marginBottom: Spacings.s5,
-    textAlign: 'center',
+  headerContainer: {
+    backgroundColor: '#87CEEB',
+    borderBottomWidth: 0, 
   },
   section: {
     marginBottom: Spacings.s4,
@@ -364,11 +365,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    marginTop: Spacings.s5,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#5848ff',
+    borderRadius: 20,
+    alignSelf: 'center',
+    width: '50%',
   },
   dateButton: {
     backgroundColor: '#fff',
