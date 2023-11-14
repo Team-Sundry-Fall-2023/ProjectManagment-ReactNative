@@ -19,13 +19,12 @@ export default function LoginScreen({ navigation }) {
     }
 
     if (!validateEmail(email)) {
-      setError('Invalid email format.'); // Show an alert
+      setError('Invalid email format.');
       return;
     }
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      // Get the user's ID
       const user = userCredential.user;
       if (user) {
         console.log('Login' + email);
@@ -36,7 +35,6 @@ export default function LoginScreen({ navigation }) {
 
         get(userQuery).then((snapshot) => {
           if (snapshot.exists()) {
-            // The snapshot contains the user data matching the email
             const user = snapshot.val();
 
             Object.keys(user).forEach((userId) => {
@@ -45,9 +43,9 @@ export default function LoginScreen({ navigation }) {
                 const category = userData.category;
 
                 if (category === 'Admin') {
-                  navigation.navigate('AdminTabNavigator'); // Navigate to the admin tab bar
+                  navigation.navigate('AdminTabNavigator'); 
                 } else if (category === 'Member') {
-                  navigation.navigate('MemberTabNavigator'); // Navigate to the member tab bar
+                  navigation.navigate('MemberTabNavigator'); 
                 }
               } else {
                 setError('Category not found for user with ID', userId);
@@ -81,8 +79,10 @@ export default function LoginScreen({ navigation }) {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        enableErrors={true} // RNUILib TextField specific props
-        error={error} // Display the error directly in the TextField
+        validate={{
+          email: (value) => validateEmail(value) || 'Invalid email format',
+        }}
+        validationMessage={error} 
       />
       <TextField
         style={styles.input}
@@ -90,8 +90,10 @@ export default function LoginScreen({ navigation }) {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
-        enableErrors={true}
-        error={error}
+        validate={{
+          password: (value) => !!value || 'Password is required',
+        }}
+        validationMessage={error}
       />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <Button label="Login" onPress={handleLogin} style={styles.button} />
@@ -100,9 +102,7 @@ export default function LoginScreen({ navigation }) {
   );
 }
 
-// Email validation function
 const validateEmail = (email) => {
-  // Use a regular expression to validate email format
   const emailPattern = /\S+@\S+\.\S+/;
   return emailPattern.test(email);
 };
@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   logo: {
-    width: 390,
-    height: 300,
+    width: 300,
+    height: 210,
     alignSelf: 'center',
     marginBottom: 20,
   },
@@ -131,16 +131,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 10,
-    maxWidth: 340, // Ensures the TextField is not wider than the buttons
+    maxWidth: 340,
     alignSelf: 'center',
+    marginBottom: 10
   },
   errorText: {
     color: 'red',
     marginBottom: 10,
+    alignSelf: 'center',
   },
   button: {
     alignSelf: 'center',
-    width: 250, // Set a fixed width for the buttons to match the TextFields
+    width: 250,
     marginBottom: 10,
   }
 });
