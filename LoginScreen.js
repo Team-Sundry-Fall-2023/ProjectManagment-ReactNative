@@ -68,6 +68,11 @@ export default function LoginScreen({ navigation }) {
     }
   };
 
+  const handleRegister = () => {
+    setError('');
+    navigation.navigate('Registration');
+  };
+
   return (
     <View style={styles.container}>
       <Header
@@ -103,7 +108,7 @@ export default function LoginScreen({ navigation }) {
       />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <Button label="Login" onPress={handleLogin} style={styles.button} />
-      <Button label="Register" backgroundColor={Colors.blue1} onPress={() => navigation.navigate('Registration')} style={styles.button} />
+      <Button label="Register" backgroundColor={Colors.blue1} onPress={handleRegister} style={styles.button} />
     </View>
   );
 }
