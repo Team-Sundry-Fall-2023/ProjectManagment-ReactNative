@@ -18,9 +18,7 @@ const TaskListScreen = () => {
     const taskList = [];
     const currentUser = auth.currentUser;
     const currentUserEmail = currentUser.email;
-    console.log('currentUser ' + currentUserEmail)
     const userQuery = query(ref(database, 'tasks'), orderByChild('owner'), equalTo(currentUserEmail));
-    console.log('userQuery' + userQuery)
     get(userQuery).then((snapshot) => {
       if (snapshot.exists()) {
         const tasks = snapshot.val();
@@ -29,10 +27,8 @@ const TaskListScreen = () => {
           const task = tasks[taskId];
           console.log('Task item', task);
           taskList.push(task);
-          // console.log('TaskList ' + TaskList.length )
 
         });
-        console.log('TaskList ' + taskList.length)
         setTasks(taskList);
       } else {
         setTasks(taskList);
@@ -201,7 +197,7 @@ const TaskListScreen = () => {
       </View>
       <FlatList
         data={searchQuery ? filteredTasks : tasks}
-        keyExtractor={(item) => item.id?.toString() ?? ''}
+        keyExtractor={(item) => item.taskId}
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
             <TouchableOpacity

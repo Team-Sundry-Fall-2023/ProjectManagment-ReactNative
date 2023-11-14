@@ -136,13 +136,11 @@ const ProjectListScreen = () => {
 
   const handleRightButtonPress = () => {
     setProjects(updatedProjects => {
-      console.log('create projects', updatedProjects);
       navigation.navigate('Add Project', { projects: updatedProjects, setProjects });
-      return updatedProjects; // Return the updated projects for the state update
+      return updatedProjects; 
     });
   };
 
-  // New component for swipeout buttons, similar to TaskListScreen
   const swipeoutBtns = (item) => [
     {
       component: (
@@ -167,7 +165,6 @@ const ProjectListScreen = () => {
   const filterProjects = () => {
     const query = searchQuery.toLowerCase();
 
-    // Filter projects based on the query
     const filtered = projects.filter((project) => {
       return project.name.toLowerCase().includes(query) || project.description.toLowerCase().includes(query);
     });
@@ -213,7 +210,7 @@ const ProjectListScreen = () => {
       </View>
       <FlatList
         data={searchQuery ? filteredProjects : projects}
-        keyExtractor={(item) => item.id?.toString() ?? ''}
+        keyExtractor={(item) => item.index}
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
             <TouchableOpacity

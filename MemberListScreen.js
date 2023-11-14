@@ -175,7 +175,7 @@ const MemberListScreen = () => {
       </View>
       <FlatList
         data={searchQuery ? filteredMembers : members}
-        keyExtractor={(item) => item.id?.toString() ?? ''}
+        keyExtractor={(item) => item.email.toString()}
         renderItem={({ item }) => (
           <Swipeout right={swipeoutBtns(item)} autoClose backgroundColor='transparent'>
             <TouchableOpacity
