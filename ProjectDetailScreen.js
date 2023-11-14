@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Alert, TextInput } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Alert, TextInput, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-ui-lib';
 import { database } from './firebase';
 import { ref, query, orderByChild, equalTo, get } from "firebase/database";
@@ -122,6 +122,11 @@ const ProjectDetailScreen = ({ route, navigation }) => {
               placeholder="Search tasks..."
               value={searchQuery}
               onChangeText={(text) => setSearchQuery(text)} />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearSearchButton}>
+                  <FontAwesome name="times" size={20} color="gray" />
+                </TouchableOpacity>
+              )}
           </View>
           {tasks.length > 0 ? (
             <FlatList
@@ -219,6 +224,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchIcon: {
+    padding: 10,
+  },
+  clearSearchButton: {
+    position: 'absolute',
+    right: 10,
     padding: 10,
   },
 });

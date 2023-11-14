@@ -183,6 +183,11 @@ const ProjectListScreen = () => {
           value={searchQuery}
           onChangeText={(text) => setSearchQuery(text)}
         />
+        {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearSearchButton}>
+              <FontAwesome name="times" size={20} color="gray" />
+            </TouchableOpacity>
+          )}
       </View>
       <FlatList
         data={searchQuery ? filteredProjects : projects}
@@ -300,7 +305,11 @@ const styles = StyleSheet.create({
   status_complete: {
     backgroundColor: 'green',
   },
-
+  clearSearchButton: {
+    position: 'absolute',
+    right: 10,
+    padding: 10,
+  },
 });
 
 export default ProjectListScreen;
