@@ -99,7 +99,7 @@ const MemberTaskListScreen = () => {
       </View>
       <FlatList
         data={searchQuery ? filteredTasks : tasks}
-        keyExtractor={(item) => item.id?.toString() ?? ''}
+        keyExtractor={(item) => item.taskId.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
