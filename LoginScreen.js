@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: 70,
     flex: 1,
-    backgroundColor: '#87CEEB',
+    backgroundColor: '#fff',
     alignItems: 'center',
   },
   logo: {
@@ -134,21 +134,21 @@ const styles = StyleSheet.create({
   appTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#007BFF',
     marginBottom: 20,
   },
   input: {
     width: 400,
     height: 40,
-    borderColor: '#fff',
+    borderColor: '#87CEEB',
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 10,
     maxWidth: 340,
     alignSelf: 'center',
     marginBottom: 10,
-    color: '#fff',
-    placeholderTextColor: '#fff',
+    color: '#87CEEB',
+    placeholderTextColor: '#87CEEB',
   },
   errorText: {
     color: 'red',
