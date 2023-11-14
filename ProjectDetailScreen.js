@@ -184,7 +184,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
           {tasks.length > 0 ? (
             <FlatList
               data={searchQuery ? filteredTasks : tasks}
-              keyExtractor={(item) => item.id?.toString() ?? ''}
+              keyExtractor={(item) => item.taskId.toString()}
               renderItem={renderTaskItem}
               showsVerticalScrollIndicator={false}
             />
