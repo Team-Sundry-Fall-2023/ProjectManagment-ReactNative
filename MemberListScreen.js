@@ -179,6 +179,7 @@ const MemberListScreen = () => {
                   <Avatar
                     rounded
                     size="large"
+                    style={{ height: 50, width: 50 }}
                     source={require('./assets/img/avatar.jpg')} 
                   />
                   <View style={styles.memberInfo}>

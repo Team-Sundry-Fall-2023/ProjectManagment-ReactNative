@@ -122,14 +122,14 @@ const validateEmail = (email) => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: '#EFEFF4',
     borderBottomWidth: 0,
     marginBottom: 100
   },
   container: {
     paddingBottom: 70,
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#EFEFF4',
     alignItems: 'center',
   },
   logo: {

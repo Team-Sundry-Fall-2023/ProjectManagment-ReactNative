@@ -80,7 +80,7 @@ const RegistrationScreen = ({ navigation }) => {
         <Header
           containerStyle={styles.headerContainer}
           centerComponent={{ text: 'Registration', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
-          backgroundColor='#fff'
+          backgroundColor='#EFEFF4'
         />
         <ScrollView style={styles.scrollViewContainer}>
           <Image
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: 70,
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#EFEFF4',
     alignItems: 'center',
   },
   scrollViewContainer: {

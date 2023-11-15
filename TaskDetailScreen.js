@@ -66,7 +66,7 @@ const TaskDetailScreen = ({ route, navigation }) => {
             onPress={() => navigation.goBack()}
           />
         }
-        centerComponent={{ text: 'Detail', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
+        centerComponent={{ text: 'Task Details', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
         backgroundColor='#fff'
       />
       <ScrollView style={styles.scrollViewContainer}>
