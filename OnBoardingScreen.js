@@ -34,7 +34,11 @@ const OnBoardingScreen = ({ navigation }) => {
   const [index, setIndex] = useState(0);
 
   const handleSwipe = (newIndex) => {
-    setIndex(newIndex);
+    console.log(data[newIndex]);
+    if (newIndex === data.length - 1) {
+      navigation.navigate('Login')
+    }
+      setIndex(newIndex);
   };
 
   return (

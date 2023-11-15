@@ -112,8 +112,8 @@ const MemberTaskListScreen = () => {
               </View>
               <Card.Divider />
                 <View style={styles.taskDescription}>
-                  <Text><Ionicons name='ios-calendar' size='16' color='blue' /> {`${formatDate(item.taskStartDate)} - ${formatDate(item.taskEndDate)}`}</Text>
-                  <Text><Ionicons name='ios-calendar-sharp' size='16' color='blue' /> {`${item.actualEndDate ? formatDate(item.actualEndDate) : 'N/A'}`}</Text>
+                  <Text style={styles.dateStyle}><Ionicons name='ios-calendar' size='16' color='blue' /> {`${formatDate(item.taskStartDate)} - ${formatDate(item.taskEndDate)}`}</Text>
+                  <Text style={styles.dateStyle}><Ionicons name='ios-calendar-sharp' size='16' color='blue' /> {`${item.actualEndDate ? formatDate(item.actualEndDate) : 'N/A'}`}</Text>
                 </View>
             </Card>
           </TouchableOpacity>
@@ -146,6 +146,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1,
   },
+  dateStyle: {
+    paddingBottom:10
+  },
   statusBadge: {
     paddingHorizontal: 6,
     paddingVertical: 3,
@@ -175,7 +178,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFEFF4',
   },
   taskDescription: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
   },
   swipeButton: {
