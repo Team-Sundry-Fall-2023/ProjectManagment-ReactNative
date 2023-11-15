@@ -150,12 +150,12 @@ const TaskOfMemberScreen = ({ route }) => {
           <Ionicons
             name='ios-arrow-back'
             size={24}
-            color='#fff'
+            color='#000'
             onPress={() => navigation.goBack()}
           />
         }
-        centerComponent={{ text: `Tasks of ${member.firstName} ${member.lastName}`, style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-        backgroundColor='#87CEEB'
+        centerComponent={{ text: `Tasks of ${member.firstName} ${member.lastName}`, style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#fff'
       />
       <FlatList
         data={tasks}
@@ -192,7 +192,7 @@ const TaskOfMemberScreen = ({ route }) => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: '#87CEEB',
+    backgroundColor: '#fff',
     borderBottomWidth: 0, 
   },
   cardTouchable: {

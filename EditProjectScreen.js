@@ -168,12 +168,12 @@ const EditProjectScreen = () => {
             <Ionicons
               name='ios-arrow-back'
               size={24}
-              color='#fff'
+              color='#000'
               onPress={() => navigation.goBack()}
             />
           }
-          centerComponent={{ text: 'Update project', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-          backgroundColor='#87CEEB'
+          centerComponent={{ text: 'Update project', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
+          backgroundColor='#fff'
         />
         <ScrollView style={styles.scrollViewContainer}>
           <View style={styles.projectHeader}>

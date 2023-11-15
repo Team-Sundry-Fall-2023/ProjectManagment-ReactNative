@@ -79,8 +79,8 @@ const RegistrationScreen = ({ navigation }) => {
       <View style={styles.container}>
         <Header
           containerStyle={styles.headerContainer}
-          centerComponent={{ text: 'Registration', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-          backgroundColor='#87CEEB'
+          centerComponent={{ text: 'Registration', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
+          backgroundColor='#fff'
         />
         <ScrollView style={styles.scrollViewContainer}>
           <Image
@@ -181,22 +181,22 @@ const styles = StyleSheet.create({
   appTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#007BFF',
+    color: '#5848ff',
     marginBottom: 20,
     alignSelf: 'center',
   },
   input: {
     width: 400,
     height: 40,
-    borderColor: '#87CEEB',
+    borderColor: '#5848ff',
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 10,
     maxWidth: 340,
     alignSelf: 'center',
     marginBottom: 10,
-    color: '#87CEEB',
-    placeholderTextColor: '#87CEEB',
+    color: '#5848ff',
+    placeholderTextColor: '#5848ff',
   },
   errorText: {
     color: 'red',
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   linkText: {
-    color: '#007BFF',
+    color: '#5848ff',
     textAlign: 'center',
     marginTop: 16,
   },

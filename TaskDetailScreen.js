@@ -62,12 +62,12 @@ const TaskDetailScreen = ({ route, navigation }) => {
           <Ionicons
             name='ios-arrow-back'
             size={24}
-            color='#fff'
+            color='#000'
             onPress={() => navigation.goBack()}
           />
         }
-        centerComponent={{ text: 'Detail', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-        backgroundColor='#87CEEB'
+        centerComponent={{ text: 'Detail', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
+        backgroundColor='#fff'
       />
       <ScrollView style={styles.scrollViewContainer}>
       {task && (

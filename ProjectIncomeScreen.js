@@ -106,12 +106,12 @@ const ProjectIncomeScreen = ({ route, navigation }) => {
                 <Ionicons
                     name='ios-arrow-back'
                     size={24}
-                    color='#fff'
+                    color='#000'
                     onPress={() => navigation.goBack()}
                 />
                 }
-                centerComponent={{ text: 'Project Income', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-                backgroundColor='#87CEEB'
+                centerComponent={{ text: 'Project Income', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
+                backgroundColor='#fff'
             />
             <ScrollView style={styles.scrollViewContainer}>
                 <View style={styles.dateContainer}>
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   headerContainer: {
-    backgroundColor: '#87CEEB',
+    backgroundColor: '#fff',
     borderBottomWidth: 0, 
   },
   header: {
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   dateButton: {
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#87CEEB',
+    borderColor: '#5848ff',
     borderRadius: 20,
     padding: 10,
     justifyContent: 'flex-start',

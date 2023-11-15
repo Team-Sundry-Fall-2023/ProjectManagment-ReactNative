@@ -132,17 +132,17 @@ const ProjectDetailScreen = ({ route, navigation }) => {
               <Ionicons
                 name='ios-arrow-back'
                 size={24}
-                color='#fff'
+                color='#000'
                 onPress={() => navigation.goBack()}
               />
             }
-            centerComponent={{ text: 'Tasks', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+            centerComponent={{ text: 'Tasks', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
             rightComponent={
               <View style={{ flexDirection: 'row' }}>
                 <Ionicons
                   name='ios-cash'
                   size={24}
-                  color='#fff'
+                  color='#000'
                   style={{ marginRight: 15 }}
                   onPress={() => {
                     navigation.navigate('Project Income', { tasksObj: tasks})
@@ -151,14 +151,14 @@ const ProjectDetailScreen = ({ route, navigation }) => {
                 <Ionicons
                   name='ios-add'
                   size={24}
-                  color='#fff'
+                  color='#000'
                   onPress={() => {
                     navigation.navigate('Create Task', { projectObj: project, tasks, setTasks })
                   }}
                 />
               </View>
             }
-            backgroundColor='#87CEEB'
+            backgroundColor='#fff'
           />
           <View style={styles.projectHeader}>
             <View style={styles.projectInfoContainer}>
@@ -170,14 +170,14 @@ const ProjectDetailScreen = ({ route, navigation }) => {
             </View>
           </View>
           <View style={styles.searchInput}>
-            <FontAwesome name="search" size={20} color="#87CEEB" style={styles.searchIcon} />
+            <FontAwesome name="search" size={20} color="#5848ff" style={styles.searchIcon} />
             <TextInput
               placeholder="Search tasks..."
               value={searchQuery}
               onChangeText={(text) => setSearchQuery(text)} />
               {searchQuery.length > 0 && (
                 <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearSearchButton}>
-                  <FontAwesome name="times" size={20} color="#87CEEB" />
+                  <FontAwesome name="times" size={20} color="#5848ff" />
                 </TouchableOpacity>
               )}
           </View>
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 40,
-    borderColor: '#87CEEB',
+    borderColor: '#5848ff',
     borderWidth: 1,
     margin: 10,
     paddingLeft: 10,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     padding: 10,
-    color:'#87CEEB'
+    color:'#5848ff'
   },
   clearSearchButton: {
     position: 'absolute',
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   headerContainer: {
-    backgroundColor: '#87CEEB',
+    backgroundColor: '#fff',
     borderBottomWidth: 0, 
   },
   headerRightButton: {

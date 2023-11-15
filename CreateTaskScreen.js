@@ -212,12 +212,12 @@ const CreateTaskScreen = ({ navigation, route }) => {
             <Ionicons
               name='ios-arrow-back'
               size={24}
-              color='#fff'
+              color='#000'
               onPress={() => navigation.goBack()}
             />
           }
-          centerComponent={{ text: 'Add task', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-          backgroundColor='#87CEEB'
+          centerComponent={{ text: 'Add task', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
+          backgroundColor='#fff'
         />
         <ScrollView style={styles.scrollViewContainer}>
           <View style={styles.fieldContainer}>

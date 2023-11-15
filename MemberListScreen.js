@@ -142,16 +142,16 @@ const MemberListScreen = () => {
     <View style={styles.container}>
       <Header
         containerStyle={styles.headerContainer}
-        centerComponent={{ text: 'Members', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+        centerComponent={{ text: 'Members', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
         rightComponent={
           <Ionicons
             name='ios-add'
             size={24}
-            color='#fff'
+            color='#000'
             onPress={handleRightButtonPress}
           />
         }
-        backgroundColor='#87CEEB'
+        backgroundColor='#fff'
       />
       <View style={styles.searchInput}>
         <FontAwesome name="search" size={20} color="gray" style={styles.searchIcon} />
@@ -161,7 +161,7 @@ const MemberListScreen = () => {
           onChangeText={(text) => setSearchQuery(text)} />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearSearchButton}>
-              <FontAwesome name="times" size={20} color="#87CEEB" />
+              <FontAwesome name="times" size={20} color="#5848ff" />
             </TouchableOpacity>
           )}
       </View>
@@ -204,7 +204,7 @@ const MemberListScreen = () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: '#87CEEB',
+    backgroundColor: '#fff',
     borderBottomWidth: 0, 
   },
   cardTouchable: {
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 40,
-    borderColor: '#87CEEB',
+    borderColor: '#5848ff',
     borderWidth: 1,
     margin: 10,
     paddingLeft: 10,
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     padding: 10,
-    color: '#87CEEB',
+    color: '#5848ff',
   },
   clearSearchButton: {
     position: 'absolute',

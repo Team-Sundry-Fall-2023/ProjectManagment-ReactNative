@@ -150,15 +150,15 @@ const CreateMemberScreen = ({ navigation, route }) => {
             <Ionicons
               name='ios-arrow-back'
               size={24}
-              color='#fff'
+              color='#000'
               onPress={() => navigation.goBack()}
             />
           }
           centerComponent={{
             text: memberToEdit ? 'Edit member' : 'Add member',
-            style: { color: '#fff', fontSize: 18, fontWeight: 'bold' }
+            style: { color: '#000', fontSize: 18, fontWeight: 'bold' }
           }}
-          backgroundColor='#87CEEB'
+          backgroundColor='#fff'
         />
         <ScrollView style={styles.scrollViewContainer}>
           <View style={styles.fieldContainer}>
