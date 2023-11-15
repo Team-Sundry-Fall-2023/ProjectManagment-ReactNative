@@ -34,17 +34,21 @@ const OnBoardingScreen = ({ navigation }) => {
   const [index, setIndex] = useState(0);
 
   const handleSwipe = (newIndex) => {
-    console.log(data[newIndex]);
-    if (newIndex === data.length - 1) {
-      navigation.navigate('Login')
+    if ((newIndex + 1) % 2 === 0) {
+      setIndex(Math.floor(newIndex / 2));
     }
-      setIndex(newIndex);
+
+    if (newIndex === data.length - 1) {
+      setTimeout(() => {
+        navigation.navigate('Login');
+      }, 2000);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Swiper
-        loop={true}
+        loop={false} 
         showsPagination={true}
         onIndexChanged={handleSwipe}
         dotStyle={styles.paginationDot}
