@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity, Keyboard , TouchableWithoutFeedback } from 'react-native';
 import { View, Text, TextField, Button, Image } from 'react-native-ui-lib';
 import { auth, database } from './firebase';
 import { ref, push } from "firebase/database";
@@ -31,7 +31,7 @@ const RegistrationScreen = ({ navigation }) => {
     }
 
     if (!validateEmail(email)) {
-      showAlert('Error', 'Invalid email format.'); 
+      showAlert('Error', 'Invalid email format.');
       return;
     }
 
@@ -49,7 +49,7 @@ const RegistrationScreen = ({ navigation }) => {
             lastName: lastName,
             email: email.toLowerCase(),
             hourlyRate: 0,
-            category: 'Admin', 
+            category: 'Admin',
           };
           push(userRef, userData)
             .then(() => {
@@ -75,77 +75,79 @@ const RegistrationScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Header
-        containerStyle={styles.headerContainer}
-        centerComponent={{ text: 'Registration', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-        backgroundColor='#87CEEB'
-      />
-      <ScrollView style={styles.scrollViewContainer}>
-        <Image
-          source={require('./assets/img/tiny_people.png')}
-          style={styles.logo}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Header
+          containerStyle={styles.headerContainer}
+          centerComponent={{ text: 'Registration', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+          backgroundColor='#87CEEB'
         />
-        <Text style={styles.appTitle}>PROJECT MANAGEMENT</Text>
-        <View style={styles.fieldContainer}>
-          <TextField
-            style={styles.input}
-            placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-            validate={{ presence: true }}
-            validationMessage={error}
+        <ScrollView style={styles.scrollViewContainer}>
+          <Image
+            source={require('./assets/img/tiny_people.png')}
+            style={styles.logo}
           />
-        </View>
-        <View style={styles.fieldContainer}>
-          <TextField
-            style={styles.input}
-            placeholder="Last Name"
-            value={lastName}
-            onChangeText={setLastName}
-            validate={{ presence: true }}
-            validationMessage={error}
-          />
-        </View>
-        <View style={styles.fieldContainer}>
-          <TextField
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            validate={{ email: true }}
-            validationMessage={error}
-          />
-        </View>
-        <View style={styles.fieldContainer}>
-          <TextField
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            validate={{ email: true }}
-            validationMessage={error}
-          />
-        </View>
-        <View style={styles.fieldContainer}>
-          <TextField
-            style={styles.input}
-            placeholder="Confirm Password"
-            secureTextEntry
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            validate={{ email: true }}
-            validationMessage={error}
-          />
-        </View>
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        <Button label="Register" onPress={handleRegistration} style={styles.button} />
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.linkText}>Already have an account? Back to login</Text>
-        </TouchableOpacity>
-      </ScrollView> 
-    </View>
+          <Text style={styles.appTitle}>PROJECT MANAGEMENT</Text>
+          <View style={styles.fieldContainer}>
+            <TextField
+              style={styles.input}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
+              validate={{ presence: true }}
+              validationMessage={error}
+            />
+          </View>
+          <View style={styles.fieldContainer}>
+            <TextField
+              style={styles.input}
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={setLastName}
+              validate={{ presence: true }}
+              validationMessage={error}
+            />
+          </View>
+          <View style={styles.fieldContainer}>
+            <TextField
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              validate={{ email: true }}
+              validationMessage={error}
+            />
+          </View>
+          <View style={styles.fieldContainer}>
+            <TextField
+              style={styles.input}
+              placeholder="Password"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              validate={{ email: true }}
+              validationMessage={error}
+            />
+          </View>
+          <View style={styles.fieldContainer}>
+            <TextField
+              style={styles.input}
+              placeholder="Confirm Password"
+              secureTextEntry
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              validate={{ email: true }}
+              validationMessage={error}
+            />
+          </View>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          <Button label="Register" onPress={handleRegistration} style={styles.button} />
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.linkText}>Already have an account? Back to login</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -207,7 +209,7 @@ const styles = StyleSheet.create({
     width: '50%',
   },
   label: {
-    alignSelf: 'flex-start', 
+    alignSelf: 'flex-start',
   },
   linkText: {
     color: '#007BFF',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Alert, ScrollView, StyleSheet } from 'react-native';
+import { View, Alert, ScrollView, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Button, TextField, Text } from 'react-native-ui-lib';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { auth, database } from './firebase';
@@ -295,81 +295,83 @@ const EditTaskScreen = () => {
     );
 
     return (
-        <View style={styles.container}>
-            <Header
-                containerStyle={styles.headerContainer}
-                leftComponent={
-                <Ionicons
-                    name='ios-arrow-back'
-                    size={24}
-                    color='#fff'
-                    onPress={() => navigation.goBack()}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <View style={styles.container}>
+                <Header
+                    containerStyle={styles.headerContainer}
+                    leftComponent={
+                        <Ionicons
+                            name='ios-arrow-back'
+                            size={24}
+                            color='#fff'
+                            onPress={() => navigation.goBack()}
+                        />
+                    }
+                    centerComponent={{ text: 'Edit task', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+                    backgroundColor='#87CEEB'
                 />
-                }
-                centerComponent={{ text: 'Edit task', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-                backgroundColor='#87CEEB'
-            />
-            <ScrollView style={styles.scrollViewContainer}>
-            <View style={styles.fieldContainer}>
-                <TextField
-                    placeholder="Enter task name"
-                    value={taskName}
-                    onChangeText={setTaskName}
-                    style={styles.input}
-                />
-            </View>
+                <ScrollView style={styles.scrollViewContainer}>
+                    <View style={styles.fieldContainer}>
+                        <TextField
+                            placeholder="Enter task name"
+                            value={taskName}
+                            onChangeText={setTaskName}
+                            style={styles.input}
+                        />
+                    </View>
 
-            <View style={styles.fieldContainer}>
-                <TextField
-                    placeholder="Enter task description"
-                    value={taskDescription}
-                    onChangeText={setTaskDescription}
-                    style={[styles.input, styles.multilineInput]}
-                    multiline={true}
-                />
-            </View>
+                    <View style={styles.fieldContainer}>
+                        <TextField
+                            placeholder="Enter task description"
+                            value={taskDescription}
+                            onChangeText={setTaskDescription}
+                            style={[styles.input, styles.multilineInput]}
+                            multiline={true}
+                        />
+                    </View>
 
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>Start Date</Text>
-                <Text style={styles.dateText}>{taskStartDate.toDateString()}</Text>
-            </View>
+                    <View style={styles.fieldContainer}>
+                        <Text style={styles.label}>Start Date</Text>
+                        <Text style={styles.dateText}>{taskStartDate.toDateString()}</Text>
+                    </View>
 
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>End Date</Text>
-                {renderEndDatePicker(taskEndDate, setTaskEndDate, showEndDatePicker, setShowEndDatePicker, "End Date")}
-            </View>
+                    <View style={styles.fieldContainer}>
+                        <Text style={styles.label}>End Date</Text>
+                        {renderEndDatePicker(taskEndDate, setTaskEndDate, showEndDatePicker, setShowEndDatePicker, "End Date")}
+                    </View>
 
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>Assign to</Text>
-                <RNPickerSelect
-                    onValueChange={(value) => setSelectedUser(value)}
-                    items={userOptions}
-                    style={pickerSelectStyles}
-                    placeholder={{
-                        label: 'Select a member',
-                        value: null,
-                    }}
-                    value={selectedUser}
-                />
-            </View>
+                    <View style={styles.fieldContainer}>
+                        <Text style={styles.label}>Assign to</Text>
+                        <RNPickerSelect
+                            onValueChange={(value) => setSelectedUser(value)}
+                            items={userOptions}
+                            style={pickerSelectStyles}
+                            placeholder={{
+                                label: 'Select a member',
+                                value: null,
+                            }}
+                            value={selectedUser}
+                        />
+                    </View>
 
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>Project</Text>
-                <RNPickerSelect
-                    onValueChange={(value) => setSelectedProject(value)}
-                    items={projectOptions}
-                    style={pickerSelectStyles}
-                    placeholder={{
-                        label: 'Select a project',
-                        value: null,
-                    }}
-                    value={selectedProject}
-                />
-            </View>
+                    <View style={styles.fieldContainer}>
+                        <Text style={styles.label}>Project</Text>
+                        <RNPickerSelect
+                            onValueChange={(value) => setSelectedProject(value)}
+                            items={projectOptions}
+                            style={pickerSelectStyles}
+                            placeholder={{
+                                label: 'Select a project',
+                                value: null,
+                            }}
+                            value={selectedProject}
+                        />
+                    </View>
 
-            <Button label="Update" onPress={handleEditTask} style={styles.saveButton} />
-        </ScrollView>
-        </View>
+                    <Button label="Update" onPress={handleEditTask} style={styles.saveButton} />
+                </ScrollView>
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -401,12 +403,12 @@ const styles = StyleSheet.create({
         paddingBottom: 70,
         flex: 1,
         backgroundColor: '#EFEFF4',
-      },
-      scrollViewContainer: {
+    },
+    scrollViewContainer: {
         flex: 1,
         padding: 16,
         backgroundColor: '#fff',
-      },
+    },
     fieldContainer: {
         marginBottom: 20,
     },

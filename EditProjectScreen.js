@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, ScrollView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Button } from 'react-native-ui-lib';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { database } from './firebase';
@@ -95,7 +95,7 @@ const EditProjectScreen = () => {
             user: project.user,
             projectCost: project.projectCost,
             noOfHours: project.noOfHours,
-            status : project.status,
+            status: project.status,
           };
 
           update(ref(database, `projects/${projectId}`), updatedProjectData)
@@ -160,44 +160,46 @@ const EditProjectScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Header
-        containerStyle={styles.headerContainer}
-        leftComponent={
-          <Ionicons
-            name='ios-arrow-back'
-            size={24}
-            color='#fff'
-            onPress={() => navigation.goBack()}
-          />
-        }
-        centerComponent={{ text: 'Update project', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-        backgroundColor='#87CEEB'
-      />
-      <ScrollView style={styles.scrollViewContainer}>
-      <View style={styles.projectHeader}>
-        <TextInput
-          style={styles.editInput}
-          placeholder="Project Name"
-          value={name}
-          onChangeText={setName}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Header
+          containerStyle={styles.headerContainer}
+          leftComponent={
+            <Ionicons
+              name='ios-arrow-back'
+              size={24}
+              color='#fff'
+              onPress={() => navigation.goBack()}
+            />
+          }
+          centerComponent={{ text: 'Update project', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+          backgroundColor='#87CEEB'
         />
-        <TextInput
-          style={[styles.editInput, styles.multilineInput]} 
-          placeholder="Project Description"
-          multiline
-          numberOfLines={4}
-          value={description}
-          onChangeText={setDescription}
-        />
-        <Button
-          label="Update"
-          onPress={handleEditProject}
-          style={styles.button}
-        />
+        <ScrollView style={styles.scrollViewContainer}>
+          <View style={styles.projectHeader}>
+            <TextInput
+              style={styles.editInput}
+              placeholder="Project Name"
+              value={name}
+              onChangeText={setName}
+            />
+            <TextInput
+              style={[styles.editInput, styles.multilineInput]}
+              placeholder="Project Description"
+              multiline
+              numberOfLines={4}
+              value={description}
+              onChangeText={setDescription}
+            />
+            <Button
+              label="Update"
+              onPress={handleEditProject}
+              style={styles.button}
+            />
+          </View>
+        </ScrollView>
       </View>
-      </ScrollView>
-    </View>
+    </TouchableWithoutFeedback>
   );
 
 };

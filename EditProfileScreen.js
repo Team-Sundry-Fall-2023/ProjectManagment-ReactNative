@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView, Keyboard , TouchableWithoutFeedback } from 'react-native';
 import { Button, TextField, Text } from 'react-native-ui-lib'; // Import from 'react-native-ui-lib'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
@@ -100,59 +100,61 @@ const EditProfileScreen = ({ }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Header
-        containerStyle={styles.headerContainer}
-        leftComponent={
-          <Ionicons
-            name='ios-arrow-back'
-            size={24}
-            color='#fff'
-            onPress={() => navigation.goBack()}
-          />
-        }
-        centerComponent={{ text: profileObj.email, style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-        backgroundColor='#87CEEB'
-      />
-      <ScrollView style={styles.scrollViewContainer}>
-      <View style={styles.fieldContainer}>
-        <Text style={styles.label}>First Name</Text>
-        <TextField
-          placeholder="First Name"
-          value={firstName}
-          onChangeText={setFirstName}
-          style={styles.input}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Header
+          containerStyle={styles.headerContainer}
+          leftComponent={
+            <Ionicons
+              name='ios-arrow-back'
+              size={24}
+              color='#fff'
+              onPress={() => navigation.goBack()}
+            />
+          }
+          centerComponent={{ text: profileObj.email, style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+          backgroundColor='#87CEEB'
         />
+        <ScrollView style={styles.scrollViewContainer}>
+          <View style={styles.fieldContainer}>
+            <Text style={styles.label}>First Name</Text>
+            <TextField
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
+              style={styles.input}
+            />
 
-        <Text style={styles.label}>Last Name</Text>
-        <TextField
-          placeholder="Last Name"
-          value={lastName}
-          onChangeText={setLastName}
-          style={styles.input}
-        />
+            <Text style={styles.label}>Last Name</Text>
+            <TextField
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={setLastName}
+              style={styles.input}
+            />
 
-        <Text style={styles.label}>Password</Text>
-        <TextField
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          style={styles.input}
-        />
+            <Text style={styles.label}>Password</Text>
+            <TextField
+              placeholder="Password"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              style={styles.input}
+            />
 
-        <Text style={styles.label}>Confirm Password</Text>
-        <TextField
-          placeholder="Confirm Password"
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          style={styles.input}
-        />
-        <Button label="Update" onPress={handleEditProfile} style={styles.button} />
+            <Text style={styles.label}>Confirm Password</Text>
+            <TextField
+              placeholder="Confirm Password"
+              secureTextEntry
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              style={styles.input}
+            />
+            <Button label="Update" onPress={handleEditProfile} style={styles.button} />
+          </View>
+        </ScrollView>
       </View>
-    </ScrollView>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

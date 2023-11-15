@@ -163,14 +163,6 @@ const TaskListScreen = () => {
     <View style={styles.container}>
       <Header
         containerStyle={styles.headerContainer}
-        leftComponent={
-          <Ionicons
-            name='ios-arrow-back'
-            size={24}
-            color='#fff'
-            onPress={() => navigation.goBack()}
-          />
-        }
         centerComponent={{ text: 'Tasks', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
         rightComponent={
           <Ionicons

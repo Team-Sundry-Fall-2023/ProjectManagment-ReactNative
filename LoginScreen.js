@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Keyboard , TouchableWithoutFeedback } from 'react-native';
 import { View, Text, TextField, Button, Image, Colors } from 'react-native-ui-lib';
 import { auth, database } from './firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -43,9 +43,9 @@ export default function LoginScreen({ navigation }) {
                 const category = userData.category;
 
                 if (category === 'Admin') {
-                  navigation.navigate('AdminTabNavigator'); 
+                  navigation.navigate('AdminTabNavigator');
                 } else if (category === 'Member') {
-                  navigation.navigate('MemberTabNavigator'); 
+                  navigation.navigate('MemberTabNavigator');
                 }
               } else {
                 setError('Category not found for user with ID', userId);
@@ -74,42 +74,44 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Header
-            containerStyle={styles.headerContainer}
-            centerComponent={{ text: ' ', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-            backgroundColor='#87CEEB'
-          />
-      <Image
-        source={require('./assets/img/tiny_people.png')}
-        style={styles.logo}
-      />
-      <Text style={styles.appTitle}>PROJECT MANAGEMENT</Text>
-      <TextField
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        validate={{
-          email: (value) => validateEmail(value) || 'Invalid email format',
-        }}
-        validationMessage={error} 
-      />
-      <TextField
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        validate={{
-          password: (value) => !!value || 'Password is required',
-        }}
-        validationMessage={error}
-      />
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <Button label="Login" onPress={handleLogin} style={styles.button} />
-      <Button label="Register" backgroundColor={Colors.blue1} onPress={handleRegister} style={styles.button} />
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Header
+          containerStyle={styles.headerContainer}
+          centerComponent={{ text: ' ', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+          backgroundColor='#fff'
+        />
+        <Image
+          source={require('./assets/img/tiny_people.png')}
+          style={styles.logo}
+        />
+        <Text style={styles.appTitle}>PROJECT MANAGEMENT</Text>
+        <TextField
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          validate={{
+            email: (value) => validateEmail(value) || 'Invalid email format',
+          }}
+          validationMessage={error}
+        />
+        <TextField
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          validate={{
+            password: (value) => !!value || 'Password is required',
+          }}
+          validationMessage={error}
+        />
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        <Button label="Login" onPress={handleLogin} style={styles.button} />
+        <Button label="Register" backgroundColor={Colors.blue1} onPress={handleRegister} style={styles.button} />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -120,7 +122,7 @@ const validateEmail = (email) => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: '#87CEEB',
+    backgroundColor: '#fff',
     borderBottomWidth: 0,
     marginBottom: 100
   },

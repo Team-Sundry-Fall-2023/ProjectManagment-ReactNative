@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, Keyboard , TouchableWithoutFeedback} from 'react-native';
 import { Card, Colors, Spacings, Typography, Button as UIButton, TextField } from 'react-native-ui-lib';
 import { auth, database } from './firebase';
 import { ref, query, orderByChild, equalTo, get, update } from "firebase/database";
@@ -22,7 +22,7 @@ const CompleteTaskScreen = ({ route, navigation }) => {
     if (taskObj) {
       settask(taskObj);
       setTasks(tasks);
-       getProjectFromId(taskObj.projectId);
+      getProjectFromId(taskObj.projectId);
     }
   }, [taskObj, task, tasks]);
 
@@ -58,7 +58,7 @@ const CompleteTaskScreen = ({ route, navigation }) => {
   }, []);
 
   const getProjectFromId = (projectId) => {
-    console.log('task' , task)
+    console.log('task', task)
     const userQuery = query(ref(database, 'projects'), orderByChild('projectId'), equalTo(projectId));
     get(userQuery).then((snapshot) => {
       if (snapshot.exists()) {
@@ -107,7 +107,7 @@ const CompleteTaskScreen = ({ route, navigation }) => {
           update(ref(database, `tasks/${taskId}`), updatedtaskData)
             .then(() => {
               showAlert('Success', 'task data updated');
-              updateProjectCost(task.projectId, taskCost , hours);
+              updateProjectCost(task.projectId, taskCost, hours);
               console.log('updatedtaskData begin', updatedtaskData);
               updateTask(taskCost);
               navigation.goBack();
@@ -154,13 +154,13 @@ const CompleteTaskScreen = ({ route, navigation }) => {
 
   const updateProjectCost = (projectId, taskCost, hours) => {
     const projectQuery = query(ref(database, 'projects'), orderByChild('projectId'), equalTo(projectId));
-  
+
     get(projectQuery)
       .then((snapshot) => {
         if (snapshot.exists()) {
           const projects = snapshot.val();
           const projectId = Object.keys(projects)[0];
-  
+
           // Check if all tasks in the project are complete
           areAllTasksCompleted()
             .then(allTasksComplete => {
@@ -169,7 +169,7 @@ const CompleteTaskScreen = ({ route, navigation }) => {
                 noOfHours: projects[projectId].noOfHours + hours, // Update the project hours
                 status: allTasksComplete ? 'Complete' : projects[projectId].status, // Update the project status
               };
-  
+
               update(ref(database, `projects/${projectId}`), updatedProjectData)
                 .then(() => {
                   // Project cost and status have been successfully updated
@@ -190,7 +190,7 @@ const CompleteTaskScreen = ({ route, navigation }) => {
 
   const areAllTasksCompleted = () => {
     const userQuery = query(ref(database, 'tasks'), orderByChild('projectId'), equalTo(project.projectId));
-  
+
     return get(userQuery)
       .then((snapshot) => {
         if (snapshot.exists()) {
@@ -241,21 +241,22 @@ const CompleteTaskScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Header
-        containerStyle={styles.headerContainer}
-        leftComponent={
-          <Ionicons
-            name='ios-arrow-back'
-            size={24}
-            color='#fff'
-            onPress={() => navigation.goBack()}
-          />
-        }
-        centerComponent={{ text: 'Complete Task', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-        backgroundColor='#87CEEB'
-      />
-      <ScrollView style={styles.scrollViewContainer}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Header
+          containerStyle={styles.headerContainer}
+          leftComponent={
+            <Ionicons
+              name='ios-arrow-back'
+              size={24}
+              color='#fff'
+              onPress={() => navigation.goBack()}
+            />
+          }
+          centerComponent={{ text: 'Complete Task', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+          backgroundColor='#87CEEB'
+        />
+        <ScrollView style={styles.scrollViewContainer}>
           {task && (
             <>
               <View style={styles.section}>
@@ -296,8 +297,9 @@ const CompleteTaskScreen = ({ route, navigation }) => {
               />
             </>
           )}
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -337,7 +339,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     backgroundColor: '#87CEEB',
-    borderBottomWidth: 0, 
+    borderBottomWidth: 0,
   },
   section: {
     marginBottom: Spacings.s4,

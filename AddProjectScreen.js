@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Button, TextField, Text } from 'react-native-ui-lib';
 import { useNavigation } from '@react-navigation/native';
 import { auth, database } from './firebase';
@@ -69,45 +69,47 @@ const AddProjectScreen = ({ route }) => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      <Header
-        containerStyle={styles.headerContainer}
-        leftComponent={
-          <Ionicons
-            name='ios-arrow-back'
-            size={24}
-            color='#fff'
-            onPress={() => navigation.goBack()}
-          />
-        }
-        centerComponent={{ text: 'Add project', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-        backgroundColor='#87CEEB'
-      />
-      <ScrollView style={styles.scrollViewContainer}>
-        <View style={styles.fieldContainer}>
-          <TextField
-            placeholder="Project Name"
-            value={name}
-            onChangeText={setName}
-            style={styles.input}
-          />
-        </View>
-        <View style={styles.fieldContainer}>
-          <TextField
-            placeholder="Project Description"
-            value={description}
-            onChangeText={setDescription}
-            style={[styles.input, styles.multilineInput]}
-            multiline={true}
-          />
-        </View>
-        <Button
-          label="+ Add"
-          onPress={handleAddProject}
-          style={styles.button}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Header
+          containerStyle={styles.headerContainer}
+          leftComponent={
+            <Ionicons
+              name='ios-arrow-back'
+              size={24}
+              color='#fff'
+              onPress={() => navigation.goBack()}
+            />
+          }
+          centerComponent={{ text: 'Add project', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+          backgroundColor='#87CEEB'
         />
-      </ScrollView>
-    </View>
+        <ScrollView style={styles.scrollViewContainer}>
+          <View style={styles.fieldContainer}>
+            <TextField
+              placeholder="Project Name"
+              value={name}
+              onChangeText={setName}
+              style={styles.input}
+            />
+          </View>
+          <View style={styles.fieldContainer}>
+            <TextField
+              placeholder="Project Description"
+              value={description}
+              onChangeText={setDescription}
+              style={[styles.input, styles.multilineInput]}
+              multiline={true}
+            />
+          </View>
+          <Button
+            label="+ Add"
+            onPress={handleAddProject}
+            style={styles.button}
+          />
+        </ScrollView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     backgroundColor: '#87CEEB',
-    borderBottomWidth: 0, 
+    borderBottomWidth: 0,
   },
   fieldContainer: {
     marginBottom: 20,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Button, TextField, Text } from 'react-native-ui-lib';
 import { auth, database } from './firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -142,88 +142,91 @@ const CreateMemberScreen = ({ navigation, route }) => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      <Header
-        containerStyle={styles.headerContainer}
-        leftComponent={
-          <Ionicons
-            name='ios-arrow-back'
-            size={24}
-            color='#fff'
-            onPress={() => navigation.goBack()}
-          />
-        }
-        centerComponent={{ 
-                    text: memberToEdit ? 'Edit member' : 'Add member',
-                    style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
-        backgroundColor='#87CEEB'
-      />
-      <ScrollView style={styles.scrollViewContainer}>
-      <View style={styles.fieldContainer}>
-
-        <Text style={styles.label}>First Name</Text>
-        <TextField
-          placeholder="First Name"
-          value={firstName}
-          onChangeText={setFirstName}
-          style={styles.input}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Header
+          containerStyle={styles.headerContainer}
+          leftComponent={
+            <Ionicons
+              name='ios-arrow-back'
+              size={24}
+              color='#fff'
+              onPress={() => navigation.goBack()}
+            />
+          }
+          centerComponent={{
+            text: memberToEdit ? 'Edit member' : 'Add member',
+            style: { color: '#fff', fontSize: 18, fontWeight: 'bold' }
+          }}
+          backgroundColor='#87CEEB'
         />
+        <ScrollView style={styles.scrollViewContainer}>
+          <View style={styles.fieldContainer}>
 
-        <Text style={styles.label}>Last Name</Text>
-        <TextField
-          placeholder="Last Name"
-          value={lastName}
-          onChangeText={setLastName}
-          style={styles.input}
-        />
+            <Text style={styles.label}>First Name</Text>
+            <TextField
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
+              style={styles.input}
+            />
 
-        <Text style={styles.label}>Email</Text>
-        <TextField
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
-          editable={memberToEdit ? false : true}
-        />
-        {!memberToEdit && (
-          <Text style={styles.label}>Password</Text>
-        )}
+            <Text style={styles.label}>Last Name</Text>
+            <TextField
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={setLastName}
+              style={styles.input}
+            />
 
-        {!memberToEdit && (
-          <TextField
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            style={styles.input}
-          />
-        )}
+            <Text style={styles.label}>Email</Text>
+            <TextField
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              style={styles.input}
+              editable={memberToEdit ? false : true}
+            />
+            {!memberToEdit && (
+              <Text style={styles.label}>Password</Text>
+            )}
 
-        <Text style={styles.label}>Hourly Rate</Text>
-        <TextField
-          placeholder="Hourly Rate"
-          value={hourlyRate.toString()}
-          onChangeText={setHourlyRate}
-          keyboardType="numeric"
-          style={styles.input}
-        />
+            {!memberToEdit && (
+              <TextField
+                placeholder="Password"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+                style={styles.input}
+              />
+            )}
 
-        <View style={styles.pickerContainer}>
-          <Text style={styles.label}>Role</Text>
-          <RNPickerSelect
-            items={[
-              { label: 'Admin', value: 'Admin' },
-              { label: 'Member', value: 'Member' },
-            ]}
-            value={selectedRole}
-            onValueChange={(value) => setSelectedRole(value)}
-            style={pickerSelectStyles}
-          />
-        </View>
-        <Button label={memberToEdit ? "Update" : "+ Add"} onPress={memberToEdit ? handleUpdateMember : handleCreateMember} style={styles.button} />
+            <Text style={styles.label}>Hourly Rate</Text>
+            <TextField
+              placeholder="Hourly Rate"
+              value={hourlyRate.toString()}
+              onChangeText={setHourlyRate}
+              keyboardType="numeric"
+              style={styles.input}
+            />
+
+            <View style={styles.pickerContainer}>
+              <Text style={styles.label}>Role</Text>
+              <RNPickerSelect
+                items={[
+                  { label: 'Admin', value: 'Admin' },
+                  { label: 'Member', value: 'Member' },
+                ]}
+                value={selectedRole}
+                onValueChange={(value) => setSelectedRole(value)}
+                style={pickerSelectStyles}
+              />
+            </View>
+            <Button label={memberToEdit ? "Update" : "+ Add"} onPress={memberToEdit ? handleUpdateMember : handleCreateMember} style={styles.button} />
+          </View>
+        </ScrollView>
       </View>
-    </ScrollView>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
