@@ -335,7 +335,6 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
   },
   headerContainer: {
     backgroundColor: '#fff',
@@ -373,7 +372,7 @@ const styles = StyleSheet.create({
     width: '50%',
   },
   dateButton: {
-    backgroundColor: '#fff',
+    backgroundColor: '#EFEFF4',
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 20,

@@ -213,7 +213,6 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
   },
   editInput: {
     height: 40,
@@ -239,7 +238,6 @@ const styles = StyleSheet.create({
     paddingBottom: 70,
     borderBottomWidth: 1,
     borderBottomColor: '#e1e1e1',
-    backgroundColor: 'white',
   },
   projectName: {
     fontSize: 22,

@@ -98,7 +98,7 @@ const ProfileDetailScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#EFEFF4',
   },
   gradientHeader: {
     position: 'absolute',

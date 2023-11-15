@@ -136,7 +136,7 @@ const ProjectDetailScreen = ({ route, navigation }) => {
                 onPress={() => navigation.goBack()}
               />
             }
-            centerComponent={{ text: 'Tasks', style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
+            centerComponent={{ text: project.name, style: { color: '#000', fontSize: 18, fontWeight: 'bold' } }}
             rightComponent={
               <View style={{ flexDirection: 'row' }}>
                 <Ionicons
