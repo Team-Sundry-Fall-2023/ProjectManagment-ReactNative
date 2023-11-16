@@ -82,6 +82,7 @@ const MemberIncomeScreen = () => {
         propsForLabels: {
             fontWeight: 'bold', // Make the label text bold
           },
+          fromZero: true,
     };
 
     // Render function for the Date Picker

@@ -41,7 +41,7 @@ const OnBoardingScreen = ({ navigation }) => {
     if (newIndex === data.length - 1) {
       setTimeout(() => {
         navigation.navigate('Login');
-      }, 2000);
+      }, 1500);
     }
   };
 

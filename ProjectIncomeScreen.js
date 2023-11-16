@@ -29,6 +29,7 @@ const ProjectIncomeScreen = ({ route, navigation }) => {
       const selectedMoment = moment(selectedDate);
 
       return (
+        // (selectedMoment.isSame(taskDate, 'month') && taskDate.isSame(selectedMoment, 'year'))
         taskDate.isSame(selectedMoment, 'day') ||
         (selectedMoment.isSame(taskDate, 'week') && taskDate.isSame(selectedMoment, 'year'))
       );
@@ -71,6 +72,7 @@ const ProjectIncomeScreen = ({ route, navigation }) => {
     propsForLabels: {
       fontWeight: 'bold', // Make the label text bold
     },
+    fromZero: true,
   };
 
   // Render function for the Date Picker
